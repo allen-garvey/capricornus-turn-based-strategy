@@ -1,0 +1,40 @@
+body{
+	font-family: sans-serif;
+}
+
+.container{
+	width: 1216px;
+	margin: 0 auto;
+}
+img.spritesheet{
+	display: none;
+}
+.game-container{
+	position: relative;
+	height: 800px;
+}
+/*
+* canvas height and width must be set to pixel values
+and through JavaScript or it will mess up rendering
+*/
+.game-canvas{
+	image-rendering: pixelated;
+	display: block;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+}
+#cursor-canvas{
+	z-index: 100;
+}
+#moving-unit-canvas{
+	z-index: 90;
+}
+#unit-canvas{
+	z-index: 80;
+}
+#terrain-canvas{
+	z-index: 70;
+}
