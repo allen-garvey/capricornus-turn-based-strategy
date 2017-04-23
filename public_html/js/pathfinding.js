@@ -20,6 +20,8 @@ app.pathfinder = (function(){
 		//get stats about the unit
     	var unitStats = unitStatsArray[unitToBeMoved.type];
 
+    	//TODO: Add code for shortest path between starting and ending coordinate here
+
     	//example return value if startingCoordinate = {x: 1, y: 1} and endingCoordinate = {x: 3, y: 2}
     	return [startingCoordinate, {x: 2, y: 1}, {x: 2, y: 2}, endingCoordinate];
 
@@ -46,6 +48,9 @@ app.pathfinder = (function(){
     	if(unitStats.canTraverse[terrain.type]){
 
     	}
+
+    	//TODO: Add code for finding tiles unit can move to here
+    	//possibly later also adding squares unit can attack
 
     	//for now just return squares around the unit
     	return [{x: unitCoordinate.x + 1, y: unitCoordinate.y}, {x: unitCoordinate.x - 1, y: unitCoordinate.y}, {x: unitCoordinate.x, y: unitCoordinate.y + 1}, {x: unitCoordinate.x, y: unitCoordinate.y - 1}];
