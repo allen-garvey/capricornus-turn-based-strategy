@@ -41,19 +41,37 @@ var game = function(){
 		canvasContext.clearRect(pixelLocationCoordinate.x, pixelLocationCoordinate.y, TILE_SIZE, TILE_SIZE);
 	}
 
-	function drawRandomTerrain(terrainCanvasContext, image){
-		for(var y = 0; y < TOTAL_TILES.y; y++){
-			for(var x = 0; x < TOTAL_TILES.x; x++){
-				drawTile(terrainCanvasContext, image, {x: x, y: y}, {x: Math.round(Math.random()), y: 0});
+	function createRandomGameboard(){
+		var gameboard = new Array(TOTAL_TILES.x);
+		for(var i = 0; i < TOTAL_TILES.x; i++){
+			for(var j = 0; j < TOTAL_TILES.y; j++){
+				if(j == 0){
+					gameboard[i] = new Array(TOTAL_TILES.y);
+				}
+				gameboard[i][j] = {};
+				gameboard[i][j].terrain = {sprite: {x: Math.round(Math.random()), y: 0}};
+				if(Math.random() * 1000 < 10){
+					gameboard[i][j].unit = {sprite: {x: 0, y: 1}};
+				}
+				else{
+					gameboard[i][j].unit = null;
+				}
 			}
 		}
+		return gameboard;
 	}
-	function drawRandomUnits(unitCanvasContext, image){
-		var numUnits = Math.ceil(Math.random() * 30);
-		while(numUnits > 0){
-			drawTile(unitCanvasContext, image, {x: Math.floor(Math.random() * TOTAL_TILES.x), y: Math.floor(Math.random() * TOTAL_TILES.y)}, {x: 0, y: 1});
-			numUnits--;
+
+	function renderInitialGameboard(gameboard, terrainCanvasContext, unitCanvasContext){
+		for(var x = 0; x < TOTAL_TILES.x; x++){
+			for(var y = 0; y < TOTAL_TILES.y; y++){
+				var currentCoordinate = {x: x, y: y};
+				drawTile(terrainCanvasContext, spritesheet, currentCoordinate, gameboard[x][y].terrain.sprite);
+				if(gameboard[x][y].unit){
+					drawTile(unitCanvasContext, spritesheet, currentCoordinate, gameboard[x][y].unit.sprite);
+				}
+			}
 		}
+
 	}
 
 	var gameContainer = document.getElementById('game-container');
@@ -66,8 +84,8 @@ var game = function(){
 	var terrainCanvasContext = getContext(gameContainer, 'terrain-canvas');
 	var unitCanvasContext = getContext(gameContainer, 'unit-canvas');
 
-	drawRandomTerrain(terrainCanvasContext, spritesheet);
-	drawRandomUnits(unitCanvasContext, spritesheet);
+	var gameboard = createRandomGameboard();
+	renderInitialGameboard(gameboard, terrainCanvasContext, unitCanvasContext);
 
 	//cursor rendering
 	gameContainer.onmousemove = function(e){
