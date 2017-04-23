@@ -56,6 +56,11 @@ var game = function(){
 		});
 		//actually draw the rectangles
 		unitSelectionCanvasContext.fill();
+		//draw outline around unit
+		var unitPixelCoordinate = tileCoordinateToPixelCoordinate(unitCoordinate);
+		unitSelectionCanvasContext.strokeStyle = 'rgb(0,255,0)';
+		unitSelectionCanvasContext.lineWidth = 2;
+		unitSelectionCanvasContext.strokeRect(unitPixelCoordinate.x, unitPixelCoordinate.y, TILE_SIZE, TILE_SIZE);
 	}
 	function renderUnitDeselected(){
 		eraseCanvas(unitSelectionCanvasContext);
