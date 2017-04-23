@@ -5,6 +5,27 @@ var app = app || {};
 app.pathfinder = (function(){
 
 	/*
+	* @param startingCoordinate - starting coordinate {x, y} of the unit
+	* @param endingCoordinate - ending coordinate {x, y} of the unit
+	* (Coordinates start at the top left of the screen at {x: 0, y: 0} and move downwards and to the right with increasing numbers)
+	* @param gamboard - 2 dimensional array of units and terrain
+	* @param - unitStatsArray - array of unit stats, cross-indexed to unit.type
+	* @param - terrainStatsArray - array of terrain stats, cross-indexed to terrain.type
+	* @returns array of coordinates in the order they should be taken starting with startingCoordinate and ending with endingCoordinate
+	* should assume that startingCoordinate and endingCoordinate are valid i.e. no need to validate them
+	*/
+	function pathFor(startingCoordinate, endingCoordinate, gameboard, unitStatsArray, terrainStatsArray){
+		//get the unit
+		var unitToBeMoved = gameboard[startingCoordinate.x][startingCoordinate.y].unit;
+		//get stats about the unit
+    	var unitStats = unitStatsArray[unitToBeMoved.type];
+
+    	//example return value if startingCoordinate = {x: 1, y: 1} and endingCoordinate = {x: 3, y: 2}
+    	return [startingCoordinate, {x: 2, y: 1}, {x: 2, y: 2}, endingCoordinate];
+
+	}
+
+	/*
 	* @param unitCoordinate - coordinate {x, y} of the unit
 	* (Coordinates start at the top left of the screen at {x: 0, y: 0} and move downwards and to the right with increasing numbers)
 	* @param gamboard - 2 dimensional array of units and terrain
@@ -33,6 +54,7 @@ app.pathfinder = (function(){
 
     //exported functions
     return {
-    	movementCoordinatesFor: movementCoordinatesFor
+    	movementCoordinatesFor: movementCoordinatesFor,
+    	pathFor: pathFor
     };
 })();
