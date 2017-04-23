@@ -75,9 +75,9 @@ app.renderer = (function(){
 			for(var y = 0; y < height; y++){
 				var currentCoordinate = {x: x, y: y};
 				var gameTile = gameTileForCoordinate(currentCoordinate, gameboard);
-				drawTile(terrainCanvasContext, spritesheet, currentCoordinate, gameTile.terrain.sprite);
+				drawTile(terrainCanvasContext, gameTile.terrain.spritesheet, currentCoordinate, gameTile.terrain.spriteCoordinate);
 				if(gameTile.unit){
-					drawTile(unitCanvasContext, spritesheet, currentCoordinate, gameTile.unit.sprite);
+					drawTile(unitCanvasContext, gameTile.unit.spritesheet, currentCoordinate, gameTile.unit.spriteCoordinate);
 				}
 			}
 		}
