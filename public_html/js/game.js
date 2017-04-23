@@ -95,19 +95,3 @@
 	//exported functions
 	return {start: start};
  })(app.renderer);
-
-
-/*
- * Wait until images are loaded to start game
- */
-(function(){
-    var spriteSheet = document.getElementById('spritesheet');
-	if(spritesheet.complete){
-		app.game.start();
-	}
-	else{
-		spritesheet.onload = function(){
-			app.game.start();
-		};
-	}
-})();
