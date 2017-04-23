@@ -5,7 +5,9 @@
  */
 var app = app || {};
 
-app.renderer = (function(){
+app.renderer = (function(unitStats, terrainStats){
+	var UNIT_STATS = unitStats.get();
+	var TERRAIN_STATS = terrainStats.get();
 	
 	/*
 	* Tile size and tiles in board initialization
@@ -68,16 +70,18 @@ app.renderer = (function(){
 	/*
 	* Gameboard rendering functions
 	*/
-	function renderInitialGameboard(gameboard, terrainCanvasContext, unitCanvasContext){
+	function renderInitialGameboard(gameboard, terrainCanvasContext, unitCanvasContext, unitStatsArray, terrainStatsArray){
 		var width = gameboard.length;
 		for(var x = 0; x < width; x++){
 			var height = gameboard[x].length;
 			for(var y = 0; y < height; y++){
 				var currentCoordinate = {x: x, y: y};
 				var gameTile = gameTileForCoordinate(currentCoordinate, gameboard);
-				drawTile(terrainCanvasContext, gameTile.terrain.spritesheet, currentCoordinate, gameTile.terrain.spriteCoordinate);
+				var terrainStats = TERRAIN_STATS[gameTile.terrain.type];
+				drawTile(terrainCanvasContext, terrainStats.spritesheet, currentCoordinate, terrainStats.spriteCoordinate);
 				if(gameTile.unit){
-					drawTile(unitCanvasContext, gameTile.unit.spritesheet, currentCoordinate, gameTile.unit.spriteCoordinate);
+					var unitStats = UNIT_STATS[gameTile.unit.type];
+					drawTile(unitCanvasContext, unitStats.spritesheet, currentCoordinate, unitStats.spriteCoordinate);
 				}
 			}
 		}
@@ -120,4 +124,4 @@ app.renderer = (function(){
 		renderUnitSelectionOutline: renderUnitSelectionOutline,
 		renderUnitMovementSquares: renderUnitMovementSquares
 	};
-})();
+})(app.unitStats, app.terrainStats);

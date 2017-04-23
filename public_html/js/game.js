@@ -3,10 +3,10 @@
 /*
 * Main game loop functionality
 */
- app.game = (function(renderer, unitStats, terrainStats){
+ app.game = (function(renderer, unitStats, terrainStats, pathfinder){
 	function start(){
 	    function renderUnitSelected(unitCoordinate){
-			var movementTilesCoordinates = [{x: unitCoordinate.x + 1, y: unitCoordinate.y}, {x: unitCoordinate.x - 1, y: unitCoordinate.y}, {x: unitCoordinate.x, y: unitCoordinate.y + 1}, {x: unitCoordinate.x, y: unitCoordinate.y - 1}];
+			var movementTilesCoordinates = pathfinder.movementCoordinatesFor(unitCoordinate, gameboard, UNIT_STATS, TERRAIN_STATS);
 			renderer.renderUnitMovementSquares(unitSelectionCanvasContext, movementTilesCoordinates);
 			renderer.renderUnitSelectionOutline(unitSelectionCanvasContext, unitCoordinate);
 		}
@@ -22,9 +22,9 @@
 						gameboard[i] = new Array(TOTAL_TILES.y);
 					}
 					gameboard[i][j] = {};
-					gameboard[i][j].terrain = TERRAIN_STATS[Math.round(Math.random())];
+					gameboard[i][j].terrain = terrainStats.create(Math.round(Math.random()));
 					if(Math.random() * 1000 < 10){
-						gameboard[i][j].unit = UNIT_STATS[0];
+						gameboard[i][j].unit = unitStats.create(0, 0);
 					}
 					else{
 						gameboard[i][j].unit = null;
@@ -90,4 +90,4 @@
 	}
 	//exported functions
 	return {start: start};
- })(app.renderer, app.unitStats, app.terrainStats);
+ })(app.renderer, app.unitStats, app.terrainStats, app.pathfinder);
