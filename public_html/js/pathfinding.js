@@ -6,6 +6,7 @@ app.pathfinder = (function(){
 
 	/*
 	* @param unitCoordinate - coordinate {x, y} of the unit
+	* (Coordinates start at the top left of the screen at {x: 0, y: 0} and move downwards and to the right with increasing numbers)
 	* @param gamboard - 2 dimensional array of units and terrain
 	* @param - unitStatsArray - array of unit stats, cross-indexed to unit.type
 	* @param - terrainStatsArray - array of terrain stats, cross-indexed to terrain.type
