@@ -7,20 +7,8 @@
 	function start(){
 	    function renderUnitSelected(unitCoordinate){
 			var movementTilesCoordinates = [{x: unitCoordinate.x + 1, y: unitCoordinate.y}, {x: unitCoordinate.x - 1, y: unitCoordinate.y}, {x: unitCoordinate.x, y: unitCoordinate.y + 1}, {x: unitCoordinate.x, y: unitCoordinate.y - 1}];
-			//have to call before path operations
-			unitSelectionCanvasContext.beginPath();
-			movementTilesCoordinates.forEach(function(coordinate){
-				var pixelCoordinate = renderer.tileCoordinateToPixelCoordinate(coordinate);
-				unitSelectionCanvasContext.fillStyle = 'rgba(0,0,255, 0.5)';
-				unitSelectionCanvasContext.rect(pixelCoordinate.x, pixelCoordinate.y, renderer.TILE_SIZE, renderer.TILE_SIZE);
-			});
-			//actually draw the rectangles
-			unitSelectionCanvasContext.fill();
-			//draw outline around unit
-			var unitPixelCoordinate = renderer.tileCoordinateToPixelCoordinate(unitCoordinate);
-			unitSelectionCanvasContext.strokeStyle = 'rgb(0,255,0)';
-			unitSelectionCanvasContext.lineWidth = 2;
-			unitSelectionCanvasContext.strokeRect(unitPixelCoordinate.x, unitPixelCoordinate.y, renderer.TILE_SIZE, renderer.TILE_SIZE);
+			renderer.renderUnitMovementSquares(unitSelectionCanvasContext, movementTilesCoordinates);
+			renderer.renderUnitSelectionOutline(unitSelectionCanvasContext, unitCoordinate);
 		}
 		function renderUnitDeselected(){
 			renderer.eraseCanvas(unitSelectionCanvasContext);

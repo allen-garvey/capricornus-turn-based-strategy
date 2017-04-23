@@ -48,7 +48,7 @@ app.renderer = (function(){
 	}
 
 	/*
-	* Drawing and erasing functions
+	* General drawing and erasing functions
 	*/
 	function drawTile(canvasContext, image, locationCoordinate, spriteCoordinate){
 		var pixelLocationCoordinate = tileCoordinateToPixelCoordinate(locationCoordinate);
@@ -83,6 +83,27 @@ app.renderer = (function(){
 		}
 	}
 
+	/*
+	* Rendering unit selection
+	*/
+	function renderUnitSelectionOutline(canvasContext, unitCoordinate){
+		var unitPixelCoordinate = tileCoordinateToPixelCoordinate(unitCoordinate);
+		canvasContext.strokeStyle = 'rgb(0,255,0)';
+		canvasContext.lineWidth = 2;
+		canvasContext.strokeRect(unitPixelCoordinate.x, unitPixelCoordinate.y, TILE_SIZE, TILE_SIZE);
+	}
+	function renderUnitMovementSquares(canvasContext, movementTilesCoordinates){
+		//have to call before path operations
+		canvasContext.beginPath();
+		movementTilesCoordinates.forEach(function(coordinate){
+			var pixelCoordinate = tileCoordinateToPixelCoordinate(coordinate);
+			canvasContext.fillStyle = 'rgba(0,0,255, 0.5)';
+			canvasContext.rect(pixelCoordinate.x, pixelCoordinate.y, TILE_SIZE, TILE_SIZE);
+		});
+		//actually draw the rectangles
+		canvasContext.fill();
+	}
+
 	//exported functions and variables
 	return {
 		TILE_SIZE: TILE_SIZE,
@@ -95,6 +116,8 @@ app.renderer = (function(){
 		eraseTile: eraseTile,
 		eraseCanvas: eraseCanvas,
 		renderInitialGameboard: renderInitialGameboard,
-		gameTileForCoordinate: gameTileForCoordinate
+		gameTileForCoordinate: gameTileForCoordinate,
+		renderUnitSelectionOutline: renderUnitSelectionOutline,
+		renderUnitMovementSquares: renderUnitMovementSquares
 	};
 })();
