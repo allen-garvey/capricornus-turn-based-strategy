@@ -47,12 +47,15 @@ var game = function(){
 
 	function renderUnitSelected(unitCoordinate){
 		var movementTilesCoordinates = [{x: unitCoordinate.x + 1, y: unitCoordinate.y}, {x: unitCoordinate.x - 1, y: unitCoordinate.y}, {x: unitCoordinate.x, y: unitCoordinate.y + 1}, {x: unitCoordinate.x, y: unitCoordinate.y - 1}];
+		//have to call before path operations
+		unitSelectionCanvasContext.beginPath();
 		movementTilesCoordinates.forEach(function(coordinate){
 			var pixelCoordinate = tileCoordinateToPixelCoordinate(coordinate);
-			unitSelectionCanvasContext.rect(pixelCoordinate.x, pixelCoordinate.y, TILE_SIZE, TILE_SIZE);
 			unitSelectionCanvasContext.fillStyle = 'rgba(0,0,255, 0.5)';
-			unitSelectionCanvasContext.fill();
+			unitSelectionCanvasContext.rect(pixelCoordinate.x, pixelCoordinate.y, TILE_SIZE, TILE_SIZE);
 		});
+		//actually draw the rectangles
+		unitSelectionCanvasContext.fill();
 	}
 	function renderUnitDeselected(){
 		eraseCanvas(unitSelectionCanvasContext);
@@ -140,7 +143,6 @@ var game = function(){
 		}
 		//user clicked unit, so show it being selected
 		userInfo.unitSelected = {x: userInfo.cursorCoordinate.x, y: userInfo.cursorCoordinate.y};
-		console.log(userInfo.unitSelected);
 		renderUnitSelected(userInfo.unitSelected);
 	}
     
