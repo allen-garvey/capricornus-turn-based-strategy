@@ -1,7 +1,7 @@
 "use strict";
 
 /*
-* 
+* Main game loop functionality
 */
  app.game = (function(renderer){
 	function start(){
@@ -92,12 +92,13 @@
 			renderUnitSelected(userInfo.unitSelected);
 		}
 	}
+	//exported functions
 	return {start: start};
  })(app.renderer);
 
 
 /*
- * Wait until image is loaded to render
+ * Wait until images are loaded to start game
  */
 (function(){
     var spriteSheet = document.getElementById('spritesheet');
