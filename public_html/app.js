@@ -41,6 +41,23 @@ var game = function(){
 		canvasContext.clearRect(pixelLocationCoordinate.x, pixelLocationCoordinate.y, TILE_SIZE, TILE_SIZE);
 	}
 
+	function eraseCanvas(canvasContext){
+		canvasContext.clearRect(0, 0, canvasContext.canvas.width, canvasContext.canvas.height);
+	}
+
+	function renderUnitSelected(unitCoordinate){
+		var movementTilesCoordinates = [{x: unitCoordinate.x + 1, y: unitCoordinate.y}, {x: unitCoordinate.x - 1, y: unitCoordinate.y}, {x: unitCoordinate.x, y: unitCoordinate.y + 1}, {x: unitCoordinate.x, y: unitCoordinate.y - 1}];
+		movementTilesCoordinates.forEach(function(coordinate){
+			var pixelCoordinate = tileCoordinateToPixelCoordinate(coordinate);
+			unitSelectionCanvasContext.rect(pixelCoordinate.x, pixelCoordinate.y, TILE_SIZE, TILE_SIZE);
+			unitSelectionCanvasContext.fillStyle = 'rgba(0,0,255, 0.5)';
+			unitSelectionCanvasContext.fill();
+		});
+	}
+	function renderUnitDeselected(){
+		eraseCanvas(unitSelectionCanvasContext);
+	}
+
 	function createRandomGameboard(){
 		var gameboard = new Array(TOTAL_TILES.x);
 		for(var i = 0; i < TOTAL_TILES.x; i++){
@@ -65,22 +82,29 @@ var game = function(){
 		for(var x = 0; x < TOTAL_TILES.x; x++){
 			for(var y = 0; y < TOTAL_TILES.y; y++){
 				var currentCoordinate = {x: x, y: y};
-				drawTile(terrainCanvasContext, spritesheet, currentCoordinate, gameboard[x][y].terrain.sprite);
-				if(gameboard[x][y].unit){
-					drawTile(unitCanvasContext, spritesheet, currentCoordinate, gameboard[x][y].unit.sprite);
+				var gameTile = gameTileForCoordinate(currentCoordinate, gameboard);
+				drawTile(terrainCanvasContext, spritesheet, currentCoordinate, gameTile.terrain.sprite);
+				if(gameTile.unit){
+					drawTile(unitCanvasContext, spritesheet, currentCoordinate, gameTile.unit.sprite);
 				}
 			}
 		}
-
+	}
+	function gameTileForCoordinate(coordinate, aGameboard){
+		if(aGameboard){
+			return aGameboard[coordinate.x][coordinate.y];
+		}
+		return gameboard[coordinate.x][coordinate.y];
 	}
 
 	var gameContainer = document.getElementById('game-container');
 	var TOTAL_TILES = totalTiles(gameContainer);
 	var spriteSheet = document.getElementById('spritesheet');
-	var cursorCoordinate = null;
+	var userInfo = {cursorCoordinate: null, unitSelected: false};
 
 	
 	var cursorCanvasContext = getContext(gameContainer, 'cursor-canvas');
+	var unitSelectionCanvasContext = getContext(gameContainer, 'unit-selection-canvas');
 	var terrainCanvasContext = getContext(gameContainer, 'terrain-canvas');
 	var unitCanvasContext = getContext(gameContainer, 'unit-canvas');
 
@@ -91,18 +115,34 @@ var game = function(){
 	gameContainer.onmousemove = function(e){
 		var coordinate = pixelCoordinateToTileCoordinate({x: e.offsetX, y: e.offsetY});
 		//not required if first time drawing cursor
-		if(cursorCoordinate != null){
+		if(userInfo.cursorCoordinate != null){
 			//don't do anything if cursor is in same square
-			if(coordinate.x == cursorCoordinate.x && coordinate.y == cursorCoordinate.y){
+			if(coordinate.x == userInfo.cursorCoordinate.x && coordinate.y == userInfo.cursorCoordinate.y){
 				return;
 			}
 			//cursor moved to new square, so erase previous cursor if there is one
-			eraseTile(cursorCanvasContext, cursorCoordinate);
+			eraseTile(cursorCanvasContext, userInfo.cursorCoordinate);
 		}
 		//set new cursor location and draw cursor
-		cursorCoordinate = coordinate;
-		drawTile(cursorCanvasContext, spriteSheet, cursorCoordinate, {x: 1, y: 1});
+		userInfo.cursorCoordinate = coordinate;
+		drawTile(cursorCanvasContext, spriteSheet, userInfo.cursorCoordinate, {x: 1, y: 1});
 	};
+
+	gameContainer.onclick = function(e){
+		//deselect previously selected unit if any
+		if(userInfo.unitSelected){
+			userInfo.unitSelected = false;
+			renderUnitDeselected();
+		}
+		//don't do anything else if user didn't click on unit
+		if(!gameTileForCoordinate(userInfo.cursorCoordinate).unit){
+			return;
+		}
+		//user clicked unit, so show it being selected
+		userInfo.unitSelected = {x: userInfo.cursorCoordinate.x, y: userInfo.cursorCoordinate.y};
+		console.log(userInfo.unitSelected);
+		renderUnitSelected(userInfo.unitSelected);
+	}
     
 };
 

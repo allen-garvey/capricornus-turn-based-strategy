@@ -29,6 +29,9 @@ and through JavaScript or it will mess up rendering
 #cursor-canvas{
 	z-index: 100;
 }
+#unit-selection-canvas{
+	z-index: 95;
+}
 #moving-unit-canvas{
 	z-index: 90;
 }
