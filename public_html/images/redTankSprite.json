@@ -1,0 +1,48 @@
+{"frames": [
+
+{
+	"filename": "redtank1.png",
+	"frame": {"x":0,"y":0,"w":30,"h":20},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":30,"h":20},
+	"sourceSize": {"w":30,"h":20},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "redtank2.png",
+	"frame": {"x":30,"y":0,"w":30,"h":20},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":30,"h":20},
+	"sourceSize": {"w":30,"h":20},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "redtank3.png",
+	"frame": {"x":60,"y":0,"w":20,"h":30},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":20,"h":30},
+	"sourceSize": {"w":20,"h":30},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "redtank4.png",
+	"frame": {"x":80,"y":0,"w":20,"h":30},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":20,"h":30},
+	"sourceSize": {"w":20,"h":30},
+	"pivot": {"x":0.5,"y":0.5}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "redTankSprite.png",
+	"format": "RGBA8888",
+	"size": {"w":100,"h":30},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:cabf6146ebf05b8ee6fb77651a5bc04a:41dc627484b3a1390cf443645da329df:bec0bb49482ba3bf6bd6c0a114c78ada$"
+}
+}

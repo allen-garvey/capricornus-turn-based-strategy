@@ -1,0 +1,48 @@
+{"frames": [
+
+{
+	"filename": "blueplane1.png",
+	"frame": {"x":0,"y":0,"w":30,"h":26},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":30,"h":26},
+	"sourceSize": {"w":30,"h":26},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "blueplane2.png",
+	"frame": {"x":30,"y":0,"w":30,"h":26},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":30,"h":26},
+	"sourceSize": {"w":30,"h":26},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "blueplane3.png",
+	"frame": {"x":60,"y":0,"w":26,"h":30},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":30},
+	"sourceSize": {"w":26,"h":30},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "blueplane4.png",
+	"frame": {"x":86,"y":0,"w":26,"h":30},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":30},
+	"sourceSize": {"w":26,"h":30},
+	"pivot": {"x":0.5,"y":0.5}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "bluePlaneSprite.png",
+	"format": "RGBA8888",
+	"size": {"w":112,"h":30},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:809a9d99048d6704ee5e0e1b9fb67bfe:acfe2128312f8232f676801a32b90a59:dc9c714581d45030bbc1ec22cc5f6afc$"
+}
+}
