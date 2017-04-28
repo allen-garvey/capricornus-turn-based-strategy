@@ -48,14 +48,71 @@ app.pathfinder = (function(){
     	if(unitStats.canTraverse[terrain.type]){
 
     	}
+		var ymax = gameboard[0].length - 1;
+		var xmax = gameboard.length - 1;
+		var validMoves = [];
+		//validMoves.push({x: unitCoordinate.x, y: unitCoordinate.y, cost: 0});
+		if(unitCoordinate.x + 1 <= xmax && unitStats.canTraverse[gameboard[unitCoordinate.x + 1][unitCoordinate.y].terrain.type]){
+			validMoves.push({x: unitCoordinate.x + 1, y: unitCoordinate.y, cost: 1});	
+		}
+		if(unitCoordinate.x - 1 >= 0 && unitStats.canTraverse[gameboard[unitCoordinate.x - 1][unitCoordinate.y].terrain.type]){
+			validMoves.push({x: unitCoordinate.x - 1, y: unitCoordinate.y, cost: 1});
+		}
+		if(unitCoordinate.y + 1 <= ymax && unitStats.canTraverse[gameboard[unitCoordinate.x][unitCoordinate.y + 1].terrain.type]){
+			validMoves.push({x: unitCoordinate.x, y: unitCoordinate.y + 1, cost: 1});
+		}
+		if(unitCoordinate.y - 1 >= 0 && unitStats.canTraverse[gameboard[unitCoordinate.x][unitCoordinate.y - 1].terrain.type]){
+			validMoves.push({x: unitCoordinate.x, y: unitCoordinate.y - 1, cost: 1});
+		} 
+		var nextMoveDist = 1;
+		index = 0;
+		//unitStats.movementSpeed
+		while(nextMoveDist <= unitStats.movementSpeed && index < validMoves.length)
+		{
+			if(validMoves[index].x + 1 <= xmax 
+			&& unitStats.canTraverse[gameboard[validMoves[index].x + 1][validMoves[index].y].terrain.type]
+			&& !arrayContainsCoords(validMoves, validMoves[index].x + 1, validMoves[index].y)
+			&& gameboard[validMoves[index].x + 1][validMoves[index].y].unit === null ){
+				validMoves.push({x: validMoves[index].x + 1, y: validMoves[index].y, cost: validMoves[index].cost + 1});	
+			}
+			if(validMoves[index].x - 1 >= 0 
+			&& unitStats.canTraverse[gameboard[validMoves[index].x - 1][validMoves[index].y].terrain.type]
+			&& !arrayContainsCoords(validMoves, validMoves[index].x - 1, validMoves[index].y)
+			&& gameboard[validMoves[index].x - 1][validMoves[index].y].unit === null){
+				validMoves.push({x: validMoves[index].x - 1, y: validMoves[index].y, cost: validMoves[index].cost + 1});
+			}
+			if(validMoves[index].y + 1 <= ymax 
+			&& unitStats.canTraverse[gameboard[validMoves[index].x][validMoves[index].y + 1].terrain.type]
+			&& !arrayContainsCoords(validMoves, validMoves[index].x, validMoves[index].y + 1)
+			&& gameboard[validMoves[index].x][validMoves[index].y + 1].unit === null){
+				validMoves.push({x: validMoves[index].x, y: validMoves[index].y + 1, cost: validMoves[index].cost + 1});
+			}
+			if(validMoves[index].y - 1 >= 0 
+			&& unitStats.canTraverse[gameboard[validMoves[index].x][validMoves[index].y - 1].terrain.type]
+			&& !arrayContainsCoords(validMoves, validMoves[index].x, validMoves[index].y - 1)
+			&& gameboard[validMoves[index].x][validMoves[index].y - 1].unit === null){
+				validMoves.push({x: validMoves[index].x, y: validMoves[index].y - 1, cost: validMoves[index].cost + 1});
+			}
+			index++;
+			nextMoveDist = validMoves[index].cost + 1;
+		}
 
     	//TODO: Add code for finding tiles unit can move to here
     	//possibly later also adding squares unit can attack
 
     	//for now just return squares around the unit
-    	return [{x: unitCoordinate.x + 1, y: unitCoordinate.y}, {x: unitCoordinate.x - 1, y: unitCoordinate.y}, {x: unitCoordinate.x, y: unitCoordinate.y + 1}, {x: unitCoordinate.x, y: unitCoordinate.y - 1}];
+    	return validMoves;
     }
-
+	
+	function arrayContainsCoords(movesArray, xCoordinate, yCoordinate){
+		for (var ixx = 0; ixx < movesArray.lenght; ixx++)
+		{
+			if(movesArray[ixx].x == xCoordinate && movesArray[ixx].y == yCoordinate){
+				return true;
+			}
+		}
+		return false;
+	}
 
     //exported functions
     return {
