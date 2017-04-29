@@ -2,14 +2,26 @@
  * Logic to start game when all assets are loaded
  */
 (function(start){
-	//wait until images are loaded to start game
-    var spriteSheet = document.getElementById('spritesheet');
-	if(spritesheet.complete){
-		start();
-	}
-	else{
-		spritesheet.onload = function(){
+	var spriteIds = ['spritesheet', 'level1_image'];
+	var assetsLeftToLoad = spriteIds.length;
+
+	function assetDidLoad(){
+		assetsLeftToLoad--;
+		if(assetsLeftToLoad == 0){
 			start();
-		};
+		}
 	}
+
+	//don't start game until all images are loaded
+	spriteIds.forEach(function(spriteId){
+		var sprite = document.getElementById(spriteId);
+		if(sprite.complete){
+			assetDidLoad();
+		}
+		else{
+			sprite.onload = function(){
+				assetDidLoad();
+			};
+		}
+	});
 })(app.game.start);
