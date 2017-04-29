@@ -52,16 +52,24 @@ app.pathfinder = (function(){
 		var xmax = gameboard.length - 1;
 		var validMoves = [];
 		//validMoves.push({x: unitCoordinate.x, y: unitCoordinate.y, cost: 0});
-		if(unitCoordinate.x + 1 <= xmax && unitStats.canTraverse[gameboard[unitCoordinate.x + 1][unitCoordinate.y].terrain.type]){
+		if(unitCoordinate.x + 1 <= xmax 
+		&& unitStats.canTraverse[gameboard[unitCoordinate.x + 1][unitCoordinate.y].terrain.type]
+		&& gameboard[unitCoordinate.x + 1][unitCoordinate.y].unit === null ){
 			validMoves.push({x: unitCoordinate.x + 1, y: unitCoordinate.y, cost: 1});	
 		}
-		if(unitCoordinate.x - 1 >= 0 && unitStats.canTraverse[gameboard[unitCoordinate.x - 1][unitCoordinate.y].terrain.type]){
+		if(unitCoordinate.x - 1 >= 0 
+		&& unitStats.canTraverse[gameboard[unitCoordinate.x - 1][unitCoordinate.y].terrain.type]
+		&& gameboard[unitCoordinate.x - 1][unitCoordinate.y].unit === null ){
 			validMoves.push({x: unitCoordinate.x - 1, y: unitCoordinate.y, cost: 1});
 		}
-		if(unitCoordinate.y + 1 <= ymax && unitStats.canTraverse[gameboard[unitCoordinate.x][unitCoordinate.y + 1].terrain.type]){
+		if(unitCoordinate.y + 1 <= ymax 
+		&& unitStats.canTraverse[gameboard[unitCoordinate.x][unitCoordinate.y + 1].terrain.type]
+		&& gameboard[unitCoordinate.x][unitCoordinate.y + 1].unit === null ){
 			validMoves.push({x: unitCoordinate.x, y: unitCoordinate.y + 1, cost: 1});
 		}
-		if(unitCoordinate.y - 1 >= 0 && unitStats.canTraverse[gameboard[unitCoordinate.x][unitCoordinate.y - 1].terrain.type]){
+		if(unitCoordinate.y - 1 >= 0 
+		&& unitStats.canTraverse[gameboard[unitCoordinate.x][unitCoordinate.y - 1].terrain.type]
+		&& gameboard[unitCoordinate.x][unitCoordinate.y - 1].unit === null ){
 			validMoves.push({x: unitCoordinate.x, y: unitCoordinate.y - 1, cost: 1});
 		} 
 		var nextMoveDist = 1;
