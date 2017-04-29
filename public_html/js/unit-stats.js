@@ -11,8 +11,8 @@ app.unitStats = (function(){
     	var stats = [];
     	stats.push({
     		name: 'Infantry', //for debugging purposes
-    		spritesheet: soldierSpriteSheet,
-    		spriteCoordinate: {x: 0, y: 1},
+    		spritesheet: document.getElementById('soldier_red_sprite'),
+    		spriteCoordinate: {x: 0, y: 0},
     		canTraverse: [true, true], //if a unit can traverse the type of terrain cross-referenced to terrainStats array index
     		applyDefense: true, //gets defense from cover
     		hitpoints: 75, //hitpoints contained in new unit
