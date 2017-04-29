@@ -4,7 +4,6 @@
 var app = app || {};
 
 app.unitStats = (function(){
-	var soldierSpriteSheet = document.getElementById('spritesheet');
     
 	//array of information about units - corresponds to unit instance type
     function unitStats(){
@@ -21,8 +20,8 @@ app.unitStats = (function(){
     	});
     	stats.push({
     		name: 'Tank', //for debugging purposes
-    		spritesheet: soldierSpriteSheet,
-    		spriteCoordinate: {x: 0, y: 1},
+    		spritesheet: document.getElementById('tank_red_sprite'),
+    		spriteCoordinate: {x: 0, y: 0},
     		canTraverse: [true, true], //if a unit can traverse the type of terrain cross-referenced to terrainStats array index
     		applyDefense: false, //gets defense from cover
     		hitpoints: 150, //hitpoints contained in new unit
@@ -31,8 +30,8 @@ app.unitStats = (function(){
     	});
     	stats.push({
     		name: 'Plane', //for debugging purposes
-    		spritesheet: soldierSpriteSheet,
-    		spriteCoordinate: {x: 0, y: 1},
+    		spritesheet: document.getElementById('plane_red_sprite'),
+    		spriteCoordinate: {x: 0, y: 2},
     		canTraverse: [true, true], //if a unit can traverse the type of terrain cross-referenced to terrainStats array index
     		applyDefense: false, //gets defense from cover
     		hitpoints: 100, //hitpoints contained in new unit
