@@ -54,7 +54,8 @@
 		var unitCanvasContext = renderer.getContext(gameContainer, 'unit-canvas');
 
 		var gameboard = createRandomGameboard();
-		renderer.renderInitialGameboard(gameboard, terrainCanvasContext, unitCanvasContext);
+		renderer.renderLevel(terrainCanvasContext, document.getElementById('level1_sprite'));
+		renderer.renderInitialGameboard(gameboard, unitCanvasContext);
 
 		//cursor rendering
 		gameContainer.onmousemove = function(e){

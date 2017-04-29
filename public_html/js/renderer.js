@@ -67,18 +67,20 @@ app.renderer = (function(unitStats, terrainStats){
 		canvasContext.clearRect(0, 0, canvasContext.canvas.width, canvasContext.canvas.height);
 	}
 
+	function renderLevel(canvasContext, levelSprite){
+		canvasContext.drawImage(levelSprite, 0, 0);
+	}
+
 	/*
 	* Gameboard rendering functions
 	*/
-	function renderInitialGameboard(gameboard, terrainCanvasContext, unitCanvasContext, unitStatsArray, terrainStatsArray){
+	function renderInitialGameboard(gameboard, unitCanvasContext){
 		var width = gameboard.length;
 		for(var x = 0; x < width; x++){
 			var height = gameboard[x].length;
 			for(var y = 0; y < height; y++){
 				var currentCoordinate = {x: x, y: y};
 				var gameTile = gameTileForCoordinate(currentCoordinate, gameboard);
-				var terrainStats = TERRAIN_STATS[gameTile.terrain.type];
-				drawTile(terrainCanvasContext, terrainStats.spritesheet, currentCoordinate, terrainStats.spriteCoordinate);
 				if(gameTile.unit){
 					var unitStats = UNIT_STATS[gameTile.unit.type];
 					drawTile(unitCanvasContext, unitStats.spritesheet, currentCoordinate, unitStats.spriteCoordinate);
@@ -122,6 +124,7 @@ app.renderer = (function(unitStats, terrainStats){
 		renderInitialGameboard: renderInitialGameboard,
 		gameTileForCoordinate: gameTileForCoordinate,
 		renderUnitSelectionOutline: renderUnitSelectionOutline,
-		renderUnitMovementSquares: renderUnitMovementSquares
+		renderUnitMovementSquares: renderUnitMovementSquares,
+		renderLevel: renderLevel
 	};
 })(app.unitStats, app.terrainStats);

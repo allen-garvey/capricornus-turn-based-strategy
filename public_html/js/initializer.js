@@ -2,7 +2,7 @@
  * Logic to start game when all assets are loaded
  */
 (function(start){
-	var spriteIds = ['spritesheet', 'level1_image'];
+	var spriteIds = ['spritesheet', 'level1_sprite'];
 	var assetsLeftToLoad = spriteIds.length;
 
 	function assetDidLoad(){
