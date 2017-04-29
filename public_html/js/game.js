@@ -23,7 +23,7 @@
 					}
 					gameboard[i][j] = {};
 					gameboard[i][j].terrain = terrainStats.create(Math.round(Math.random()));
-					if(Math.random() * 1000 < 10){
+					if(Math.random() * 100 < 10){
 						gameboard[i][j].unit = unitStats.create(0, 0);
 					}
 					else{
