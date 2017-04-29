@@ -3,7 +3,7 @@
 /*
 * Main game loop functionality
 */
- app.game = (function(renderer, unitStats, terrainStats, pathfinder){
+ app.game = (function(renderer, unitStats, terrainStats, pathfinder, levelStats){
 	function start(){
 	    function renderUnitSelected(unitCoordinate){
 			var movementTilesCoordinates = pathfinder.movementCoordinatesFor(unitCoordinate, gameboard, UNIT_STATS, TERRAIN_STATS);
@@ -38,6 +38,7 @@
 		var TOTAL_TILES = renderer.totalTiles(gameContainer);
 		var UNIT_STATS = unitStats.get();
 		var TERRAIN_STATS = terrainStats.get();
+		var LEVEL_STATS = levelStats.get();
 		var userInfo = {
 						cursor: {
 							coordinate: null,
@@ -54,7 +55,7 @@
 		var unitCanvasContext = renderer.getContext(gameContainer, 'unit-canvas');
 
 		var gameboard = createRandomGameboard();
-		renderer.renderLevel(terrainCanvasContext, document.getElementById('level1_sprite'));
+		renderer.renderLevel(terrainCanvasContext, LEVEL_STATS[0].spritesheet);
 		renderer.renderInitialGameboard(gameboard, unitCanvasContext);
 
 		//cursor rendering
@@ -91,4 +92,4 @@
 	}
 	//exported functions
 	return {start: start};
- })(app.renderer, app.unitStats, app.terrainStats, app.pathfinder);
+ })(app.renderer, app.unitStats, app.terrainStats, app.pathfinder, app.levelStats);
