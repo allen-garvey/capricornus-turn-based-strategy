@@ -14,6 +14,7 @@
 			renderer.renderUnitMovement(unitCanvasContext, unitSelectionCanvasContext, unitToBeMoved, path, function(){
 				userInfo.isUnitBeingMoved = false;
 				//update gameboard
+				unitToBeMoved.canMove = false;
 				gameboard[endingCoordinate.x][endingCoordinate.y].unit = unitToBeMoved;
 				gameboard[startingCoordinate.x][startingCoordinate.y].unit = null;
 				console.log("animation over");
@@ -101,7 +102,7 @@
 				return;
 			}
 			//move unit if one is currently selected, is on the player's team, and valid movement tile is clicked
-			if(userInfo.unitSelected && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.team === 0 && util.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedMovementSquares)){
+			if(userInfo.unitSelected && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.team === 0 && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.canMove && util.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedMovementSquares)){
 				renderUnitDeselected(); //erase selection tiles
 				moveUnit(userInfo.unitSelected, util.copyCoordinate(userInfo.cursor.coordinate));
 				//after unit is moved it's the same as if unit was deselected
@@ -118,7 +119,7 @@
 				return;
 			}
 			//don't do anything else if user didn't click on unit and no unit was selected
-			if(!renderer.gameTileForCoordinate(userInfo.cursor.coordinate, gameboard).unit){
+			if(!renderer.gameTileForCoordinate(userInfo.cursor.coordinate, gameboard).unit || !renderer.gameTileForCoordinate(userInfo.cursor.coordinate, gameboard).unit.canMove){
 				return;
 			}
 			//user clicked unit with nothing previously selected, so show it being selected
