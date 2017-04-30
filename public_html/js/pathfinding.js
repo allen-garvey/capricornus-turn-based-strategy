@@ -21,9 +21,27 @@ app.pathfinder = (function(){
     	var unitStats = unitStatsArray[unitToBeMoved.type];
 
     	//TODO: Add code for shortest path between starting and ending coordinate here
+    	//right now this is a stub algorithm for testing purposes
+    	var coordinatesPath = [startingCoordinate];
+    	var currentCoordinate = {x: startingCoordinate.x, y: startingCoordinate.y};
+    	while(currentCoordinate.x !== endingCoordinate.x && currentCoordinate.y !== endingCoordinate.y){
+    		if(currentCoordinate.x < endingCoordinate.x){
+    			currentCoordinate.x += 1;
+    		}
+    		else if(currentCoordinate.x > endingCoordinate.x){
+    			currentCoordinate.x -= 1;
+    		}
+    		else if(currentCoordinate.y < endingCoordinate.y){
+    			currentCoordinate.y += 1;
+    		}
+    		else{
+    			currentCoordinate.y -= 1;
+    		}
+    		coordinatesPath.push({x: currentCoordinate.x, y: currentCoordinate.y});
+    	}
+    	coordinatesPath.push(endingCoordinate);
 
-    	//example return value if startingCoordinate = {x: 1, y: 1} and endingCoordinate = {x: 3, y: 2}
-    	return [startingCoordinate, {x: 2, y: 1}, {x: 2, y: 2}, endingCoordinate];
+    	return coordinatesPath;
 
 	}
 
