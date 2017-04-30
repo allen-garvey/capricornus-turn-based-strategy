@@ -150,15 +150,20 @@ app.renderer = (function(util, unitStats, terrainStats){
 	 	var startingPixelCoordinate = tileCoordinateToPixelCoordinate(startingCoordinate);
 	 	var endingPixelCoordinate = tileCoordinateToPixelCoordinate(endingCoordinate);
 	 	var currentPixelCoordinate = util.copyCoordinate(startingPixelCoordinate);
-	 	var currentDirection = DIRECTIONS.RIGHT;
+	 	var currentDirection;
 	 	if(endingCoordinate.x < startingCoordinate.x){
 	 		currentDirection = DIRECTIONS.LEFT;
+	 		unit.currentDirection = unitStats.UNIT_DIRECTIONS.LEFT;
 	 	}
 	 	else if(endingCoordinate.y > startingCoordinate.y){
 	 		currentDirection = DIRECTIONS.DOWN;
 	 	}
 	 	else if(endingCoordinate.y < startingCoordinate.y){
 	 		currentDirection = DIRECTIONS.UP;
+	 	}
+	 	else{
+	 		currentDirection = DIRECTIONS.RIGHT;
+	 		unit.currentDirection = unitStats.UNIT_DIRECTIONS.RIGHT;
 	 	}
 	 	function step(timestamp){
 			if(start === null){
