@@ -215,7 +215,7 @@ app.renderer = (function(util, unitStats, terrainStats){
 		 	eraseTile(animationCanvasContext, endingCoordinate);
 		 	resolveCallback();
 	 	};
-	 	var i = 1;
+	 	var i = 0;
 	 	function nextAnimationCallback(){
 	 		i++;
 	 		if(i < path.length - 1){
