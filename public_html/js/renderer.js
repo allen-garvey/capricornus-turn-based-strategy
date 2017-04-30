@@ -15,7 +15,7 @@ app.renderer = (function(util, unitStats, terrainStats){
 	//pixels in square tile
 	var TILE_SIZE = 32;
 	//number of pixels between each frame in the animation
-	var ANIMATION_PIXEL_STEP = 1;
+	var ANIMATION_PIXEL_STEP = 2;
 	//delay between frames in ms
 	var ANIMATION_FRAME_DELAY = 10;
 
@@ -157,9 +157,17 @@ app.renderer = (function(util, unitStats, terrainStats){
 	 	}
 	 	else if(endingCoordinate.y > startingCoordinate.y){
 	 		currentDirection = DIRECTIONS.DOWN;
+	 		//show down orientation if unit has sprite for it
+	 		if(UNIT_STATS[unit.type].spriteCoordinates[unit.team][unitStats.UNIT_DIRECTIONS.DOWN]){
+	 			unit.currentDirection = unitStats.UNIT_DIRECTIONS.DOWN;
+			}
 	 	}
 	 	else if(endingCoordinate.y < startingCoordinate.y){
 	 		currentDirection = DIRECTIONS.UP;
+	 		//show up orientation if unit has sprite for it
+	 		if(UNIT_STATS[unit.type].spriteCoordinates[unit.team][unitStats.UNIT_DIRECTIONS.UP]){
+	 			unit.currentDirection = unitStats.UNIT_DIRECTIONS.UP;
+			}
 	 	}
 	 	else{
 	 		currentDirection = DIRECTIONS.RIGHT;
