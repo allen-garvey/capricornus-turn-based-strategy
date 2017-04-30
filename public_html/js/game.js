@@ -3,10 +3,26 @@
 /*
 * Main game loop functionality
 */
- app.game = (function(renderer, unitStats, terrainStats, pathfinder, levelStats){
+ app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats){
 	function start(){
+
+		function moveUnit(startingCoordinate, endingCoordinate){
+			userInfo.isUnitBeingMoved = true;
+			console.log("animation started");
+			var unitToBeMoved = renderer.gameTileForCoordinate(startingCoordinate, gameboard).unit;
+			var path = pathfinder.pathFor(startingCoordinate, endingCoordinate, gameboard, UNIT_STATS, TERRAIN_STATS);
+			renderer.renderUnitMovement(unitCanvasContext, unitSelectionCanvasContext, unitToBeMoved, path, function(){
+				userInfo.isUnitBeingMoved = false;
+				//update gameboard
+				gameboard[endingCoordinate.x][endingCoordinate.y].unit = unitToBeMoved;
+				gameboard[startingCoordinate.x][startingCoordinate.y].unit = null;
+				console.log("animation over");
+			});
+		}
+
 	    function renderUnitSelected(unitCoordinate){
 			var movementTilesCoordinates = pathfinder.movementCoordinatesFor(unitCoordinate, gameboard, UNIT_STATS, TERRAIN_STATS);
+			userInfo.unitSelectedMovementSquares = movementTilesCoordinates;
 			renderer.renderUnitMovementSquares(unitSelectionCanvasContext, movementTilesCoordinates);
 			renderer.renderUnitSelectionOutline(unitSelectionCanvasContext, unitCoordinate);
 		}
@@ -47,7 +63,9 @@
 							spritesheet: document.getElementById('spritesheet'),
 							spriteCoordinate: {x: 1, y: 1}
 						},
-						unitSelected: false
+						unitSelected: false,
+						unitSelectedMovementSquares: false,
+						isUnitBeingMoved: false
 						};
 
 		
@@ -78,20 +96,36 @@
 		};
 
 		gameContainer.onclick = function(e){
-			//deselect previously selected unit if any
+			//don't do anything if unit is currently moving
+			if(userInfo.isUnitBeingMoved){
+				return;
+			}
+			//move unit if one is currently selected, is on the player's team, and valid movement tile is clicked
+			if(userInfo.unitSelected && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.team === 0 && util.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedMovementSquares)){
+				renderUnitDeselected(); //erase selection tiles
+				moveUnit(userInfo.unitSelected, util.copyCoordinate(userInfo.cursor.coordinate));
+				//after unit is moved it's the same as if unit was deselected
+				userInfo.unitSelected = false;
+				userInfo.unitSelectedMovementSquares = false;
+				return;
+			}
+
+			//deselect previously selected unit if any, since non-valid movement tile clicked, or AI unit was selected
 			if(userInfo.unitSelected){
 				userInfo.unitSelected = false;
+				userInfo.unitSelectedMovementSquares = false;
 				renderUnitDeselected();
+				return;
 			}
-			//don't do anything else if user didn't click on unit
+			//don't do anything else if user didn't click on unit and no unit was selected
 			if(!renderer.gameTileForCoordinate(userInfo.cursor.coordinate, gameboard).unit){
 				return;
 			}
-			//user clicked unit, so show it being selected
+			//user clicked unit with nothing previously selected, so show it being selected
 			userInfo.unitSelected = {x: userInfo.cursor.coordinate.x, y: userInfo.cursor.coordinate.y};
 			renderUnitSelected(userInfo.unitSelected);
 		}
 	}
 	//exported functions
 	return {start: start};
- })(app.renderer, app.unitStats, app.terrainStats, app.pathfinder, app.levelStats);
+ })(app.util, app.renderer, app.unitStats, app.terrainStats, app.pathfinder, app.levelStats);
