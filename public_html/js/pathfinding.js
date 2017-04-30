@@ -39,7 +39,6 @@ app.pathfinder = (function(){
     		}
     		coordinatesPath.push({x: currentCoordinate.x, y: currentCoordinate.y});
     	}
-    	coordinatesPath.push(endingCoordinate);
 
     	return coordinatesPath;
 
