@@ -24,7 +24,9 @@
 					gameboard[i][j] = {};
 					gameboard[i][j].terrain = terrainStats.create(Math.round(Math.random()));
 					if(Math.random() * 100 < 10){
-						gameboard[i][j].unit = unitStats.create(Math.floor(Math.random() * 3), 0);
+						var unit = unitStats.create(Math.floor(Math.random() * 3), Math.floor(Math.random() * 2));
+						unit.currentDirection = Math.floor(Math.random() * 2);
+						gameboard[i][j].unit = unit;
 					}
 					else{
 						gameboard[i][j].unit = null;

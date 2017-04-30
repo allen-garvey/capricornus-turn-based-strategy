@@ -4,14 +4,22 @@
 var app = app || {};
 
 app.unitStats = (function(){
+
+    //used for sprite directions
+    var UNIT_DIRECTIONS = {
+        LEFT: 0,
+        RIGHT: 1,
+        UP: 2,
+        DOWN: 3
+    };
     
 	//array of information about units - corresponds to unit instance type
     function unitStats(){
     	var stats = [];
     	stats.push({
     		name: 'Infantry', //for debugging purposes
-    		spritesheet: document.getElementById('soldier_red_sprite'),
-    		spriteCoordinate: {x: 0, y: 0},
+    		spritesheets: [document.getElementById('soldier_red_sprite'), document.getElementById('soldier_blue_sprite')],
+    		spriteCoordinates: [[{x: 0, y: 0}, {x: 4, y: 0}], [{x: 0, y: 0}, {x: 0, y: 4}]],
     		canTraverse: [true, true], //if a unit can traverse the type of terrain cross-referenced to terrainStats array index
     		applyDefense: true, //gets defense from cover
     		hitpoints: 75, //hitpoints contained in new unit
@@ -20,8 +28,8 @@ app.unitStats = (function(){
     	});
     	stats.push({
     		name: 'Tank', //for debugging purposes
-    		spritesheet: document.getElementById('tank_red_sprite'),
-    		spriteCoordinate: {x: 0, y: 0},
+    		spritesheets: [document.getElementById('tank_red_sprite'), document.getElementById('tank_blue_sprite')],
+    		spriteCoordinates: [[{x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: 0}, {x: 1, y: 0}]],
     		canTraverse: [true, true], //if a unit can traverse the type of terrain cross-referenced to terrainStats array index
     		applyDefense: false, //gets defense from cover
     		hitpoints: 150, //hitpoints contained in new unit
@@ -30,8 +38,8 @@ app.unitStats = (function(){
     	});
     	stats.push({
     		name: 'Plane', //for debugging purposes
-    		spritesheet: document.getElementById('plane_red_sprite'),
-    		spriteCoordinate: {x: 0, y: 2},
+    		spritesheets: [document.getElementById('plane_red_sprite'), document.getElementById('plane_blue_sprite')],
+    		spriteCoordinates: [[{x: 0, y: 2}, {x: 1, y: 2}, {x: 0, y: 0}, {x: 0, y: 1}], [{x: 2, y: 0}, {x: 3, y: 0}, {x: 0, y: 0}, {x: 1, y: 0}]],
     		canTraverse: [true, true], //if a unit can traverse the type of terrain cross-referenced to terrainStats array index
     		applyDefense: false, //gets defense from cover
     		hitpoints: 100, //hitpoints contained in new unit
@@ -47,13 +55,15 @@ app.unitStats = (function(){
     		type: type, //array index in unitStats
     		team: team, //0 for player team, 1 for AI team
     		health: unitStats()[type].hitpoints, //current health of unit
-    		canMove: true //if unit can still move for this turn
+    		canMove: true, //if unit can still move for this turn
+            currentDirection: UNIT_DIRECTIONS.LEFT //current direction unit is facing
     	};
     }
 
     //exported functions
     return {
     		get: unitStats,
-    		create: unit
+    		create: unit,
+            UNIT_DIRECTIONS: UNIT_DIRECTIONS
     		};
 })();
