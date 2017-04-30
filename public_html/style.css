@@ -41,3 +41,41 @@ and through JavaScript or it will mess up rendering
 #terrain-canvas{
 	z-index: 70;
 }
+
+/*
+* Loading message
+*/
+.loading-message-container{
+	display: none;
+	text-align: center;
+}
+.loading .loading-message-container{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	z-index: 101;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+}
+html.loading{
+	cursor: progress;
+}
+/*
+* based on: https://www.w3schools.com/howto/howto_css_loader.asp
+*/
+.loader {
+    border: 4px solid #f3f3f3; /* Light grey */
+    border-top: 4px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

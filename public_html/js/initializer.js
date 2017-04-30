@@ -16,6 +16,7 @@
 	function assetDidLoad(){
 		assetsLeftToLoad--;
 		if(assetsLeftToLoad == 0){
+			document.documentElement.classList.remove('loading');
 			start();
 		}
 	}
