@@ -2,7 +2,7 @@
  * Logic for unit pathfinding
  */
 var app = app || {};
-app.pathfinder = (function(){
+app.pathfinder = (function(util){
 
 	/*
 	* @param startingCoordinate - starting coordinate {x, y} of the unit
@@ -24,7 +24,7 @@ app.pathfinder = (function(){
     	//right now this is a stub algorithm for testing purposes
     	var coordinatesPath = [startingCoordinate];
     	var currentCoordinate = {x: startingCoordinate.x, y: startingCoordinate.y};
-    	while(currentCoordinate.x !== endingCoordinate.x && currentCoordinate.y !== endingCoordinate.y){
+    	while(!util.areCoordinatesEqual(currentCoordinate, endingCoordinate)){
     		if(currentCoordinate.x < endingCoordinate.x){
     			currentCoordinate.x += 1;
     		}
@@ -37,7 +37,7 @@ app.pathfinder = (function(){
     		else{
     			currentCoordinate.y -= 1;
     		}
-    		coordinatesPath.push({x: currentCoordinate.x, y: currentCoordinate.y});
+    		coordinatesPath.push(util.copyCoordinate(currentCoordinate));
     	}
 
     	return coordinatesPath;
@@ -144,4 +144,4 @@ app.pathfinder = (function(){
     	movementCoordinatesFor: movementCoordinatesFor,
     	pathFor: pathFor
     };
-})();
+})(app.util);
