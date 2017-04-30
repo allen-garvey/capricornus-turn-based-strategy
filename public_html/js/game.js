@@ -8,7 +8,6 @@
 
 		function moveUnit(startingCoordinate, endingCoordinate){
 			userInfo.isUnitBeingMoved = true;
-			console.log("animation started");
 			var unitToBeMoved = renderer.gameTileForCoordinate(startingCoordinate, gameboard).unit;
 			var path = pathfinder.pathFor(startingCoordinate, endingCoordinate, gameboard, UNIT_STATS, TERRAIN_STATS);
 			renderer.renderUnitMovement(unitCanvasContext, unitSelectionCanvasContext, unitToBeMoved, path, function(){
@@ -17,7 +16,6 @@
 				unitToBeMoved.canMove = false;
 				gameboard[endingCoordinate.x][endingCoordinate.y].unit = unitToBeMoved;
 				gameboard[startingCoordinate.x][startingCoordinate.y].unit = null;
-				console.log("animation over");
 			});
 		}
 
