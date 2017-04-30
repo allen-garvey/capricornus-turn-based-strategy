@@ -7,8 +7,8 @@ app.unitStats = (function(){
 
     //used for sprite directions
     var UNIT_DIRECTIONS = {
-        LEFT: 0,
-        RIGHT: 1,
+        RIGHT: 0,
+        LEFT: 1,
         UP: 2,
         DOWN: 3
     };
