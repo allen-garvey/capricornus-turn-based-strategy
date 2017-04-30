@@ -71,6 +71,11 @@ app.renderer = (function(unitStats, terrainStats){
 		canvasContext.drawImage(levelSprite, 0, 0);
 	}
 
+	function renderUnit(canvasContext, coordinate, unit){
+		var unitStats = UNIT_STATS[unit.type];
+		drawTile(canvasContext, unitStats.spritesheets[unit.team], coordinate, unitStats.spriteCoordinates[unit.team][unit.currentDirection]);
+	}
+
 	/*
 	* Gameboard rendering functions
 	*/
@@ -82,8 +87,7 @@ app.renderer = (function(unitStats, terrainStats){
 				var currentCoordinate = {x: x, y: y};
 				var gameTile = gameTileForCoordinate(currentCoordinate, gameboard);
 				if(gameTile.unit){
-					var unitStats = UNIT_STATS[gameTile.unit.type];
-					drawTile(unitCanvasContext, unitStats.spritesheet, currentCoordinate, unitStats.spriteCoordinate);
+					renderUnit(unitCanvasContext, currentCoordinate, gameTile.unit);
 				}
 			}
 		}
