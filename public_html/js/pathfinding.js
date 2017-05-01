@@ -41,29 +41,7 @@ app.pathfinder = (function(util){
 		{
 			path.push(pathReverse[ixx]);
 		}
-		//document.getElementById("testOut").textContent = JSON.stringify(path);
     	return path;
-    	//TODO: Add code for shortest path between starting and ending coordinate here
-    	//right now this is a stub algorithm for testing purposes
-    	/* var coordinatesPath = [startingCoordinate];
-    	var currentCoordinate = {x: startingCoordinate.x, y: startingCoordinate.y};
-    	while(!util.areCoordinatesEqual(currentCoordinate, endingCoordinate)){
-    		if(currentCoordinate.x < endingCoordinate.x){
-    			currentCoordinate.x += 1;
-    		}
-    		else if(currentCoordinate.x > endingCoordinate.x){
-    			currentCoordinate.x -= 1;
-    		}
-    		else if(currentCoordinate.y < endingCoordinate.y){
-    			currentCoordinate.y += 1;
-    		}
-    		else{
-    			currentCoordinate.y -= 1;
-    		}
-    		coordinatesPath.push(util.copyCoordinate(currentCoordinate));
-    	}
-
-    	return coordinatesPath; */
 
 	}
 
@@ -144,11 +122,6 @@ app.pathfinder = (function(util){
 			index++;
 			nextMoveDist = validMoves[index].cost + 1;
 		}
-		//document.getElementById("testOut").textContent = JSON.stringify(validMoves);
-    	//TODO: Add code for finding tiles unit can move to here
-    	//possibly later also adding squares unit can attack
-
-    	//for now just return squares around the unit
     	return validMoves;
     }
 	
