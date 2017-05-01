@@ -12,6 +12,11 @@ app.unitStats = (function(){
         UP: 2,
         DOWN: 3
     };
+
+    var TEAMS = {
+        PLAYER: 0,
+        AI: 1
+    };
     
 	//array of information about units - corresponds to unit instance type
     function unitStats(){
@@ -64,6 +69,7 @@ app.unitStats = (function(){
     return {
     		get: unitStats,
     		create: unit,
-            UNIT_DIRECTIONS: UNIT_DIRECTIONS
+            UNIT_DIRECTIONS: UNIT_DIRECTIONS,
+            TEAMS: TEAMS
     		};
 })();

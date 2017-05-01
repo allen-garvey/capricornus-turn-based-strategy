@@ -100,7 +100,7 @@
 				return;
 			}
 			//move unit if one is currently selected, is on the player's team, and valid movement tile is clicked
-			if(userInfo.unitSelected && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.team === 0 && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.canMove && util.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedMovementSquares)){
+			if(userInfo.unitSelected && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.team === unitStats.TEAMS.PLAYER && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.canMove && util.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedMovementSquares)){
 				renderUnitDeselected(); //erase selection tiles
 				moveUnit(userInfo.unitSelected, util.copyCoordinate(userInfo.cursor.coordinate));
 				//after unit is moved it's the same as if unit was deselected
