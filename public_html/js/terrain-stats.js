@@ -4,23 +4,35 @@
 var app = app || {};
 
 app.terrainStats = (function(){
-	var terrainSpritesheet = document.getElementById('spritesheet');
     
     //array of information about terrain - corresponds to terrain instance type
     function terrainStats(){
     	var stats = [];
-    	stats.push({
-    		name: 'Sand',
-    		spritesheet: terrainSpritesheet,
-    		spriteCoordinate: {x: 0, y: 0},
-            defense: 1
-    	});
         stats.push({
-            name: 'Grass',
-            spritesheet: terrainSpritesheet,
-            spriteCoordinate: {x: 1, y: 0},
-            defense: 2
+            name: 'Grass', //for debugging purposes
+            defense: false //for units that benefit from defense, should defense be applied here?
         });
+        stats.push({
+            name: 'Mountains', //for debugging purposes
+            defense: true //for units that benefit from defense, should defense be applied here?
+        });
+        stats.push({
+            name: 'Trees', //for debugging purposes
+            defense: true //for units that benefit from defense, should defense be applied here?
+        });
+        stats.push({
+            name: 'Water', //for debugging purposes
+            defense: false //for units that benefit from defense, should defense be applied here?
+        });
+        stats.push({
+            name: 'Edge of water', //for debugging purposes
+            defense: false //for units that benefit from defense, should defense be applied here?
+        });
+        stats.push({
+            name: 'Bridge', //for debugging purposes
+            defense: false //for units that benefit from defense, should defense be applied here?
+        });
+
     	return stats;
     }
 
