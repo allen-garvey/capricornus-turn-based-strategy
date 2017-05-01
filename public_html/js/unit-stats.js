@@ -19,7 +19,7 @@ app.unitStats = (function(){
     	stats.push({
     		name: 'Infantry', //for debugging purposes
     		spritesheets: [document.getElementById('soldier_red_sprite'), document.getElementById('soldier_blue_sprite')],
-    		spriteCoordinates: [[{x: 0, y: 0}, {x: 4, y: 0}], [{x: 0, y: 0}, {x: 0, y: 4}]],
+    		spriteCoordinates: [[{x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: 0}, {x: 1, y: 0}]],
     		canTraverse: [true, true], //if a unit can traverse the type of terrain cross-referenced to terrainStats array index
     		applyDefense: true, //gets defense from cover
     		hitpoints: 75, //hitpoints contained in new unit
@@ -39,7 +39,7 @@ app.unitStats = (function(){
     	stats.push({
     		name: 'Plane', //for debugging purposes
     		spritesheets: [document.getElementById('plane_red_sprite'), document.getElementById('plane_blue_sprite')],
-    		spriteCoordinates: [[{x: 0, y: 2}, {x: 1, y: 2}, {x: 0, y: 0}, {x: 0, y: 1}], [{x: 2, y: 0}, {x: 3, y: 0}, {x: 0, y: 0}, {x: 1, y: 0}]],
+    		spriteCoordinates: [[{x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: 0}, {x: 1, y: 0}]],
     		canTraverse: [true, true], //if a unit can traverse the type of terrain cross-referenced to terrainStats array index
     		applyDefense: false, //gets defense from cover
     		hitpoints: 100, //hitpoints contained in new unit
