@@ -6,10 +6,10 @@ var app = app || {};
 app.damage = (function(){
 	/*
 	* Returns amount of damage done by attacking unit to defending unit
-	* @param attackingUnit - unit attacking
-	* @param defendingUnit - unit being attacked
-	* @param attackingTerrain - terrain the unit attacking is standing on
-	* @param defendingTerrain - terrain the unit defending is standing on
+	* @param attackingUnit - unit instance attacking
+	* @param defendingUnit - unit instance being attacked
+	* @param attackingTerrain - terrain instance the unit attacking is standing on
+	* @param defendingTerrain - terrain instance the unit defending is standing on
 	* @param - unitStatsArray - array of unit stats, cross-indexed to unit.type
 	* @param - terrainStatsArray - array of terrain stats, cross-indexed to terrain.type
 	* @returns - positive integer or 0 representing the amount of damage attackingUnit deals to defendingUnit from attack
@@ -27,10 +27,10 @@ app.damage = (function(){
 
 	/*
 	* Returns amount of damage done by attacking unit to defending unit during counterattack
-	* @param attackingUnit - unit attacking
-	* @param defendingUnit - unit being attacked
-	* @param attackingTerrain - terrain the unit attacking is standing on
-	* @param defendingTerrain - terrain the unit defending is standing on
+	* @param attackingUnit - unit instance attacking
+	* @param defendingUnit - unit instance being attacked
+	* @param attackingTerrain - terrain instance the unit attacking is standing on
+	* @param defendingTerrain - terrain instance the unit defending is standing on
 	* @param - unitStatsArray - array of unit stats, cross-indexed to unit.type
 	* @param - terrainStatsArray - array of terrain stats, cross-indexed to terrain.type
 	* @returns - positive integer or 0 representing the amount of damage attackingUnit deals to defendingUnit from counterattack
