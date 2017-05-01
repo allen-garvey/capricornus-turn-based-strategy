@@ -134,6 +134,20 @@ app.renderer = (function(util, unitStats, terrainStats){
 		canvasContext.fill();
 	}
 
+	function renderUnitMovementPreview(canvasContext, pathCoordinates){
+		//have to call before path operations
+		canvasContext.beginPath();
+		pathCoordinates.forEach(function(coordinate){
+			//erase movement tiles if any and then redraw new preview tile
+			var pixelCoordinate = tileCoordinateToPixelCoordinate(coordinate);
+			eraseTile(canvasContext, coordinate);
+			canvasContext.fillStyle = 'rgba(0,255,178,0.5)';
+			canvasContext.rect(pixelCoordinate.x, pixelCoordinate.y, TILE_SIZE, TILE_SIZE);
+		});
+		//actually draw the rectangles
+		canvasContext.fill();
+	}
+
 	/**
 	 * Rending unit movement
 	 */
@@ -263,6 +277,7 @@ app.renderer = (function(util, unitStats, terrainStats){
 		renderUnitSelectionOutline: renderUnitSelectionOutline,
 		renderUnitMovementSquares: renderUnitMovementSquares,
 		renderLevel: renderLevel,
-		renderUnitMovement: renderUnitMovement
+		renderUnitMovement: renderUnitMovement,
+		renderUnitMovementPreview: renderUnitMovementPreview
 	};
 })(app.util, app.unitStats, app.terrainStats);

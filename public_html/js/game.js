@@ -19,6 +19,15 @@
 			});
 		}
 
+		function drawUnitMovementPreview(cursorCoordinate){
+			//redraw movement squares
+			renderer.eraseCanvas(unitSelectionCanvasContext);
+			renderer.renderUnitMovementSquares(unitSelectionCanvasContext, userInfo.unitSelectedMovementSquares);
+			renderer.renderUnitSelectionOutline(unitSelectionCanvasContext, userInfo.unitSelected);
+			var path = pathfinder.pathFor(userInfo.unitSelected, cursorCoordinate, gameboard, UNIT_STATS, TERRAIN_STATS);
+			renderer.renderUnitMovementPreview(unitSelectionCanvasContext, path);
+		}
+
 	    function renderUnitSelected(unitCoordinate){
 			var movementTilesCoordinates = pathfinder.movementCoordinatesFor(unitCoordinate, gameboard, UNIT_STATS, TERRAIN_STATS);
 			userInfo.unitSelectedMovementSquares = movementTilesCoordinates;
@@ -92,6 +101,11 @@
 			//set new cursor location and draw cursor
 			userInfo.cursor.coordinate = coordinate;
 			renderer.drawTile(cursorCanvasContext, userInfo.cursor.spritesheet, userInfo.cursor.coordinate, userInfo.cursor.spriteCoordinate);
+
+			//draw unit path preview tiles, if applicable
+			if(userInfo.unitSelected && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.team === unitStats.TEAMS.PLAYER && util.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedMovementSquares)){
+				drawUnitMovementPreview(util.copyCoordinate(userInfo.cursor.coordinate));
+			}
 		};
 
 		gameContainer.onclick = function(e){
