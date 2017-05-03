@@ -60,46 +60,6 @@
 			return gameboard;
 		}
 		
-		/*function createRandomGameboard(){
-			var gameboard = new Array(TOTAL_TILES.x);
-			
-			$.getJSON('level1sprites.json', function(pos) {
-				for(int i = 0; i < TOTAL_TILES.x; i++)
-				{
-					for(int j = 0; j < TOTAL_TILES.y; j++)
-					{
-						if(j == 0)
-						{
-							gameboard[i] = new Array(TOTAL_TILES.y);
-						}
-						var unit = null;
-						pos[i][j] = gameboard[i][j];
-						if(gameboard[i][j] == 1)
-							unit = unitStats.create(0,0);
-						else if(gameboard[i][j] == 2)
-							unit = unitStats.create(1,0);
-						else if(gameboard[i][j] == 3)
-							unit = unitStats.create(2,0);
-						else if(gameboard[i][j] == 4)
-							unit = unitStats.create(0,1);
-						else if(gameboard[i][j] == 5)
-							unit = unitStats.create(1,1);
-						else if(gameboard[i][j] == 6)
-							unit = unitStats.create(2,1);
-						
-						if(i < TOTAL_TILES.x/2)
-							unit.currentDirection = 0;
-						else
-							unit.currentDirection = 1;
-					
-						gameboard[i][j].unit = unit;						
-					}
-				}
-			});
-			
-			return gameboard;
-		}*/
-		
 
 		var gameContainer = document.getElementById('game-container');
 		var TOTAL_TILES = renderer.totalTiles(gameContainer);
