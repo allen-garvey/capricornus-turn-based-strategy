@@ -38,7 +38,7 @@
 			renderer.eraseCanvas(unitSelectionCanvasContext);
 		}
 
-		/*function createRandomGameboard(){
+		function createRandomGameboard(){
 			var gameboard = new Array(TOTAL_TILES.x);
 			for(var i = 0; i < TOTAL_TILES.x; i++){
 				for(var j = 0; j < TOTAL_TILES.y; j++){
@@ -58,9 +58,9 @@
 				}
 			}
 			return gameboard;
-		}*/
+		}
 		
-		function createRandomGameboard(){
+		/*function createRandomGameboard(){
 			var gameboard = new Array(TOTAL_TILES.x);
 			
 			$.getJSON('level1sprites.json', function(pos) {
@@ -98,7 +98,7 @@
 			});
 			
 			return gameboard;
-		}
+		}*/
 		
 
 		var gameContainer = document.getElementById('game-container');
