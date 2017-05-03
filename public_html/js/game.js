@@ -63,7 +63,7 @@
 		/*function createRandomGameboard(){
 			var gameboard = new Array(TOTAL_TILES.x);
 			
-			$.getJSON('level1sprites.json', function(pos) {
+			$.getJSON('js/level1sprites.json', function(data) {
 				for(var i = 0; i < TOTAL_TILES.x; i++)
 				{
 					for(var j = 0; j < TOTAL_TILES.y; j++)
@@ -73,7 +73,7 @@
 							gameboard[i] = new Array(TOTAL_TILES.y);
 						}
 						var unit = null;
-						gameboard[i][j] = pos.units[i][j];
+						gameboard[i][j] = data.units[i][j];
 						if(gameboard[i][j] == 1)
 							unit = unitStats.create(0,0);
 						else if(gameboard[i][j] == 2)
