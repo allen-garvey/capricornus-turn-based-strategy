@@ -4,7 +4,7 @@
 * Main game loop functionality
 */
  app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats){
-	function start(){
+	function start(levelDatas){
 
 		function moveUnit(startingCoordinate, endingCoordinate){
 			userInfo.isUnitBeingMoved = true;
@@ -37,7 +37,7 @@
 		function renderUnitDeselected(){
 			renderer.eraseCanvas(unitSelectionCanvasContext);
 		}
-
+		
 		function createRandomGameboard(){
 			var gameboard = new Array(TOTAL_TILES.x);
 			for(var i = 0; i < TOTAL_TILES.x; i++){
@@ -59,53 +59,70 @@
 			}
 			return gameboard;
 		}
-		
-		/*function createRandomGameboard(){
+
+		function createGameboard(level){
 			var gameboard = new Array(TOTAL_TILES.x);
-			
-			$.getJSON('js/level1sprites.json', function(data) {
-				for(var i = 0; i < TOTAL_TILES.x; i++)
-				{
-					for(var j = 0; j < TOTAL_TILES.y; j++)
-					{
-						if(j == 0)
-						{
-							gameboard[i] = new Array(TOTAL_TILES.y);
-						}
-						var unit = null;
-						gameboard[i][j] = data.units[i][j];
-						if(gameboard[i][j] == 1)
-							unit = unitStats.create(0,0);
-						else if(gameboard[i][j] == 2)
-							unit = unitStats.create(1,0);
-						else if(gameboard[i][j] == 3)
-							unit = unitStats.create(2,0);
-						else if(gameboard[i][j] == 4)
-							unit = unitStats.create(0,1);
-						else if(gameboard[i][j] == 5)
-							unit = unitStats.create(1,1);
-						else if(gameboard[i][j] == 6)
-							unit = unitStats.create(2,1);
-						
-						if(i < TOTAL_TILES.x/2)
-							unit.currentDirection = 0;
-						else
-							unit.currentDirection = 1;
+			for(var i = 0; i < TOTAL_TILES.x; i++){
+				for(var j = 0; j < TOTAL_TILES.y; j++){
+					if(j == 0){
+						gameboard[i] = new Array(TOTAL_TILES.y);
+					}
+					gameboard[i][j] = {};
+					gameboard[i][j].terrain = terrainStats.create(Math.round(Math.random()));
 					
-						gameboard[i][j].unit = unit;						
+					if(level.data.units[i] === undefined || level.data.units[i][j] === undefined){
+						continue;
+					}
+					var unit;
+					switch(level.data.units[i][j]){
+						case 1:
+							unit = unitStats.create(0,0);
+							break;
+						case 2:
+							unit = unitStats.create(1,0);
+							break;
+						case 3:
+							unit = unitStats.create(2,0);
+							break;
+						case 4:
+							unit = unitStats.create(0,1);
+							break;
+						case 5:
+							unit = unitStats.create(1,1);
+							break;
+						case 6:
+							unit = unitStats.create(2,1);
+							break;
+						default:
+							unit = null;
+							break;
+					}
+					gameboard[i][j].unit = unit;
+					if(!unit){
+						continue;
+					}
+					if(i < TOTAL_TILES.x/2){
+						unit.currentDirection = unitStats.UNIT_DIRECTIONS.RIGHT;
+					}
+					else{
+						unit.currentDirection = unitStats.UNIT_DIRECTIONS.LEFT;
 					}
 				}
-			});
-			
+			}
 			return gameboard;
-		}*/
-		
+		}
 
 		var gameContainer = document.getElementById('game-container');
 		var TOTAL_TILES = renderer.totalTiles(gameContainer);
 		var UNIT_STATS = unitStats.get();
 		var TERRAIN_STATS = terrainStats.get();
 		var LEVEL_STATS = levelStats.get();
+		//load level data into the level stats
+		LEVEL_STATS.forEach(function(item, index){
+			if(levelDatas[index]){
+				item.data = levelDatas[index];
+			}
+		});
 		var userInfo = {
 						cursor: {
 							coordinate: null,
@@ -123,7 +140,7 @@
 		var terrainCanvasContext = renderer.getContext(gameContainer, 'terrain-canvas');
 		var unitCanvasContext = renderer.getContext(gameContainer, 'unit-canvas');
 
-		var gameboard = createRandomGameboard();
+		var gameboard = createGameboard(LEVEL_STATS[0]);
 		renderer.renderLevel(terrainCanvasContext, LEVEL_STATS[0].spritesheet);
 		renderer.renderInitialGameboard(gameboard, unitCanvasContext);
 
