@@ -10,7 +10,9 @@ app.levelStats = (function(){
     	var stats = [];
     	stats.push({
     		name: 'Level 0', //for debugging purposes
-    		spritesheet: document.getElementById('level1_sprite')
+    		spritesheet: document.getElementById('level1_sprite'),
+            dataFileUrl: 'js/level1sprites.json', //file to load unit sprite locations from
+            data: null //where the data will be stored from dataFileUrl when it is loaded
     	});
     	return stats;
     }
