@@ -25,7 +25,8 @@ app.unitStats = (function(){
     		name: 'Infantry', //for debugging purposes
     		spritesheets: [document.getElementById('soldier_red_sprite'), document.getElementById('soldier_blue_sprite')],
     		spriteCoordinates: [[{x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: 0}, {x: 1, y: 0}]],
-    		canTraverse: [true, true], //if a unit can traverse the type of terrain cross-referenced to terrainStats array index
+    		spriteCoordinatesWhenMoved: [[{x: 2, y: 0}, {x: 3, y: 0}], [{x: 2, y: 0}, {x: 3, y: 0}]],
+            canTraverse: [true, true], //if a unit can traverse the type of terrain cross-referenced to terrainStats array index
     		applyDefense: true, //gets defense from cover
     		hitpoints: 75, //hitpoints contained in new unit
     		attackTable: [20, 20, 20], //damage inflicted to a unit of the same type as the array index
@@ -35,7 +36,8 @@ app.unitStats = (function(){
     		name: 'Tank', //for debugging purposes
     		spritesheets: [document.getElementById('tank_red_sprite'), document.getElementById('tank_blue_sprite')],
     		spriteCoordinates: [[{x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: 0}, {x: 1, y: 0}]],
-    		canTraverse: [true, true], //if a unit can traverse the type of terrain cross-referenced to terrainStats array index
+    		spriteCoordinatesWhenMoved: [[{x: 2, y: 0}, {x: 3, y: 0}], [{x: 2, y: 0}, {x: 3, y: 0}]],
+            canTraverse: [true, true], //if a unit can traverse the type of terrain cross-referenced to terrainStats array index
     		applyDefense: false, //gets defense from cover
     		hitpoints: 150, //hitpoints contained in new unit
     		attackTable: [50, 50, 50], //damage inflicted to a unit of the same type as the array index
@@ -45,7 +47,8 @@ app.unitStats = (function(){
     		name: 'Plane', //for debugging purposes
     		spritesheets: [document.getElementById('plane_red_sprite'), document.getElementById('plane_blue_sprite')],
     		spriteCoordinates: [[{x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: 0}, {x: 1, y: 0}]],
-    		canTraverse: [true, true], //if a unit can traverse the type of terrain cross-referenced to terrainStats array index
+    		spriteCoordinatesWhenMoved: [[{x: 2, y: 0}, {x: 3, y: 0}], [{x: 2, y: 0}, {x: 3, y: 0}]],
+            canTraverse: [true, true], //if a unit can traverse the type of terrain cross-referenced to terrainStats array index
     		applyDefense: false, //gets defense from cover
     		hitpoints: 100, //hitpoints contained in new unit
     		attackTable: [30, 30, 30], //damage inflicted to a unit of the same type as the array index

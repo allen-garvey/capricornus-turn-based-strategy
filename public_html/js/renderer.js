@@ -87,6 +87,11 @@ app.renderer = (function(util, unitStats, terrainStats){
 		canvasContext.drawImage(levelSprite, 0, 0);
 	}
 
+	function renderUnitMoved(canvasContext, coordinate, unit){
+		var unitStats = UNIT_STATS[unit.type];
+		drawTile(canvasContext, unitStats.spritesheets[unit.team], coordinate, unitStats.spriteCoordinatesWhenMoved[unit.team][unit.currentDirection]);
+	}
+
 	function renderUnit(canvasContext, coordinate, unit){
 		var unitStats = UNIT_STATS[unit.type];
 		drawTile(canvasContext, unitStats.spritesheets[unit.team], coordinate, unitStats.spriteCoordinates[unit.team][unit.currentDirection]);
@@ -278,6 +283,7 @@ app.renderer = (function(util, unitStats, terrainStats){
 		renderUnitMovementSquares: renderUnitMovementSquares,
 		renderLevel: renderLevel,
 		renderUnitMovement: renderUnitMovement,
-		renderUnitMovementPreview: renderUnitMovementPreview
+		renderUnitMovementPreview: renderUnitMovementPreview,
+		renderUnitMoved: renderUnitMoved
 	};
 })(app.util, app.unitStats, app.terrainStats);

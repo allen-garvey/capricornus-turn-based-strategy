@@ -11,11 +11,12 @@
 			var unitToBeMoved = renderer.gameTileForCoordinate(startingCoordinate, gameboard).unit;
 			var path = pathfinder.pathFor(startingCoordinate, endingCoordinate, gameboard, UNIT_STATS, TERRAIN_STATS);
 			renderer.renderUnitMovement(unitCanvasContext, unitSelectionCanvasContext, unitToBeMoved, path, function(){
-				userInfo.isUnitBeingMoved = false;
+				renderer.renderUnitMoved(unitCanvasContext, endingCoordinate, unitToBeMoved);
 				//update gameboard
 				unitToBeMoved.canMove = false;
 				gameboard[endingCoordinate.x][endingCoordinate.y].unit = unitToBeMoved;
 				gameboard[startingCoordinate.x][startingCoordinate.y].unit = null;
+				userInfo.isUnitBeingMoved = false;
 			});
 		}
 
