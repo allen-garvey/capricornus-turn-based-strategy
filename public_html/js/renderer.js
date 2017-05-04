@@ -64,8 +64,6 @@ app.renderer = (function(util, unitStats, terrainStats){
 
 	function drawTile(canvasContext, image, locationCoordinate, spriteCoordinate){
 		var pixelLocationCoordinate = tileCoordinateToPixelCoordinate(locationCoordinate);
-		// var spritePixelCoordinate = tileCoordinateToPixelCoordinate(spriteCoordinate);
-		// canvasContext.drawImage(image, spritePixelCoordinate.x, spritePixelCoordinate.y, TILE_SIZE, TILE_SIZE, pixelLocationCoordinate.x, pixelLocationCoordinate.y, TILE_SIZE, TILE_SIZE);
 		drawTileAtPixelCoordinate(canvasContext, image, pixelLocationCoordinate, spriteCoordinate);
 	}
 
@@ -76,7 +74,6 @@ app.renderer = (function(util, unitStats, terrainStats){
 	function eraseTile(canvasContext, locationCoordinate){
 		var pixelLocationCoordinate = tileCoordinateToPixelCoordinate(locationCoordinate);
 		eraseTileAtPixelCoordinate(canvasContext, pixelLocationCoordinate);
-		// canvasContext.clearRect(pixelLocationCoordinate.x, pixelLocationCoordinate.y, TILE_SIZE, TILE_SIZE);
 	}
 
 	function eraseCanvas(canvasContext){
