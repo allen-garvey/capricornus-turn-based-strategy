@@ -8,8 +8,10 @@
 
 		function moveUserUnit(startingCoordinate, endingCoordinate){
 			userInfo.isUnitBeingMoved = true;
+			endTurnButton.disabled = true;
 			moveUnit(startingCoordinate, endingCoordinate, function(){
 				userInfo.isUnitBeingMoved = false;
+				endTurnButton.disabled = false;
 			});
 		}
 
