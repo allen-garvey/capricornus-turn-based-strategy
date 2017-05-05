@@ -110,3 +110,11 @@ html.loading{
 	background-color: black;
 	color: white;
 }
+
+/*
+* Game controls (end turn button)
+*/
+.game-controls-container{
+	text-align: right;
+	margin-bottom: 10px;
+}
