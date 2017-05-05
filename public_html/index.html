@@ -13,7 +13,7 @@
     		<h1>Game Title</h1>
     	</header>
 		<main class="main container">
-			<div class="game-container" id="game-container">
+            <div class="game-section">
                 <div class="loading-message-container">
                     <p>Game Title is loading&hellip;</p>
                     <div class="loader"></div>
@@ -25,11 +25,13 @@
                         <li id="menu_option_level1">Level 1</li>
                     </ul>
                 </div>
-				<canvas class="game-canvas" id="cursor-canvas"></canvas>
-                <canvas class="game-canvas" id="unit-selection-canvas"></canvas>
-				<canvas class="game-canvas" id="unit-canvas"></canvas>
-				<canvas class="game-canvas" id="terrain-canvas"></canvas>
-			</div>
+                <div class="game-container" id="game-container">
+                    <canvas class="game-canvas" id="cursor-canvas"></canvas>
+                    <canvas class="game-canvas" id="unit-selection-canvas"></canvas>
+                    <canvas class="game-canvas" id="unit-canvas"></canvas>
+                    <canvas class="game-canvas" id="terrain-canvas"></canvas>
+                </div>
+            </div>
 		</main>
         <img src="images/spritesheet.png" class="spritesheet" id="spritesheet">
         <img src="images/level1.png" class="spritesheet" id="level1_sprite">

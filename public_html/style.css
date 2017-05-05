@@ -9,7 +9,7 @@ body{
 img.spritesheet{
 	display: none;
 }
-.game-container{
+.game-section, .game-container{
 	position: relative;
 	height: 800px;
 }
