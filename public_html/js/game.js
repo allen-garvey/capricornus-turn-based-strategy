@@ -4,7 +4,7 @@
 * Main game loop functionality
 */
  app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats){
-	function start(levelDatas){
+	function start(levelDatas, levelIndex){
 
 		function moveUnit(startingCoordinate, endingCoordinate){
 			userInfo.isUnitBeingMoved = true;
@@ -119,12 +119,7 @@
 		var UNIT_STATS = unitStats.get();
 		var TERRAIN_STATS = terrainStats.get();
 		var LEVEL_STATS = levelStats.get();
-		//load level data into the level stats
-		LEVEL_STATS.forEach(function(item, index){
-			if(levelDatas[index]){
-				item.data = levelDatas[index];
-			}
-		});
+		
 		var userInfo = {
 						cursor: {
 							coordinate: null,
@@ -142,7 +137,18 @@
 		var terrainCanvasContext = renderer.getContext(gameContainer, 'terrain-canvas');
 		var unitCanvasContext = renderer.getContext(gameContainer, 'unit-canvas');
 
-		var gameboard = createGameboard(LEVEL_STATS[0]);
+		//load level data into the level stats
+		LEVEL_STATS.forEach(function(item, index){
+			if(levelDatas[index]){
+				item.data = levelDatas[index];
+			}
+		});
+		if(levelIndex < 0){
+			var gameboard = createRandomGameboard();
+		}
+		else{
+			var gameboard = createGameboard(LEVEL_STATS[levelIndex]);
+		}
 		renderer.renderLevel(terrainCanvasContext, LEVEL_STATS[0].spritesheet);
 		renderer.renderInitialGameboard(gameboard, unitCanvasContext);
 

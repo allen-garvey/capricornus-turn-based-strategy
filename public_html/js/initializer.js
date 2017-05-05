@@ -19,7 +19,6 @@
 		assetsLeftToLoad--;
 		if(assetsLeftToLoad == 0){
 			document.documentElement.classList.remove('loading');
-			start(levelDatas);
 		}
 	}
 
@@ -47,5 +46,16 @@
 			assetDidLoad();
 		});
 	});
+
+
+	//menu buttons event listeners
+	document.getElementById('menu_option_level1').onclick = function(){
+		document.documentElement.classList.remove('show-menu');
+		start(levelDatas, 0);
+	};
+	document.getElementById('menu_option_random').onclick = function(){
+		document.documentElement.classList.remove('show-menu');
+		start(levelDatas, -1);
+	};
 
 })(app.game.start, app.levelStats);
