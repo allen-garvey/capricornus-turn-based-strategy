@@ -3,11 +3,17 @@
 /*
 * Main game loop functionality
 */
- app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats){
+ app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats, ai){
 	function start(levelDatas, levelIndex){
 
-		function moveUnit(startingCoordinate, endingCoordinate){
+		function moveUserUnit(startingCoordinate, endingCoordinate){
 			userInfo.isUnitBeingMoved = true;
+			moveUnit(startingCoordinate, endingCoordinate, function(){
+				userInfo.isUnitBeingMoved = false;
+			});
+		}
+
+		function moveUnit(startingCoordinate, endingCoordinate, doneCallback){
 			var unitToBeMoved = renderer.gameTileForCoordinate(startingCoordinate, gameboard).unit;
 			var path = pathfinder.pathFor(startingCoordinate, endingCoordinate, gameboard, UNIT_STATS, TERRAIN_STATS);
 			renderer.renderUnitMovement(unitCanvasContext, unitSelectionCanvasContext, unitToBeMoved, path, function(){
@@ -16,7 +22,7 @@
 				unitToBeMoved.canMove = false;
 				gameboard[endingCoordinate.x][endingCoordinate.y].unit = unitToBeMoved;
 				gameboard[startingCoordinate.x][startingCoordinate.y].unit = null;
-				userInfo.isUnitBeingMoved = false;
+				doneCallback();
 			});
 		}
 
@@ -37,6 +43,47 @@
 		}
 		function renderUnitDeselected(){
 			renderer.eraseCanvas(unitSelectionCanvasContext);
+		}
+
+		function resetGameboardForPlayerTurn(){
+			for(var i = 0; i < gameboard.length; i++){
+				var innerArray = gameboard[i];
+				for(var j = 0; j < innerArray.length; j++){
+					if(gameboard[i][j].unit && !gameboard[i][j].unit.canMove){
+						var unit = gameboard[i][j].unit; 
+						unit.canMove = true;
+						renderer.renderUnit(unitCanvasContext, {x: i, y: j}, unit)
+					}
+				}
+			}
+		}
+
+		function triggerAiTurn(){
+			userInfo.isAiTurn = true;
+			endTurnButton.disabled = true;
+			
+			aiTurnAction(function(){
+				resetGameboardForPlayerTurn();
+				userInfo.isAiTurn = false;
+				endTurnButton.disabled = false;
+			});
+		}
+
+		function aiTurnAction(doneCallback){
+			var action = ai.aiAction(gameboard, UNIT_STATS, TERRAIN_STATS);
+			if(action.actionType === ai.ACTION_TYPES.END_TURN){
+				doneCallback();
+				return;
+			}
+			//attack unit should be here, not fully implemented yet
+			else if(false){
+
+			}
+			else{
+				moveUnit(action.startingCoordinate, action.endingCoordinate, function(){
+					aiTurnAction(doneCallback);
+				});
+			}
 		}
 		
 		function createRandomGameboard(){
@@ -115,6 +162,7 @@
 		}
 
 		var gameContainer = document.getElementById('game-container');
+		var endTurnButton = document.getElementById('button-end-turn');
 		var TOTAL_TILES = renderer.totalTiles(gameContainer);
 		var UNIT_STATS = unitStats.get();
 		var TERRAIN_STATS = terrainStats.get();
@@ -128,7 +176,8 @@
 						},
 						unitSelected: false,
 						unitSelectedMovementSquares: false,
-						isUnitBeingMoved: false
+						isUnitBeingMoved: false,
+						isAiTurn: false
 						};
 
 		
@@ -176,13 +225,13 @@
 
 		gameContainer.onclick = function(e){
 			//don't do anything if unit is currently moving
-			if(userInfo.isUnitBeingMoved){
+			if(userInfo.isUnitBeingMoved || userInfo.isAiTurn){
 				return;
 			}
 			//move unit if one is currently selected, is on the player's team, and valid movement tile is clicked
 			if(userInfo.unitSelected && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.team === unitStats.TEAMS.PLAYER && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.canMove && util.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedMovementSquares)){
 				renderUnitDeselected(); //erase selection tiles
-				moveUnit(userInfo.unitSelected, util.copyCoordinate(userInfo.cursor.coordinate));
+				moveUserUnit(userInfo.unitSelected, util.copyCoordinate(userInfo.cursor.coordinate));
 				//after unit is moved it's the same as if unit was deselected
 				userInfo.unitSelected = false;
 				userInfo.unitSelectedMovementSquares = false;
@@ -204,7 +253,11 @@
 			userInfo.unitSelected = {x: userInfo.cursor.coordinate.x, y: userInfo.cursor.coordinate.y};
 			renderUnitSelected(userInfo.unitSelected);
 		}
+
+		endTurnButton.onclick = function(){
+			triggerAiTurn();
+		};
 	}
 	//exported functions
 	return {start: start};
- })(app.util, app.renderer, app.unitStats, app.terrainStats, app.pathfinder, app.levelStats);
+ })(app.util, app.renderer, app.unitStats, app.terrainStats, app.pathfinder, app.levelStats, app.ai);
