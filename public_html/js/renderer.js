@@ -281,6 +281,7 @@ app.renderer = (function(util, unitStats, terrainStats){
 		renderLevel: renderLevel,
 		renderUnitMovement: renderUnitMovement,
 		renderUnitMovementPreview: renderUnitMovementPreview,
-		renderUnitMoved: renderUnitMoved
+		renderUnitMoved: renderUnitMoved,
+		renderUnit: renderUnit
 	};
 })(app.util, app.unitStats, app.terrainStats);
