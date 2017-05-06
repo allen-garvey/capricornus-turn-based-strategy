@@ -52,7 +52,6 @@ app.pathfinder = (function(util){
 	* @param - unitStatsArray - array of unit stats, cross-indexed to unit.type
 	* @param - terrainStatsArray - array of terrain stats, cross-indexed to terrain.type
 	* @returns array of coordinates (in any order) that the unit at unitCoordinate can travel to (not including starting unitCoordinate)
-	(should also probably return coordinates of units that can be attacked, with additional property to coordinate, such as {x: 1, y: 1, attack: true})
 	*/
     function movementCoordinatesFor(unitCoordinate, gameboard, unitStatsArray, terrainStatsArray){
     	//get the unit
@@ -146,9 +145,54 @@ app.pathfinder = (function(util){
 		return {x: -1, y: -1};
 	}
 
+	/*
+	* @param unitCoordinate - coordinate {x, y} of the unit
+	* (Coordinates start at the top left of the screen at {x: 0, y: 0} and move downwards and to the right with increasing numbers)
+	* @param gamboard - 2 dimensional array of units and terrain
+	* @param - unitStatsArray - array of unit stats, cross-indexed to unit.type
+	* @param - terrainStatsArray - array of terrain stats, cross-indexed to terrain.type
+	* @returns array of coordinates (in any order) that the unit at unitCoordinate can attack from its current location
+	*/
+    function attackCoordinatesFor(unitCoordinate, gameboard, unitStatsArray, terrainStatsArray){
+    	return stubAttackCoordinatesFor(unitCoordinate, gameboard, unitStatsArray, terrainStatsArray);
+    }
+
+    //example very inefficient version that examines all the movement coordinates and sees if there is an enemy unit either directly above,
+    //below, or to the left or right
+    function stubAttackCoordinatesFor(unitCoordinate, gameboard, unitStatsArray, terrainStatsArray){
+    	var attackingUnit = gameboard[unitCoordinate.x][unitCoordinate.y].unit;
+    	var attackCoordinates = [];
+    	var movementCoordinates = movementCoordinatesFor(unitCoordinate, gameboard, unitStatsArray, terrainStatsArray);
+    	movementCoordinates.push(unitCoordinate);
+    	function coordinateContainsEnemyUnit(coordinate){
+    		if(gameboard[coordinate.x] === undefined || gameboard[coordinate.x][coordinate.y] === undefined){
+    			return false;
+    		}
+    		if(gameboard[coordinate.x][coordinate.y].unit && gameboard[coordinate.x][coordinate.y].unit.team !== attackingUnit.team){
+    			return true;
+    		}
+    		return false;
+    	}
+
+    	movementCoordinates.forEach(function(coordinate){
+    		[
+    			util.coordinateFrom(coordinate.x + 1, coordinate.y), 
+    			util.coordinateFrom(coordinate.x - 1, coordinate.y),
+    			util.coordinateFrom(coordinate.x, coordinate.y + 1), 
+    			util.coordinateFrom(coordinate.x, coordinate.y - 1)
+    		].forEach(function(adjacentCoordinate){
+    			if(coordinateContainsEnemyUnit(adjacentCoordinate)){
+    				attackCoordinates.push(adjacentCoordinate);
+    			}
+    		});
+    	});
+    	return attackCoordinates;
+    }
+
     //exported functions
     return {
     	movementCoordinatesFor: movementCoordinatesFor,
-    	pathFor: pathFor
+    	pathFor: pathFor,
+    	attackCoordinatesFor: attackCoordinatesFor
     };
 })(app.util);
