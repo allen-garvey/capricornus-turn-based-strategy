@@ -4,6 +4,10 @@
 var app = app || {};
 
 app.util = (function(){
+	function coordinateFrom(x, y){
+		return {x: x, y: y};
+	}
+
 	function copyCoordinate(coordinate){
 		return {x: coordinate.x, y: coordinate.y};
 	}
@@ -26,7 +30,8 @@ app.util = (function(){
 	return {
 		copyCoordinate: copyCoordinate,
 		isCoordinateInMovementSquares: isCoordinateInMovementSquares,
-		areCoordinatesEqual: areCoordinatesEqual
+		areCoordinatesEqual: areCoordinatesEqual,
+		coordinateFrom: coordinateFrom
 	};
     
 })();
