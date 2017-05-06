@@ -18,11 +18,21 @@ app.damage = (function(){
 		//example code to get you started
 		//get attacking unit stats
 		var attackingUnitStats = unitStatsArray[attackingUnit.type];
+		//get defending unit stats
+		var defendingUnitStats = unitStatsArray[defendingUnit.type];
+		
+		//get attacking terrain stats
+		var attackTerrainStats = terrainStatsArray[attackingTerrain.type];    //This has no effect on damage right now
 		//get defending unit terrain stats
 		var defendingTerrainStats = terrainStatsArray[defendingTerrain.type];
+		
 		//TODO: calculate the damage done by attacking unit
 		//for now, just return default damage from attack table
-		return attackingUnitStats.attackTable[defendingUnit.type];
+		if(defendingUnitStats.applyDefense == true && defendingTerrainStats.defense == true)
+			return Math.floor(attackingUnitStats.attackTable[defendingUnit.type] * 0.5); 
+		
+		else
+			return attackingUnitStats.attackTable[defendingUnit.type];
 	}
 
 	/*
