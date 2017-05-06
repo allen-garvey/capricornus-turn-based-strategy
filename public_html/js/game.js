@@ -32,6 +32,7 @@
 			//redraw movement squares
 			renderer.eraseCanvas(unitSelectionCanvasContext);
 			renderer.renderUnitMovementSquares(unitSelectionCanvasContext, userInfo.unitSelectedMovementSquares);
+			renderer.renderUnitAttackSquares(unitSelectionCanvasContext, userInfo.unitSelectedAttackSquares);
 			renderer.renderUnitSelectionOutline(unitSelectionCanvasContext, userInfo.unitSelected);
 			var path = pathfinder.pathFor(userInfo.unitSelected, cursorCoordinate, gameboard, UNIT_STATS, TERRAIN_STATS);
 			renderer.renderUnitMovementPreview(unitSelectionCanvasContext, path);
@@ -40,7 +41,10 @@
 	    function renderUnitSelected(unitCoordinate){
 			var movementTilesCoordinates = pathfinder.movementCoordinatesFor(unitCoordinate, gameboard, UNIT_STATS, TERRAIN_STATS);
 			userInfo.unitSelectedMovementSquares = movementTilesCoordinates;
+			var attackTilesCoordinates = pathfinder.attackCoordinatesFor(unitCoordinate, gameboard, UNIT_STATS, TERRAIN_STATS);
+			userInfo.unitSelectedAttackSquares = attackTilesCoordinates;
 			renderer.renderUnitMovementSquares(unitSelectionCanvasContext, movementTilesCoordinates);
+			renderer.renderUnitAttackSquares(unitSelectionCanvasContext, attackTilesCoordinates);
 			renderer.renderUnitSelectionOutline(unitSelectionCanvasContext, unitCoordinate);
 		}
 		function renderUnitDeselected(){
@@ -178,6 +182,7 @@
 						},
 						unitSelected: false,
 						unitSelectedMovementSquares: false,
+						unitSelectedAttackSquares: false,
 						isUnitBeingMoved: false,
 						isAiTurn: false
 						};
