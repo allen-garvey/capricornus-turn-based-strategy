@@ -124,16 +124,26 @@ app.renderer = (function(util, unitStats, terrainStats){
 		canvasContext.lineWidth = 2;
 		canvasContext.strokeRect(unitPixelCoordinate.x, unitPixelCoordinate.y, TILE_SIZE, TILE_SIZE);
 	}
-	function renderUnitMovementSquares(canvasContext, movementTilesCoordinates){
+	//renders solid color squares at list of coordinates of given fillColor
+	//used for movement squares and attack squares
+	function renderSquares(canvasContext, tileCoordinates, fillColor){
 		//have to call before path operations
 		canvasContext.beginPath();
-		movementTilesCoordinates.forEach(function(coordinate){
+		tileCoordinates.forEach(function(coordinate){
 			var pixelCoordinate = tileCoordinateToPixelCoordinate(coordinate);
-			canvasContext.fillStyle = 'rgba(0,0,255, 0.5)';
+			canvasContext.fillStyle = fillColor;
 			canvasContext.rect(pixelCoordinate.x, pixelCoordinate.y, TILE_SIZE, TILE_SIZE);
 		});
 		//actually draw the rectangles
 		canvasContext.fill();
+	}
+
+	function renderUnitAttackSquares(canvasContext, attackTilesCoordinates){
+		renderSquares(canvasContext, attackTilesCoordinates, 'rgba(255,0,0, 0.3)');
+	}
+
+	function renderUnitMovementSquares(canvasContext, movementTilesCoordinates){
+		renderSquares(canvasContext, movementTilesCoordinates, 'rgba(0,0,255, 0.5)');
 	}
 
 	function renderUnitMovementPreview(canvasContext, pathCoordinates){
@@ -278,6 +288,7 @@ app.renderer = (function(util, unitStats, terrainStats){
 		gameTileForCoordinate: gameTileForCoordinate,
 		renderUnitSelectionOutline: renderUnitSelectionOutline,
 		renderUnitMovementSquares: renderUnitMovementSquares,
+		renderUnitAttackSquares: renderUnitAttackSquares,
 		renderLevel: renderLevel,
 		renderUnitMovement: renderUnitMovement,
 		renderUnitMovementPreview: renderUnitMovementPreview,
