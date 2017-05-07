@@ -92,10 +92,40 @@ app.renderer = (function(util, unitStats, terrainStats){
 	function renderUnit(canvasContext, coordinate, unit){
 		var unitStats = UNIT_STATS[unit.type];
 		drawTile(canvasContext, unitStats.spritesheets[unit.team], coordinate, unitStats.spriteCoordinates[unit.team][unit.currentDirection]);
+		renderUnitHealthbar(canvasContext, coordinate, unit);
 	}
 	function renderUnitAtPixelCoordinate(canvasContext, pixelCoordinate, unit){
 		var unitStats = UNIT_STATS[unit.type];
 		drawTileAtPixelCoordinate(canvasContext, unitStats.spritesheets[unit.team], pixelCoordinate, unitStats.spriteCoordinates[unit.team][unit.currentDirection]);
+		renderUnitHealthbarAtPixelCoordinate(canvasContext, pixelCoordinate, unit);
+	}
+
+	function renderUnitHealthbarAtPixelCoordinate(canvasContext, pixelCoordinate, unit){
+		var healthPercentage = unit.health / UNIT_STATS[unit.type].hitpoints;
+		//don't draw healthbar if unit is at full health
+		if(healthPercentage >= 1){
+			return;
+		}
+
+		//pixels from top of unit sprite where healthbar is drawn
+		var topPixelOffset = 4;
+		//pixels padding on each side of healthbar
+		var healthbarPadding = 2;
+		var healthbarLength = TILE_SIZE - (2 * healthbarPadding);
+		var healthbarHeight = 2;
+		
+		//draw bar to show hitpoints that are missing
+		canvasContext.fillStyle = 'tomato';
+		canvasContext.fillRect(pixelCoordinate.x + healthbarPadding, pixelCoordinate.y + topPixelOffset, healthbarLength, healthbarHeight);
+
+		//draw bar for current hitpoints
+		canvasContext.fillStyle = 'lawngreen';
+		canvasContext.fillRect(pixelCoordinate.x + healthbarPadding, pixelCoordinate.y + topPixelOffset, healthbarLength * healthPercentage, healthbarHeight);
+	}
+
+	function renderUnitHealthbar(canvasContext, coordinate, unit){
+		var pixelCoordinate = tileCoordinateToPixelCoordinate(coordinate);
+		renderUnitHealthbarAtPixelCoordinate(canvasContext, pixelCoordinate, unit);
 	}
 
 	/*
