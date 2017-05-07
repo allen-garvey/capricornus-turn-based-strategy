@@ -87,6 +87,7 @@ app.renderer = (function(util, unitStats, terrainStats){
 	function renderUnitMoved(canvasContext, coordinate, unit){
 		var unitStats = UNIT_STATS[unit.type];
 		drawTile(canvasContext, unitStats.spritesheets[unit.team], coordinate, unitStats.spriteCoordinatesWhenMoved[unit.team][unit.currentDirection]);
+		renderUnitHealthbar(canvasContext, coordinate, unit);
 	}
 
 	function renderUnit(canvasContext, coordinate, unit){
