@@ -103,6 +103,7 @@
 					gameboard[i][j].terrain = terrainStats.create(Math.round(Math.random()));
 					if(Math.random() * 100 < 10){
 						var unit = unitStats.create(Math.floor(Math.random() * 3), Math.floor(Math.random() * 2));
+						unit.health = Math.ceil(unit.health * Math.random());
 						unit.currentDirection = Math.floor(Math.random() * 2);
 						gameboard[i][j].unit = unit;
 					}
