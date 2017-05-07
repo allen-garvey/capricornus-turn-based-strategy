@@ -68,15 +68,15 @@
 			userInfo.isAiTurn = true;
 			endTurnButton.disabled = true;
 			
-			aiTurnAction(function(){
+			aiTurnAction({}, function(){
 				resetGameboardForPlayerTurn();
 				userInfo.isAiTurn = false;
 				endTurnButton.disabled = false;
 			});
 		}
 
-		function aiTurnAction(doneCallback){
-			var action = ai.aiAction(gameboard, UNIT_STATS, TERRAIN_STATS);
+		function aiTurnAction(memoizationObject, doneCallback){
+			var action = ai.aiAction(gameboard, UNIT_STATS, TERRAIN_STATS, userInfo.difficultyLevel, memoizationObject);
 			if(action.actionType === ai.ACTION_TYPES.END_TURN){
 				doneCallback();
 				return;
@@ -87,7 +87,7 @@
 			}
 			else{
 				moveUnit(action.startingCoordinate, action.endingCoordinate, function(){
-					aiTurnAction(doneCallback);
+					aiTurnAction(action.memoizationObject, doneCallback);
 				});
 			}
 		}
@@ -184,7 +184,8 @@
 						unitSelectedMovementSquares: false,
 						unitSelectedAttackSquares: false,
 						isUnitBeingMoved: false,
-						isAiTurn: false
+						isAiTurn: false,
+						difficultyLevel: ai.DIFFICULTY_LEVELS.HARD
 						};
 
 		
