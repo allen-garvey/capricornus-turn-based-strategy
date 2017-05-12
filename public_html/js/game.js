@@ -11,21 +11,44 @@
 		//depending on where the mouse is before clicking the attack square this might be an invalid coordinate
 		//if it is, pick a random valid one
 		function userUnitAttack(startingCoordinate, attackCoordinate, movementCoordinate){
-			var validMovementCoordinates = pathfinder.movementCoordinatesForAttackCoordinate(attackCoordinate, userInfo.unitSelectedMovementSquares);
-			//check if movement coordinate is valid
-			if(movementCoordinate === undefined || !validMovementCoordinates.find(function(coordinate){
-				return util.areCoordinatesEqual(coordinate, movementCoordinate);
-			})){
-				movementCoordinate = validMovementCoordinates[0];
-			}
 			userInfo.isUnitBeingMoved = true;
 			endTurnButton.disabled = true;
-			moveUnit(startingCoordinate, movementCoordinate, function(){
+			var attackCallback = function(){
 				unitAttack(movementCoordinate, attackCoordinate, function(){
 					userInfo.isUnitBeingMoved = false;
 					endTurnButton.disabled = false;
 				});
-			});
+			};
+
+			//make copy of movement squares, since we need to add the starting location as well
+			var movementSquares = userInfo.unitSelectedMovementSquares.slice();
+			movementSquares.push(startingCoordinate);
+			var validMovementCoordinates = pathfinder.movementCoordinatesForAttackCoordinate(attackCoordinate, movementSquares);
+			//check if movement coordinate is valid
+			var isUnitBeingMoved = true;
+			if(movementCoordinate === undefined || !validMovementCoordinates.find(function(coordinate){
+				return util.areCoordinatesEqual(coordinate, movementCoordinate);
+			})){
+				//see if unit has to move to attack
+				if(util.isCoordinateInMovementSquares(startingCoordinate, validMovementCoordinates)){
+					movementCoordinate = startingCoordinate;
+					console.log("movement coordinate is starting coordinate");
+					console.log(movementCoordinate);
+					isUnitBeingMoved = false;
+				}
+				else{
+					movementCoordinate = validMovementCoordinates[0];
+					console.log("movement coordinate is random");
+				}
+				
+			}
+			
+			if(isUnitBeingMoved){
+				moveUnit(startingCoordinate, movementCoordinate, attackCallback);
+			}
+			else{
+				attackCallback();
+			}
 			
 		}
 
