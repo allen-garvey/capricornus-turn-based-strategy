@@ -2,7 +2,7 @@
  * Module for AI Player
  */
 var app = app || {};
-app.ai = (function(util, pathfinder, unitStats, terrainStats){
+app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 	//Constants for types of AI actions
 	var AI_ACTION_TYPES = {
 		END_TURN: 0,
@@ -92,9 +92,23 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats){
 					var unit = gameboard[i][j].unit;
 					var startingCoordinate = {x: i, y: j};
 					var movementCoordinates = pathfinder.movementCoordinatesFor(startingCoordinate, gameboard, unitStatsArray, terrainStatsArray);
-					//pick random ending coordinate
-					var endingCoordinate = movementCoordinates[Math.floor(Math.random() * movementCoordinates.length)];
-					return aiActionMoveUnit(startingCoordinate, endingCoordinate, memoizationObject);
+					var attackCoordinates = pathfinder.attackCoordinatesFor(startingCoordinate, gameboard, unitStatsArray, terrainStatsArray);
+					//attack a unit, if possible
+					if(attackCoordinates.length > 0){
+						var attackCoordinate = attackCoordinates[Math.floor(Math.random() * attackCoordinates.length)];
+						//find ending coordinate for attack coordinate
+						//add the starting coordinate, since it is not already in movementCoordinates
+						movementCoordinates.push(startingCoordinate);
+						var endingCoordinates = pathfinder.movementCoordinatesForAttackCoordinate(attackCoordinate, movementCoordinates);
+						var endingCoordinate = endingCoordinates[Math.floor(Math.random() * endingCoordinates.length)];
+						return aiActionAttackUnit(startingCoordinate, endingCoordinate, attackCoordinate, memoizationObject);
+					}
+					//otherwise, just move
+					else{
+						//pick random ending coordinate
+						var endingCoordinate = movementCoordinates[Math.floor(Math.random() * movementCoordinates.length)];
+						return aiActionMoveUnit(startingCoordinate, endingCoordinate, memoizationObject);
+					}
 				}
 			}
 		}
@@ -108,4 +122,4 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats){
     	DIFFICULTY_LEVELS: AI_DIFFICULTY_LEVELS,
     	aiAction: aiAction
     };
-})(app.util, app.pathfinder, app.unitStats, app.terrainStats);
+})(app.util, app.pathfinder, app.unitStats, app.terrainStats, app.damage);
