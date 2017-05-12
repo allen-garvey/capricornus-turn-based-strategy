@@ -3,8 +3,65 @@
 /*
 * Main game loop functionality
 */
- app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats, ai){
+ app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats, ai, damageCalculator){
 	function start(levelDatas, levelIndex){
+
+		//triggered when user's unit is attacking
+		//movementCoordinate is the coordinate the unit to move to before attacking
+		//depending on where the mouse is before clicking the attack square this might be an invalid coordinate
+		//if it is, pick a random valid one
+		function userUnitAttack(startingCoordinate, attackCoordinate, movementCoordinate){
+			var validMovementCoordinates = pathfinder.movementCoordinatesForAttackCoordinate(attackCoordinate, userInfo.unitSelectedMovementSquares);
+			//check if movement coordinate is valid
+			if(movementCoordinate === undefined || !validMovementCoordinates.find(function(coordinate){
+				return util.areCoordinatesEqual(coordinate, movementCoordinate);
+			})){
+				movementCoordinate = validMovementCoordinates[0];
+			}
+			userInfo.isUnitBeingMoved = true;
+			endTurnButton.disabled = true;
+			moveUnit(startingCoordinate, movementCoordinate, function(){
+				unitAttack(movementCoordinate, attackCoordinate, function(){
+					userInfo.isUnitBeingMoved = false;
+					endTurnButton.disabled = false;
+				});
+			});
+			
+		}
+
+		//displays the attacker attacking the defender, and alters the stats appropriately
+		function unitAttack(attackerCoordinate, defenderCoordinate, doneCallback, isCounterattack){
+			var attackingUnit = renderer.gameTileForCoordinate(attackerCoordinate, gameboard).unit;
+			var attackingTerrain = renderer.gameTileForCoordinate(attackerCoordinate, gameboard).terrain;
+			var defendingUnit = renderer.gameTileForCoordinate(defenderCoordinate, gameboard).unit;
+			var defendingTerrain = renderer.gameTileForCoordinate(defenderCoordinate, gameboard).terrain;
+			
+			if(isCounterattack){
+				var damageDone = damageCalculator.damageForCounterattack(attackingUnit, defendingUnit, attackingTerrain, defendingTerrain, UNIT_STATS, TERRAIN_STATS);
+			}
+			else{
+				var damageDone = damageCalculator.damageForAttack(attackingUnit, defendingUnit, attackingTerrain, defendingTerrain, UNIT_STATS, TERRAIN_STATS);
+			}
+			
+			//check to see if damage done is more than unit's current health
+			if(damageDone > defendingUnit.health){
+				damageDone = defendingUnit.health;
+				defendingUnit.health = 0;
+				renderer.gameTileForCoordinate(defenderCoordinate, gameboard).unit = null;
+			}
+			else{
+				defendingUnit.health -= damageDone;
+			}
+			renderer.renderAttack(unitCanvasContext, unitSelectionCanvasContext, attackerCoordinate, defenderCoordinate, attackingUnit, defendingUnit, damageDone, function(){
+				//do counterattack if defender is still alive, and we're not already in a counterattack
+				if(!isCounterattack && defendingUnit.health > 0){
+					unitAttack(defenderCoordinate, attackerCoordinate, doneCallback, true);
+				}
+				else{
+					doneCallback();
+				}
+			});
+		}
 
 		function moveUserUnit(startingCoordinate, endingCoordinate){
 			userInfo.isUnitBeingMoved = true;
@@ -35,6 +92,7 @@
 			renderer.renderUnitAttackSquares(unitSelectionCanvasContext, userInfo.unitSelectedAttackSquares);
 			renderer.renderUnitSelectionOutline(unitSelectionCanvasContext, userInfo.unitSelected);
 			var path = pathfinder.pathFor(userInfo.unitSelected, cursorCoordinate, gameboard, UNIT_STATS, TERRAIN_STATS);
+			userInfo.unitSelectedShortestPath = path;
 			renderer.renderUnitMovementPreview(unitSelectionCanvasContext, path);
 		}
 
@@ -184,6 +242,7 @@
 						unitSelected: false,
 						unitSelectedMovementSquares: false,
 						unitSelectedAttackSquares: false,
+						unitSelectedShortestPath: false,
 						isUnitBeingMoved: false,
 						isAiTurn: false,
 						difficultyLevel: ai.DIFFICULTY_LEVELS.HARD
@@ -243,14 +302,23 @@
 				moveUserUnit(userInfo.unitSelected, util.copyCoordinate(userInfo.cursor.coordinate));
 				//after unit is moved it's the same as if unit was deselected
 				userInfo.unitSelected = false;
-				userInfo.unitSelectedMovementSquares = false;
+				//userInfo.unitSelectedMovementSquares = false;
+				return;
+			}
+
+			//have unit attack a unit if one is currently selected, on the players team, and valid attack tile is clicked
+			if(userInfo.unitSelected && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.team === unitStats.TEAMS.PLAYER && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.canMove && util.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedAttackSquares)){
+				renderUnitDeselected(); //erase selection tiles
+				userUnitAttack(userInfo.unitSelected, util.copyCoordinate(userInfo.cursor.coordinate), userInfo.unitSelectedShortestPath[userInfo.unitSelectedShortestPath.length - 1]);
+				//after unit attacks it's the same as if unit was deselected
+				userInfo.unitSelected = false;
 				return;
 			}
 
 			//deselect previously selected unit if any, since non-valid movement tile clicked, or AI unit was selected
 			if(userInfo.unitSelected){
 				userInfo.unitSelected = false;
-				userInfo.unitSelectedMovementSquares = false;
+				//userInfo.unitSelectedMovementSquares = false;
 				renderUnitDeselected();
 				return;
 			}
@@ -269,4 +337,4 @@
 	}
 	//exported functions
 	return {start: start};
- })(app.util, app.renderer, app.unitStats, app.terrainStats, app.pathfinder, app.levelStats, app.ai);
+ })(app.util, app.renderer, app.unitStats, app.terrainStats, app.pathfinder, app.levelStats, app.ai, app.damage);
