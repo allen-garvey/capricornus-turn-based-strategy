@@ -304,6 +304,22 @@ app.renderer = (function(util, unitStats, terrainStats){
 	 	}
 	 }
 
+	 /**
+	 * Rending unit attacks
+	 */
+	 //defending unit should already have it's health adjusted before entering this function, the damage done, is used to calculate the 
+	 //damage that should be displayed to have been taken from the defender
+	 function renderAttack(unitCanvasContext, animationCanvasContext, attackCoordinate, defenseCoordinate, attackingUnit, defendingUnit, damageDone, doneCallback){
+	 	//right now, simply display the new healthbars
+	 	eraseTile(unitCanvasContext, defenseCoordinate);
+	 	//see if unit died
+	 	if(defendingUnit.health > 0){
+	 		renderUnit(unitCanvasContext, defenseCoordinate, defendingUnit);
+	 	}
+
+	 	doneCallback();
+	 }
+
 	//exported functions and variables
 	return {
 		TILE_SIZE: TILE_SIZE,
@@ -324,6 +340,7 @@ app.renderer = (function(util, unitStats, terrainStats){
 		renderUnitMovement: renderUnitMovement,
 		renderUnitMovementPreview: renderUnitMovementPreview,
 		renderUnitMoved: renderUnitMoved,
-		renderUnit: renderUnit
+		renderUnit: renderUnit,
+		renderAttack: renderAttack
 	};
 })(app.util, app.unitStats, app.terrainStats);
