@@ -90,7 +90,6 @@
 			var unitToBeMoved = renderer.gameTileForCoordinate(startingCoordinate, gameboard).unit;
 			//don't render movement if starting and ending coordinates are the same
 			if(util.areCoordinatesEqual(startingCoordinate, endingCoordinate)){
-				console.log("move coordinates are equal");
 				renderer.eraseTile(unitCanvasContext, startingCoordinate);
 				renderer.renderUnitMoved(unitCanvasContext, startingCoordinate, unitToBeMoved);
 				unitToBeMoved.canMove = false;

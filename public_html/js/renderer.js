@@ -310,11 +310,18 @@ app.renderer = (function(util, unitStats, terrainStats){
 	 //defending unit should already have it's health adjusted before entering this function, the damage done, is used to calculate the 
 	 //damage that should be displayed to have been taken from the defender
 	 function renderAttack(unitCanvasContext, animationCanvasContext, attackCoordinate, defenseCoordinate, attackingUnit, defendingUnit, damageDone, doneCallback){
+	 	//TODO: set attacking unit to face in the appropriate direction
 	 	//right now, simply display the new healthbars
 	 	eraseTile(unitCanvasContext, defenseCoordinate);
 	 	//see if unit died
 	 	if(defendingUnit.health > 0){
-	 		renderUnit(unitCanvasContext, defenseCoordinate, defendingUnit);
+	 		if(defendingUnit.canMove){
+	 			renderUnit(unitCanvasContext, defenseCoordinate, defendingUnit);
+	 		}
+	 		else{
+	 			renderUnitMoved(unitCanvasContext, defenseCoordinate, defendingUnit);
+	 		}
+	 		
 	 	}
 
 	 	doneCallback();
