@@ -32,13 +32,10 @@
 				//see if unit has to move to attack
 				if(util.isCoordinateInMovementSquares(startingCoordinate, validMovementCoordinates)){
 					movementCoordinate = startingCoordinate;
-					console.log("movement coordinate is starting coordinate");
-					console.log(movementCoordinate);
 					isUnitBeingMoved = false;
 				}
 				else{
 					movementCoordinate = validMovementCoordinates[0];
-					console.log("movement coordinate is random");
 				}
 				
 			}
