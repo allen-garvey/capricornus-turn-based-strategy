@@ -86,12 +86,18 @@
 		}
 
 		function moveUnit(startingCoordinate, endingCoordinate, doneCallback){
-			//don't do anything if starting and ending coordinates are the same
+			
+			var unitToBeMoved = renderer.gameTileForCoordinate(startingCoordinate, gameboard).unit;
+			//don't render movement if starting and ending coordinates are the same
 			if(util.areCoordinatesEqual(startingCoordinate, endingCoordinate)){
+				console.log("move coordinates are equal");
+				renderer.eraseTile(unitCanvasContext, startingCoordinate);
+				renderer.renderUnitMoved(unitCanvasContext, startingCoordinate, unitToBeMoved);
+				unitToBeMoved.canMove = false;
 				doneCallback();
 				return;
 			}
-			var unitToBeMoved = renderer.gameTileForCoordinate(startingCoordinate, gameboard).unit;
+
 			var path = pathfinder.pathFor(startingCoordinate, endingCoordinate, gameboard, UNIT_STATS, TERRAIN_STATS);
 			renderer.renderUnitMovement(unitCanvasContext, unitSelectionCanvasContext, unitToBeMoved, path, function(){
 				renderer.renderUnitMoved(unitCanvasContext, endingCoordinate, unitToBeMoved);
