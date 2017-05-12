@@ -25,14 +25,12 @@
 			movementSquares.push(startingCoordinate);
 			var validMovementCoordinates = pathfinder.movementCoordinatesForAttackCoordinate(attackCoordinate, movementSquares);
 			//check if movement coordinate is valid
-			var isUnitBeingMoved = true;
 			if(movementCoordinate === undefined || !validMovementCoordinates.find(function(coordinate){
 				return util.areCoordinatesEqual(coordinate, movementCoordinate);
 			})){
 				//see if unit has to move to attack
 				if(util.isCoordinateInMovementSquares(startingCoordinate, validMovementCoordinates)){
 					movementCoordinate = startingCoordinate;
-					isUnitBeingMoved = false;
 				}
 				else{
 					movementCoordinate = validMovementCoordinates[0];
@@ -40,12 +38,7 @@
 				
 			}
 			
-			if(isUnitBeingMoved){
-				moveUnit(startingCoordinate, movementCoordinate, attackCallback);
-			}
-			else{
-				attackCallback();
-			}
+			moveUnit(startingCoordinate, movementCoordinate, attackCallback);
 			
 		}
 
@@ -93,6 +86,11 @@
 		}
 
 		function moveUnit(startingCoordinate, endingCoordinate, doneCallback){
+			//don't do anything if starting and ending coordinates are the same
+			if(util.areCoordinatesEqual(startingCoordinate, endingCoordinate)){
+				doneCallback();
+				return;
+			}
 			var unitToBeMoved = renderer.gameTileForCoordinate(startingCoordinate, gameboard).unit;
 			var path = pathfinder.pathFor(startingCoordinate, endingCoordinate, gameboard, UNIT_STATS, TERRAIN_STATS);
 			renderer.renderUnitMovement(unitCanvasContext, unitSelectionCanvasContext, unitToBeMoved, path, function(){
@@ -159,9 +157,12 @@
 				doneCallback();
 				return;
 			}
-			//attack unit should be here, not fully implemented yet
-			else if(false){
-
+			else if(action.actionType === ai.ACTION_TYPES.ATTACK_UNIT){
+				moveUnit(action.startingCoordinate, action.endingCoordinate, function(){
+					unitAttack(action.endingCoordinate, action.attackedUnitCoordinate, function(){
+						aiTurnAction(action.memoizationObject, doneCallback);	
+					});
+				});
 			}
 			else{
 				moveUnit(action.startingCoordinate, action.endingCoordinate, function(){
