@@ -189,10 +189,34 @@ app.pathfinder = (function(util){
     	return attackCoordinates;
     }
 
+
+    /*
+    * Used when a unit wants to attack another unit, but the movement square that unit should go to to attack that unit is not
+    * specified
+	* @param attackCoordinate - coordinate {x, y} of the unit to be attacked
+	* (Coordinates start at the top left of the screen at {x: 0, y: 0} and move downwards and to the right with increasing numbers)
+	* @param movementCoordinates - array of coordinates (return value of movementCoordinatesFor for attacking unit)
+	* @returns array of adjacent coordinates (in any order) to the attackCoordinate that do not contain units, and are contained in 
+	* the movementCoordinates array
+	*/
+    function movementCoordinatesForAttackCoordinate(attackCoordinate, movementCoordinates){
+    	function areCoordinatesAdjacent(coordinate1, coordinate2){
+    		if(coordinate1.x === coordinate2.x && (coordinate1.y + 1 === coordinate2.y || coordinate1.y - 1 === coordinate2.y)){
+    			return true;
+    		}
+    		if(coordinate1.y === coordinate2.y && (coordinate1.x + 1 === coordinate2.x || coordinate1.x - 1 === coordinate2.x)){
+    			return true;
+    		}
+    		return false;
+    	}
+    	return movementCoordinates.filter(function(coordinate){ return areCoordinatesAdjacent(coordinate, attackCoordinate); });
+    }
+
     //exported functions
     return {
     	movementCoordinatesFor: movementCoordinatesFor,
     	pathFor: pathFor,
-    	attackCoordinatesFor: attackCoordinatesFor
+    	attackCoordinatesFor: attackCoordinatesFor,
+    	movementCoordinatesForAttackCoordinate: movementCoordinatesForAttackCoordinate
     };
 })(app.util);
