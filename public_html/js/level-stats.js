@@ -20,12 +20,12 @@ app.levelStats = (function(){
                 dataFileUrl: 'js/level2sprites.json', //file to load unit sprite locations from
                 data: null //where the data will be stored from dataFileUrl when it is loaded
     	});
-	stats.push({
-		name: 'Level 0', //for debugging purposes
-		spritesheet: document.getElementById('level3_sprite'),
-		dataFileUrl: 'js/level3sprites.json', //file to load unit sprite locations from
-                data: null //where the data will be stored from dataFileUrl when it is loaded
-    	});
+    	stats.push({
+    		name: 'Level 2', //for debugging purposes
+    		spritesheet: document.getElementById('level3_sprite'),
+    		dataFileUrl: 'js/level3sprites.json', //file to load unit sprite locations from
+                    data: null //where the data will be stored from dataFileUrl when it is loaded
+        	});
 		    
 	    
     	return stats;
