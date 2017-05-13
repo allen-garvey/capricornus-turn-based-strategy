@@ -4,7 +4,7 @@
 * Main game loop functionality
 */
  app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats, ai, damageCalculator){
-	function start(levelDatas, levelIndex){
+	function start(LEVEL_STATS, levelIndex){
 
 		//triggered when user's unit is attacking
 		//movementCoordinate is the coordinate the unit to move to before attacking
@@ -257,7 +257,6 @@
 		var TOTAL_TILES = renderer.totalTiles(gameContainer);
 		var UNIT_STATS = unitStats.get();
 		var TERRAIN_STATS = terrainStats.get();
-		var LEVEL_STATS = levelStats.get();
 		
 		var userInfo = {
 						cursor: {
@@ -280,12 +279,6 @@
 		var terrainCanvasContext = renderer.getContext(gameContainer, 'terrain-canvas');
 		var unitCanvasContext = renderer.getContext(gameContainer, 'unit-canvas');
 
-		//load level data into the level stats
-		LEVEL_STATS.forEach(function(item, index){
-			if(levelDatas[index]){
-				item.data = levelDatas[index];
-			}
-		});
 		if(levelIndex < 0){
 			var gameboard = createRandomGameboard();
 		}

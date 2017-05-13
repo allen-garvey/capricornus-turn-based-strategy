@@ -15,11 +15,25 @@
 					];
 	var assetsLeftToLoad = spriteIds.length + levelStatsArray.length;
 
+	//called after a single asset loads
 	function assetDidLoad(){
 		assetsLeftToLoad--;
 		if(assetsLeftToLoad == 0){
-			document.documentElement.classList.remove('loading');
+			allAssetsFinishedLoading();
 		}
+	}
+
+	//called when all assets are loaded
+	function allAssetsFinishedLoading(){
+		//load level data into the level stats
+		levelStatsArray.forEach(function(item, index){
+			if(levelDatas[index]){
+				item.data = levelDatas[index];
+			}
+		});
+
+		document.documentElement.classList.remove('loading');
+
 	}
 
 	//don't start game until all images are loaded
@@ -51,11 +65,11 @@
 	//menu buttons event listeners
 	document.getElementById('menu_option_level1').onclick = function(){
 		document.documentElement.classList.remove('show-menu');
-		start(levelDatas, 0);
+		start(levelStatsArray, 0);
 	};
 	document.getElementById('menu_option_random').onclick = function(){
 		document.documentElement.classList.remove('show-menu');
-		start(levelDatas, -1);
+		start(levelStatsArray, -1);
 	};
 
 })(app.game.start, app.levelStats);
