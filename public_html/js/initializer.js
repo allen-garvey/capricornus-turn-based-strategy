@@ -61,15 +61,32 @@
 		});
 	});
 
+	/*
+	 * Add options to select a level to main-menu-list
+	 */
+	(function(){
+		function menuItemClickHandler(index){
+			document.documentElement.classList.remove('show-menu');
+			start(levelStatsArray, index);
+		}
 
-	//menu buttons event listeners
-	document.getElementById('menu_option_level1').onclick = function(){
-		document.documentElement.classList.remove('show-menu');
-		start(levelStatsArray, 0);
-	};
-	document.getElementById('menu_option_random').onclick = function(){
-		document.documentElement.classList.remove('show-menu');
-		start(levelStatsArray, -1);
-	};
+
+		var mainMenuList = document.getElementById('main-menu-list');
+		var listItems = document.createDocumentFragment();
+
+		levelStatsArray.forEach(function(level, index){
+			var menuItem = document.createElement('li');
+			menuItem.textContent = level.name;
+			menuItem.onclick = function(){
+				menuItemClickHandler(index);
+			};
+			listItems.appendChild(menuItem);
+		});
+		mainMenuList.appendChild(listItems);
+
+		document.getElementById('menu_option_random').onclick = function(){
+			menuItemClickHandler(-1);
+		};	    
+	})();
 
 })(app.game.start, app.levelStats);
