@@ -285,7 +285,9 @@
 		else{
 			var gameboard = createGameboard(LEVEL_STATS[levelIndex]);
 		}
-		renderer.renderLevel(terrainCanvasContext, LEVEL_STATS[0].spritesheet);
+		var levelSpritesheet = levelIndex >= 0 ? LEVEL_STATS[levelIndex].spritesheet : LEVEL_STATS[Math.floor(Math.random() * LEVEL_STATS.length)].spritesheet;
+
+		renderer.renderLevel(terrainCanvasContext, levelSpritesheet);
 		renderer.renderInitialGameboard(gameboard, unitCanvasContext);
 
 		//cursor rendering
