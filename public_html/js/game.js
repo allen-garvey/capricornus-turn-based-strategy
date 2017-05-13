@@ -175,7 +175,9 @@
 				});
 			}
 		}
-		
+		/**
+		 * Creates random gameboard for debugging purposes
+		 */
 		function createRandomGameboard(){
 			var gameboard = new Array(TOTAL_TILES.x);
 			for(var i = 0; i < TOTAL_TILES.x; i++){
@@ -199,6 +201,10 @@
 			return gameboard;
 		}
 
+		/**
+		 * Creates gameboard based on a level
+		 * @param level - entry from the level-stat.js level array with the data already pre-loaded
+		 */
 		function createGameboard(level){
 			var gameboard = new Array(TOTAL_TILES.x);
 			for(var i = 0; i < TOTAL_TILES.x; i++){
@@ -252,6 +258,10 @@
 			return gameboard;
 		}
 
+		/**
+		 * Game initialization stuff below
+		 */
+
 		var gameContainer = document.getElementById('game-container');
 		var endTurnButton = document.getElementById('button-end-turn');
 		var TOTAL_TILES = renderer.totalTiles(gameContainer);
@@ -290,6 +300,10 @@
 		renderer.renderLevel(terrainCanvasContext, levelSpritesheet);
 		renderer.renderInitialGameboard(gameboard, unitCanvasContext);
 
+
+		/**
+		 * Click handlers
+		 */
 		//cursor rendering
 		gameContainer.onmousemove = function(e){
 			var coordinate = renderer.pixelCoordinateToTileCoordinate({x: e.offsetX, y: e.offsetY});
