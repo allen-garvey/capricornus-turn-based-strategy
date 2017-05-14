@@ -8,6 +8,14 @@ var app = app || {};
 app.renderer = (function(util, unitStats, terrainStats){
 	var UNIT_STATS = unitStats.get();
 	var TERRAIN_STATS = terrainStats.get();
+
+	//constants used when rendering unit orientation and movement animation
+	var DIRECTIONS = {
+	 		RIGHT: 0,
+	 		LEFT: 1,
+	 		UP: 2,
+	 		DOWN: 3
+	 	};
 	
 	/*
 	* Tile size and tiles in board initialization
@@ -194,19 +202,10 @@ app.renderer = (function(util, unitStats, terrainStats){
 	/**
 	 * Rending unit movement
 	 */
-	 //displays animation showing unit moving between 2 adjacent tiles
-	 //based on: https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
-	 function renderUnitMovingBetween(animationCanvasContext, unit, startingCoordinate, endingCoordinate, nextCallback){
-	 	var DIRECTIONS = {
-	 		RIGHT: 0,
-	 		LEFT: 1,
-	 		UP: 2,
-	 		DOWN: 3
-	 	};
-	 	var start = null;
-	 	var startingPixelCoordinate = tileCoordinateToPixelCoordinate(startingCoordinate);
-	 	var endingPixelCoordinate = tileCoordinateToPixelCoordinate(endingCoordinate);
-	 	var currentPixelCoordinate = util.copyCoordinate(startingPixelCoordinate);
+
+	 //edits unit direction so it is facing in the correct direction
+	 //returns a constant from DIRECTIONS for the direction the unit will be moving in
+	 function orientUnit(startingCoordinate, endingCoordinate, unit){
 	 	var currentDirection;
 	 	if(endingCoordinate.x < startingCoordinate.x){
 	 		currentDirection = DIRECTIONS.LEFT;
@@ -230,6 +229,25 @@ app.renderer = (function(util, unitStats, terrainStats){
 	 		currentDirection = DIRECTIONS.RIGHT;
 	 		unit.currentDirection = unitStats.UNIT_DIRECTIONS.RIGHT;
 	 	}
+	 	return currentDirection;
+	 }
+
+
+	 //displays animation showing unit moving between 2 adjacent tiles
+	 //based on: https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+	 function renderUnitMovingBetween(animationCanvasContext, unit, startingCoordinate, endingCoordinate, nextCallback){
+	 	var DIRECTIONS = {
+	 		RIGHT: 0,
+	 		LEFT: 1,
+	 		UP: 2,
+	 		DOWN: 3
+	 	};
+	 	var start = null;
+	 	var startingPixelCoordinate = tileCoordinateToPixelCoordinate(startingCoordinate);
+	 	var endingPixelCoordinate = tileCoordinateToPixelCoordinate(endingCoordinate);
+	 	var currentPixelCoordinate = util.copyCoordinate(startingPixelCoordinate);
+	 	var currentDirection = orientUnit(startingCoordinate, endingCoordinate, unit);
+	 	
 	 	function step(timestamp){
 			if(start === null){
 				start = timestamp;	
