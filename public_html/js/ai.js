@@ -76,9 +76,82 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 	* @returns either aiActionAttackUnit(), aiActionMoveUnit(), or aiActionEndTurn()
 	*/
 	function aiAction(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject){
-		return randomAiAction(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject);
+		return  aiMain(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject);
+		//return randomAiAction(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject);
 	}
 
+	function aiMain(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject){
+		//parse map
+		var friendlyUnits = [];
+		var enemyUnits = [];
+		
+		for (var i = 0; i < gameboard.length; i++)
+		{
+			for (var j = 0; j < gameboard[i].length; j++)
+			{
+				if(gameboard[i][j].unit !== null)
+				{
+					if(gameboard[i][j].unit.team === unitStats.TEAMS.PLAYER)
+					{
+						enemyUnits.push({x: i, y: j, unit: gameboard[i][j].unit});
+					}
+					if(gameboard[i][j].unit.team === unitStats.TEAMS.AI)
+					{
+						friendlyUnits.push({x: i, y: j, unit: gameboard[i][j].unit});
+					}
+				}
+			}
+		}
+		var unitToMove = null;
+		for (var ixx = 0; ixx < friendlyUnits.length; ixx++)
+		{
+			if(friendlyUnits[ixx].unit.canMove)
+			{
+				unitToMove = friendlyUnits[ixx];
+			}
+		}
+		if(unitToMove === null)
+		{
+			return aiActionEndTurn();
+		}
+		//decide on strategy
+		var attackCoordinates = pathfinder.attackCoordinatesFor(unitToMove, gameboard, unitStatsArray, terrainStatsArray);
+		console.log(attackCoordinates);
+		if(attackCoordinates.length > 0){
+			console.log("In Attack")
+			var movementCoordinates = pathfinder.movementCoordinatesFor(unitToMove, gameboard, unitStatsArray, terrainStatsArray);
+			var attackCoordinate = attackCoordinates[Math.floor(Math.random() * attackCoordinates.length)];
+			//find ending coordinate for attack coordinate
+			//add the starting coordinate, since it is not already in movementCoordinates
+			movementCoordinates.push(unitToMove);
+			var endingCoordinates = pathfinder.movementCoordinatesForAttackCoordinate(attackCoordinate, movementCoordinates);
+			var endingCoordinate = endingCoordinates[Math.floor(Math.random() * endingCoordinates.length)];
+			return aiActionAttackUnit(unitToMove, endingCoordinate, attackCoordinate, memoizationObject);
+		}
+		console.log("In Chase")
+		return blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unitToMove, enemyUnits[0])
+		//return move for one unit
+	}
+	
+	function blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unit, target){
+		if(unit === null)
+		{
+			return aiActionEndTurn();
+		}
+		var unitPathToEnemy = pathfinder.AIPathFor(unit, target, gameboard, unitStatsArray, terrainStatsArray);
+		var moveTo = null;
+		var izz = 0;
+		var unitStats = unitStatsArray[unit.unit.type];
+		
+		while(izz < unitPathToEnemy.length && unitPathToEnemy[izz].cost <= unitStats.movementSpeed)
+		{
+			moveTo = unitPathToEnemy[izz];
+			izz++
+		}
+		
+		return aiActionMoveUnit(unit, moveTo, memoizationObject);
+	}
+	
 	//example function, picks random AI action
 	function randomAiAction(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject){
 		if(Math.random() * 100 <= 20){
