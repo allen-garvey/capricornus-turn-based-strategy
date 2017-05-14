@@ -1,3 +1,4 @@
+"use strict";
 /*
  * Logic to start game when all assets are loaded
  */

@@ -1,3 +1,4 @@
+"use strict";
 /*
  * Functions for calculating damage done when units attack
  */

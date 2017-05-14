@@ -1,3 +1,4 @@
+"use strict";
 /*
  * Array that stores statistics about each level type
  */
