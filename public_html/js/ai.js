@@ -1,3 +1,4 @@
+"use strict";
 /*
  * Module for AI Player
  */
@@ -116,9 +117,9 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		}
 		//decide on strategy
 		var attackCoordinates = pathfinder.attackCoordinatesFor(unitToMove, gameboard, unitStatsArray, terrainStatsArray);
-		console.log(attackCoordinates);
+		// console.log(attackCoordinates);
 		if(attackCoordinates.length > 0){
-			console.log("In Attack")
+			// console.log("In Attack");
 			var movementCoordinates = pathfinder.movementCoordinatesFor(unitToMove, gameboard, unitStatsArray, terrainStatsArray);
 			var attackCoordinate = attackCoordinates[Math.floor(Math.random() * attackCoordinates.length)];
 			//find ending coordinate for attack coordinate
@@ -128,7 +129,7 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 			var endingCoordinate = endingCoordinates[Math.floor(Math.random() * endingCoordinates.length)];
 			return aiActionAttackUnit(unitToMove, endingCoordinate, attackCoordinate, memoizationObject);
 		}
-		console.log("In Chase")
+		// console.log("In Chase");
 		return blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unitToMove, enemyUnits[0])
 		//return move for one unit
 	}
