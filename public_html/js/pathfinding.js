@@ -1,3 +1,4 @@
+"use strict";
 /*
  * Logic for unit pathfinding
  */
@@ -158,7 +159,7 @@ app.pathfinder = (function(util){
 			validMoves.push({x: unitCoordinate.x, y: unitCoordinate.y - 1, cost: 1, fromX: unitCoordinate.x, fromY: unitCoordinate.y});
 		} 
 		var nextMoveDist = 1;
-		index = 0;
+		var index = 0;
 		//unitStats.movementSpeed
 		while(nextMoveDist <= unitStats.movementSpeed && index < validMoves.length)
 		{
@@ -231,7 +232,7 @@ app.pathfinder = (function(util){
 			validMoves.push({x: unitCoordinate.x, y: unitCoordinate.y - 1, cost: 1, fromX: unitCoordinate.x, fromY: unitCoordinate.y});
 		} 
 		var nextMoveDist = 1;
-		index = 0;
+		var index = 0;
 		//unitStats.movementSpeed
 		while(index < validMoves.length - 1)
 		{
