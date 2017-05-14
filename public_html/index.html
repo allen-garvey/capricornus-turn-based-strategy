@@ -11,9 +11,16 @@
     <body>
     	<header class="header container">
     		<h1>Game Title</h1>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li data-tab="game">Play</li>
+                    <li data-tab="instructions">Instructions</li>
+                    <li data-tab="credits">Credits</li>
+                </ul>
+            </nav>
     	</header>
 		<main class="main container">
-            <div class="game-section">
+            <div class="game-section tab" data-tab="game">
                 <div class="loading-message-container">
                     <p>Game Title is loading&hellip;</p>
                     <div class="loader"></div>
@@ -34,6 +41,14 @@
                     <canvas class="game-canvas" id="terrain-canvas"></canvas>
                 </div>
             </div>
+            <div class="tab" data-tab="instructions">
+                <h2>Instructions</h2>
+                <p>Placeholder text</p>
+            </div>
+            <div class="tab" data-tab="credits">
+                <h2>Credits</h2>
+                <p>Placeholder text</p>
+            </div>
 		</main>
         <img src="images/spritesheet.png" class="spritesheet" id="spritesheet">
         <img src="images/level1.png" class="spritesheet" id="level1_sprite">
@@ -45,7 +60,8 @@
         <img src="images/blueSoldierSprite.png" class="spritesheet" id="soldier_blue_sprite">
         <img src="images/blueTankSprite.png" class="spritesheet" id="tank_blue_sprite">
         <img src="images/bluePlaneSprite.png" class="spritesheet" id="plane_blue_sprite">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+        <script src="js/tabs.js"></script>
         <script src="js/util.js"></script>
         <script src="js/damage.js"></script>
         <script src="js/terrain-stats.js"></script>

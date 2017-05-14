@@ -1,3 +1,7 @@
+/*
+* Base styles
+*/
+
 body{
 	font-family: sans-serif;
 }
@@ -9,8 +13,34 @@ body{
 img.spritesheet{
 	display: none;
 }
+
+/*
+* Page Navigation
+*/
+
+.nav-list{
+	list-style-type: none;
+	display: flex;
+	justify-content: space-between;
+	padding-left: 0;
+}
+.tab{
+	display: none;
+}
+.tab.active{
+	display: block;
+}
+
+/*
+* Setup for game section
+*/
+.game-section{
+	padding-bottom: 200px;
+}
 .game-section, .game-container{
 	position: relative;
+}
+.game-container{
 	height: 800px;
 }
 /*
@@ -102,11 +132,11 @@ html.loading{
 	list-style-type: none;
 	padding-left: 0;
 }
-.main-menu-list li{
+.main-menu-list li, .nav-list li{
 	cursor: pointer;
 	padding: 1em 2em;
 }
-.main-menu-list li:hover{
+.main-menu-list li:hover, .nav-list li:hover, .nav-list li.active{
 	background-color: black;
 	color: white;
 }
