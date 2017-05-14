@@ -92,6 +92,20 @@ app.renderer = (function(util, unitStats, terrainStats){
 		canvasContext.drawImage(levelSprite, 0, 0);
 	}
 
+	//erases and then redraws the unit as necessary based on movement and if the unit is dead
+	function redrawUnit(canvasContext, coordinate, unit){
+		eraseTile(canvasContext, coordinate);
+		if(unit.health <= 0){
+			return;
+		}
+		if(unit.canMove){
+			renderUnit(canvasContext, coordinate, unit);
+		}
+		else{
+			renderUnitMoved(canvasContext, coordinate, unit);
+		}
+	}
+	
 	function renderUnitMoved(canvasContext, coordinate, unit){
 		var unitStats = UNIT_STATS[unit.type];
 		drawTile(canvasContext, unitStats.spritesheets[unit.team], coordinate, unitStats.spriteCoordinatesWhenMoved[unit.team][unit.currentDirection]);
@@ -247,7 +261,7 @@ app.renderer = (function(util, unitStats, terrainStats){
 	 	var endingPixelCoordinate = tileCoordinateToPixelCoordinate(endingCoordinate);
 	 	var currentPixelCoordinate = util.copyCoordinate(startingPixelCoordinate);
 	 	var currentDirection = orientUnit(startingCoordinate, endingCoordinate, unit);
-	 	
+
 	 	function step(timestamp){
 			if(start === null){
 				start = timestamp;	
@@ -328,7 +342,8 @@ app.renderer = (function(util, unitStats, terrainStats){
 	 //defending unit should already have it's health adjusted before entering this function, the damage done, is used to calculate the 
 	 //damage that should be displayed to have been taken from the defender
 	 function renderAttack(unitCanvasContext, animationCanvasContext, attackCoordinate, defenseCoordinate, attackingUnit, defendingUnit, damageDone, doneCallback){
-	 	//TODO: set attacking unit to face in the appropriate direction
+	 	orientUnit(attackCoordinate, defenseCoordinate, attackingUnit);
+	 	redrawUnit(unitCanvasContext, attackCoordinate, attackingUnit);
 	 	//right now, simply display the new healthbars
 	 	eraseTile(unitCanvasContext, defenseCoordinate);
 	 	//see if unit died
@@ -366,6 +381,7 @@ app.renderer = (function(util, unitStats, terrainStats){
 		renderUnitMovementPreview: renderUnitMovementPreview,
 		renderUnitMoved: renderUnitMoved,
 		renderUnit: renderUnit,
+		redrawUnit: redrawUnit,
 		renderAttack: renderAttack
 	};
 })(app.util, app.unitStats, app.terrainStats);
