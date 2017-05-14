@@ -81,6 +81,7 @@ and through JavaScript or it will mess up rendering
 }
 .loading .loading-message-container{
 	display: flex;
+	background-color: white;
 	flex-direction: column;
 	align-items: center;
 	z-index: 110;
