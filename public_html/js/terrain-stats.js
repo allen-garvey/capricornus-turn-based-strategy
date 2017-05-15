@@ -33,6 +33,10 @@ app.terrainStats = (function(){
             name: 'Bridge', //for debugging purposes
             defense: false //for units that benefit from defense, should defense be applied here?
         });
+        stats.push({
+            name: 'Sand', //for debugging purposes
+            defense: false //for units that benefit from defense, should defense be applied here?
+        });
 
     	return stats;
     }
