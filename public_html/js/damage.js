@@ -30,12 +30,15 @@ app.damage = (function(){
 		//TODO: calculate the damage done by attacking unit
 		//for now, just return default damage from attack table
 		if(defendingUnitStats.applyDefense == true && defendingTerrainStats.defense == true)
+		{	
 			console.log(Math.floor(attackingUnitStats.attackTable[defendingUnit.type] * 0.5));
 			return Math.floor(attackingUnitStats.attackTable[defendingUnit.type] * 0.5); 
-		
+		}
 		else
+		{
 			console.log(attackingUnitStats.attackTable[defendingUnit.type]);
 			return attackingUnitStats.attackTable[defendingUnit.type];
+		}	
 	}
 
 	/*
