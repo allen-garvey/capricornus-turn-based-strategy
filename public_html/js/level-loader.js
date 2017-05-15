@@ -69,10 +69,84 @@ app.levelLoader = (function(unitStats, terrainStats){
 	 * @param level - an item from the array returned from terrain-stats with data preloaded
 	 * @param column - int - column index
 	 * @param row - int - row index
+	 * @param TOTAL_TILES - total number of tiles in game, return value from renderer.totalTiles
 	 * @Returns terrain instance from terrainStats
 	 */
-	function terrainFor(level, column, row){
+	function terrainFor(level, column, row, TOTAL_TILES){
+		var terrainLayers = level.dataTerrain.layers;
+		//have to do some math, because layer array is 1d array representing 2d array
+		var layerIndex = (TOTAL_TILES.x * row) + column;
+		var layer2TerrainId = terrainLayers[1][layerIndex];
+		var layer1TerrainId = terrainLayers[0][layerIndex];
+		
+		//check to see if layer 2 is empty
+		//if it's not, then that is the terrain type
+		if(layer2TerrainId !== 0){
+			return terrainForId(layer2TerrainId);
+		}
+		//if there is no layer 2 terrain, that means the terrain type is on layer 1
+		return terrainForId(layer1TerrainId);
+	}
 
+	/**
+	 * Maps terrainId to terrain instance
+	 * @param terrainId - integer from level json file representing a terrain type
+	 * @Returns terrain instance from terrainStats
+	 */
+	function terrainForId(terrainId){
+		switch(terrainId){
+			//sand
+			case 3:
+			case 4:
+			case 5:
+			case 19:
+			case 20:
+			case 21:
+			case 35:
+			case 36:
+			case 37:
+				return terrainStats.create(6);
+				break;
+			//trees
+			case 472:
+			case 473:
+			case 488:
+			case 489:
+			case 504:
+			case 505:
+				return terrainStats.create(2);
+				break;
+			//water
+			case 53:
+			case 68:
+			case 85:
+				return terrainStats.create(3);
+				break;
+			//edge of water
+			case 52:
+			case 54:
+			case 68:
+			case 70:
+			case 84:
+			case 86:
+				return terrainStats.create(4);
+				break;
+			//bridge
+			case 365:
+			case 381:
+			case 397:
+				return terrainStats.create(5);
+				break;
+			//mountains
+			case 460:
+			case 476:
+				return terrainStats.create(1);
+				break;
+			//should be 1 for grass
+			default:
+				return terrainStats.create(0);
+				break;
+		}
 	}
 
 
