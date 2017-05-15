@@ -27,12 +27,25 @@ app.util = (function(){
 		return (coordinate1.x === coordinate2.x && coordinate1.y === coordinate2.y);
 	}
 
+	//get json data at url, and passes parsed json data as argument into callback
+	function getJson(url, callback){
+		var request = new Request(url);
+		var headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+		fetch(request, {headers: headers}).then(function(response){
+			return response.json();
+		}).then(function(json){
+			callback(json);
+		});
+	}
+
 	//exported functions and variables
 	return {
 		copyCoordinate: copyCoordinate,
 		isCoordinateInMovementSquares: isCoordinateInMovementSquares,
 		areCoordinatesEqual: areCoordinatesEqual,
-		coordinateFrom: coordinateFrom
+		coordinateFrom: coordinateFrom,
+		getJson: getJson
 	};
     
 })();
