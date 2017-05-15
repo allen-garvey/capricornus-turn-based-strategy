@@ -213,7 +213,7 @@
 					}
 					gameboard[i][j] = {};
 					// gameboard[i][j].terrain = terrainStats.create(Math.round(Math.random()));
-					gameboard[i][j].terrain = levelLoader.terrainFor(level, j, i, TOTAL_TILES);
+					gameboard[i][j].terrain = levelLoader.terrainFor(level, i, j, TOTAL_TILES);
 					gameboard[i][j].unit = levelLoader.unitFor(level, j, i, TOTAL_TILES);
 				}
 			}
@@ -289,6 +289,7 @@
 		};
 
 		gameContainer.onclick = function(e){
+			// console.log(renderer.gameTileForCoordinate(userInfo.cursor.coordinate, gameboard).terrain);
 			//don't do anything if unit is currently moving
 			if(userInfo.isUnitBeingMoved || userInfo.isAiTurn){
 				return;

@@ -76,9 +76,8 @@ app.levelLoader = (function(unitStats, terrainStats){
 		var terrainLayers = level.dataTerrain.layers;
 		//have to do some math, because layer array is 1d array representing 2d array
 		var layerIndex = (TOTAL_TILES.x * row) + column;
-		var layer2TerrainId = terrainLayers[1][layerIndex];
-		var layer1TerrainId = terrainLayers[0][layerIndex];
-		
+		var layer2TerrainId = terrainLayers[1].data[layerIndex];
+		var layer1TerrainId = terrainLayers[0].data[layerIndex];
 		//check to see if layer 2 is empty
 		//if it's not, then that is the terrain type
 		if(layer2TerrainId !== 0){
@@ -118,7 +117,7 @@ app.levelLoader = (function(unitStats, terrainStats){
 				break;
 			//water
 			case 53:
-			case 68:
+			case 69:
 			case 85:
 				return terrainStats.create(3);
 				break;
