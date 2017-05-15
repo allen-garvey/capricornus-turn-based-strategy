@@ -2,9 +2,11 @@
 /*
  * Logic to start game when all assets are loaded
  */
-(function(start, levelStats){
+(function(start, util, levelStats){
 	var levelStatsArray = levelStats.get();
-	var levelDatas = [];
+	var levelUnitDatas = [];
+	var levelTerrainDatas = [];
+
 	var spriteIds = ['spritesheet', 
 					'level1_sprite', 
 					'soldier_red_sprite', 
@@ -14,7 +16,7 @@
 					'plane_blue_sprite', 
 					'tank_blue_sprite'
 					];
-	var assetsLeftToLoad = spriteIds.length + levelStatsArray.length;
+	var assetsLeftToLoad = spriteIds.length + (2 * levelStatsArray.length);
 
 	//called after a single asset loads
 	function assetDidLoad(){
@@ -26,15 +28,22 @@
 
 	//called when all assets are loaded
 	function allAssetsFinishedLoading(){
-		//load level data into the level stats
-		levelStatsArray.forEach(function(item, index){
-			if(levelDatas[index]){
-				item.dataUnits = levelDatas[index];
-			}
-		});
-
+		initializeLevelData();
 		document.documentElement.classList.remove('loading');
 
+	}
+
+	function initializeLevelData(){
+		levelStatsArray.forEach(function(item, index){
+			//load unit level data into the level stats
+			if(levelUnitDatas[index]){
+				item.dataUnits = levelUnitDatas[index];
+			}
+			//load terrain level data into the level stats
+			if(levelTerrainDatas[index]){
+				item.dataTerrain = levelTerrainDatas[index];
+			}
+		});
 	}
 
 	//don't start game until all images are loaded
@@ -51,15 +60,17 @@
 	});
 
 	levelStatsArray.forEach(function(level, index){
-		var request = new Request(level.dataUnitsFileUrl);
-		var headers = new Headers();
-		headers.append('Content-Type', 'application/json');
-		fetch(request, {headers: headers}).then(function(response){
-			return response.json();
-		}).then(function(json){
-			levelDatas[index] = json;
+		util.getJson(level.dataUnitsUrl, function(json){
+			levelUnitDatas[index] = json;
 			assetDidLoad();
 		});
+
+		util.getJson(level.dataTerrainUrl, function(json){
+			levelTerrainDatas[index] = json;
+			assetDidLoad();
+		});
+
+
 	});
 
 	/*
@@ -90,4 +101,4 @@
 		};	    
 	})();
 
-})(app.game.start, app.levelStats);
+})(app.game.start, app.util, app.levelStats);
