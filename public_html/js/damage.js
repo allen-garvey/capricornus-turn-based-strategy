@@ -29,13 +29,17 @@ app.damage = (function(){
 		
 		//TODO: calculate the damage done by attacking unit
 		//for now, just return default damage from attack table
+		var damage = attackingUnitStats.attackTable[defendingUnit.type];
+		
 		if(defendingUnitStats.applyDefense == true && defendingTerrainStats.defense == true)
 		{	
-			return Math.floor(attackingUnitStats.attackTable[defendingUnit.type] * 0.5); 
+			console.log('Initial attack = ', damage);
+			return Math.floor(damage * 0.5); 
 		}
 		else
 		{
-			return attackingUnitStats.attackTable[defendingUnit.type];
+			console.log('Initial attack = ', damage);
+			return damage;
 		}	
 	}
 
@@ -52,7 +56,9 @@ app.damage = (function(){
 	function damageForCounterattack(attackingUnit, defendingUnit, attackingTerrain, defendingTerrain, unitStatsArray, terrainStatsArray){
 		//TODO: calculate damage done for counter attack
 		//for now just return percentage of attack damage
-		return Math.floor(damageForAttack(attackingUnit, defendingUnit, attackingTerrain, defendingTerrain, unitStatsArray, terrainStatsArray) * 0.5);
+		var counterDamage = Math.floor(damageForAttack(attackingUnit, defendingUnit, attackingTerrain, defendingTerrain, unitStatsArray, terrainStatsArray) * 0.5);
+		console.log('Counter attack damage = ', counterDamage);
+		return counterDamage;
 	}
 	
 
