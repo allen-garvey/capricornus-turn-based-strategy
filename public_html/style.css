@@ -3,7 +3,16 @@
 */
 
 body{
+	margin: 0;
 	font-family: sans-serif;
+}
+h1, h2{
+	margin-top: 0;
+	font-family: 'Orbitron', sans-serif;
+	font-weight: bold;
+}
+ul{
+	margin-bottom: 0;
 }
 
 .container{
@@ -15,6 +24,21 @@ img.spritesheet{
 }
 
 /*
+* Header
+*/
+
+.header{
+	background-color: darkolivegreen;
+	color: white;
+	padding-top: 32px;
+	margin-bottom: 36px;
+}
+.brand{
+	font-size: 2.3em;
+	margin-top: 0;
+}
+
+/*
 * Page Navigation
 */
 
@@ -23,6 +47,9 @@ img.spritesheet{
 	display: flex;
 	justify-content: space-between;
 	padding-left: 0;
+}
+.nav-list li.active{
+	font-weight: bold;
 }
 .tab{
 	display: none;
@@ -116,6 +143,9 @@ html.loading{
 */
 .main-menu-container{
 	display: none;
+}
+.menu-title{
+	margin-bottom: 0;
 }
 .show-menu .main-menu-container{
 	display: flex;
