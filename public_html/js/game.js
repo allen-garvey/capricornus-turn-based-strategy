@@ -215,11 +215,11 @@
 					gameboard[i][j].terrain = terrainStats.create(Math.round(Math.random()));
 					
 					//gameboard is actually mistakenly rotated, so we have to rotate the level data to match it
-					if(level.data.units[j] === undefined || level.data.units[j][i] === undefined){
+					if(level.dataUnits.units[j] === undefined || level.dataUnits.units[j][i] === undefined){
 						continue;
 					}
 					var unit;
-					switch(level.data.units[j][i]){
+					switch(level.dataUnits.units[j][i]){
 						case 1:
 							unit = unitStats.create(0,0);
 							break;

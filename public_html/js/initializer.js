@@ -29,7 +29,7 @@
 		//load level data into the level stats
 		levelStatsArray.forEach(function(item, index){
 			if(levelDatas[index]){
-				item.data = levelDatas[index];
+				item.dataUnits = levelDatas[index];
 			}
 		});
 
@@ -51,7 +51,7 @@
 	});
 
 	levelStatsArray.forEach(function(level, index){
-		var request = new Request(level.dataFileUrl);
+		var request = new Request(level.dataUnitsFileUrl);
 		var headers = new Headers();
 		headers.append('Content-Type', 'application/json');
 		fetch(request, {headers: headers}).then(function(response){
