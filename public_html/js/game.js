@@ -3,7 +3,7 @@
 /*
 * Main game loop functionality
 */
- app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats, ai, damageCalculator){
+ app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats, ai, damageCalculator, levelLoader){
 	function start(LEVEL_STATS, levelIndex){
 
 		//triggered when user's unit is attacking
@@ -213,45 +213,7 @@
 					}
 					gameboard[i][j] = {};
 					gameboard[i][j].terrain = terrainStats.create(Math.round(Math.random()));
-					
-					//gameboard is actually mistakenly rotated, so we have to rotate the level data to match it
-					if(level.dataUnits.units[j] === undefined || level.dataUnits.units[j][i] === undefined){
-						continue;
-					}
-					var unit;
-					switch(level.dataUnits.units[j][i]){
-						case 1:
-							unit = unitStats.create(0,0);
-							break;
-						case 2:
-							unit = unitStats.create(1,0);
-							break;
-						case 3:
-							unit = unitStats.create(2,0);
-							break;
-						case 4:
-							unit = unitStats.create(0,1);
-							break;
-						case 5:
-							unit = unitStats.create(1,1);
-							break;
-						case 6:
-							unit = unitStats.create(2,1);
-							break;
-						default:
-							unit = null;
-							break;
-					}
-					gameboard[i][j].unit = unit;
-					if(!unit){
-						continue;
-					}
-					if(i < TOTAL_TILES.x/2){
-						unit.currentDirection = unitStats.UNIT_DIRECTIONS.RIGHT;
-					}
-					else{
-						unit.currentDirection = unitStats.UNIT_DIRECTIONS.LEFT;
-					}
+					gameboard[i][j].unit = levelLoader.unitFor(level, j, i, TOTAL_TILES);
 				}
 			}
 			return gameboard;
@@ -371,4 +333,4 @@
 	}
 	//exported functions
 	return {start: start};
- })(app.util, app.renderer, app.unitStats, app.terrainStats, app.pathfinder, app.levelStats, app.ai, app.damage);
+ })(app.util, app.renderer, app.unitStats, app.terrainStats, app.pathfinder, app.levelStats, app.ai, app.damage, app.levelLoader);
