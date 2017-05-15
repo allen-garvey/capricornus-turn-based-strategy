@@ -33,7 +33,7 @@ app.damage = (function(){
 		
 		if(defendingUnitStats.applyDefense == true && defendingTerrainStats.defense == true)
 		{	
-			console.log('Initial attack = ', damage);
+			console.log('Initial attack = ', damage * 0.5);
 			return Math.floor(damage * 0.5); 
 		}
 		else
