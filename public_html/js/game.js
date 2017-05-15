@@ -212,7 +212,8 @@
 						gameboard[i] = new Array(TOTAL_TILES.y);
 					}
 					gameboard[i][j] = {};
-					gameboard[i][j].terrain = terrainStats.create(Math.round(Math.random()));
+					// gameboard[i][j].terrain = terrainStats.create(Math.round(Math.random()));
+					gameboard[i][j].terrain = levelLoader.terrainFor(level, j, i, TOTAL_TILES);
 					gameboard[i][j].unit = levelLoader.unitFor(level, j, i, TOTAL_TILES);
 				}
 			}
