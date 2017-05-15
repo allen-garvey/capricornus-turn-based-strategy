@@ -30,7 +30,7 @@ app.levelStats = (function(){
     		spritesheet: document.getElementById('level3_sprite'),
     		dataUnitsUrl: 'data/level3sprites.json', //file to load unit sprite locations from
             dataUnits: null, //where the data will be stored from dataUnitsUrl when it is loaded
-            dataTerrainUrl: 'data/level2.json', //url for terrain types for level
+            dataTerrainUrl: 'data/level3.json', //url for terrain types for level
             dataTerrain: null //where data from dataTerrainUrl will be stored after it is loaded
         });
 		    
