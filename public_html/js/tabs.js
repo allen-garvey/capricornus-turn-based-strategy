@@ -2,11 +2,9 @@
 /*
  * Functionality for site navigation to trigger page section tabs
  */
-(function(){
+(function(util){
 	//saves some typing
     var $ = function(selector){ return document.querySelectorAll(selector); };
-    //because can't use array prototype methods on NodeList
-    var forEach = function(iteratable, callback){ return Array.prototype.forEach.call(iteratable, callback); }
 
     var navLinks = $('.nav-list li');
     var pageSections = $('.tab[data-tab]');
@@ -20,19 +18,19 @@
     }
 
     function deselectNavlinks(){
-    	forEach(navLinks, function(navLink){
+    	util.forEach(navLinks, function(navLink){
     		navLink.classList.remove('active');
     	});
     }
 
     function hideAllPageSections(){
-		forEach(pageSections, function(pageSection){
+		util.forEach(pageSections, function(pageSection){
     		pageSection.classList.remove('active');
     	});
 	}
 
     //set navLink to be active on click
-    forEach(navLinks, function(navLink){
+    util.forEach(navLinks, function(navLink){
     	navLink.onclick = function(){
     		navLinkClicked(navLink);
     	};
@@ -41,4 +39,4 @@
     //select first navLink active by default on page load
     navLinkClicked(navLinks[0]);
 
-})();
+})(app.util);
