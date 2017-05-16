@@ -352,7 +352,7 @@ app.renderer = (function(util, unitStats, terrainStats, animationStats){
 		redrawUnit(unitCanvasContext, defenseCoordinate, defendingUnit);
 		//show explosion if defender died
 		if(defendingUnit.health <= 0){
-			renderExplosionAnimation(animationCanvasContext, defenseCoordinate, doneCallback);
+			renderStaticAnimation(animationCanvasContext, ANIMATION_STATS.explosion, defenseCoordinate, doneCallback);
 		}
 		else{
 			doneCallback();
@@ -362,10 +362,11 @@ app.renderer = (function(util, unitStats, terrainStats, animationStats){
 	/**
 	 * Rending animations
 	 */
-	//renders explosion animation at coordinate, calls doneCallback when completed
+
+	//renders animation at coordinate, calls doneCallback when completed
+	//animation should be an entry from the explosionStats object
 	//based on: https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
-	function renderExplosionAnimation(canvasContext, coordinate, doneCallback){
-		var explosionAnimation = ANIMATION_STATS.explosion;
+	function renderStaticAnimation(canvasContext, animation, coordinate, doneCallback){
 		var currentSpriteIndex = 0;
 
 		var start = null;
@@ -382,9 +383,9 @@ app.renderer = (function(util, unitStats, terrainStats, animationStats){
 			//erase previous frame from animation
 			eraseTile(canvasContext, coordinate);
 			
-			if(currentSpriteIndex < explosionAnimation.spriteCoordinates.length){
+			if(currentSpriteIndex < animation.spriteCoordinates.length){
 				//render current frame in animation
-				drawTile(canvasContext, explosionAnimation.spritesheet, coordinate, explosionAnimation.spriteCoordinates[currentSpriteIndex]);
+				drawTile(canvasContext, animation.spritesheet, coordinate, animation.spriteCoordinates[currentSpriteIndex]);
 				currentSpriteIndex++;
 				//request animation frame one last time to erase final frame of animation
 				window.requestAnimationFrame(step);
