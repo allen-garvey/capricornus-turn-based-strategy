@@ -7,7 +7,7 @@
 	var levelUnitDatas = [];
 	var levelTerrainDatas = [];
 
-	var imageSprites = document.querySelectorAll('.spritesheet');
+	var imageSprites = document.querySelectorAll('img.spritesheet');
 
 	var assetsLeftToLoad = imageSprites.length + (2 * levelStatsArray.length);
 
