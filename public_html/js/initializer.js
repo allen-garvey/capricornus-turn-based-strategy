@@ -7,16 +7,9 @@
 	var levelUnitDatas = [];
 	var levelTerrainDatas = [];
 
-	var spriteIds = ['spritesheet', 
-					'level1_sprite', 
-					'soldier_red_sprite', 
-					'plane_red_sprite', 
-					'tank_red_sprite',
-					'soldier_blue_sprite', 
-					'plane_blue_sprite', 
-					'tank_blue_sprite'
-					];
-	var assetsLeftToLoad = spriteIds.length + (2 * levelStatsArray.length);
+	var imageSprites = document.querySelectorAll('.spritesheet');
+
+	var assetsLeftToLoad = imageSprites.length + (2 * levelStatsArray.length);
 
 	//called after a single asset loads
 	function assetDidLoad(){
@@ -47,8 +40,7 @@
 	}
 
 	//don't start game until all images are loaded
-	spriteIds.forEach(function(spriteId){
-		var sprite = document.getElementById(spriteId);
+	util.forEach(imageSprites, function(sprite){
 		if(sprite.complete){
 			assetDidLoad();
 		}
