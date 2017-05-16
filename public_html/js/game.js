@@ -177,7 +177,16 @@
 		/**
 		 * Creates random gameboard for debugging purposes
 		 */
-		function createRandomGameboard(){
+		function createRandomGameboard(randomLevelIndex){
+			function createRandomUnit(){
+				var unit = unitStats.create(Math.floor(Math.random() * UNIT_STATS.length), Math.floor(Math.random() * 2));
+				unit.health = Math.ceil(unit.health * Math.random());
+				unit.currentDirection = Math.floor(Math.random() * 2);
+				return unit;
+			}
+
+			var level = LEVEL_STATS[randomLevelIndex];
+
 			var gameboard = new Array(TOTAL_TILES.x);
 			for(var i = 0; i < TOTAL_TILES.x; i++){
 				for(var j = 0; j < TOTAL_TILES.y; j++){
@@ -185,11 +194,12 @@
 						gameboard[i] = new Array(TOTAL_TILES.y);
 					}
 					gameboard[i][j] = {};
-					gameboard[i][j].terrain = terrainStats.create(Math.round(Math.random()));
-					if(Math.random() * 100 < 10){
-						var unit = unitStats.create(Math.floor(Math.random() * 3), Math.floor(Math.random() * 2));
-						unit.health = Math.ceil(unit.health * Math.random());
-						unit.currentDirection = Math.floor(Math.random() * 2);
+					var terrain = levelLoader.terrainFor(level, i, j, TOTAL_TILES);
+					gameboard[i][j].terrain = terrain;
+					var unit = createRandomUnit();
+					//randomly place unit if threshold is met and it is possible for the unit to be
+					//able to traverse the current type of terrain
+					if(UNIT_STATS[unit.type].canTraverse[terrain.type] && Math.random() * 100 < 10){
 						gameboard[i][j].unit = unit;
 					}
 					else{
@@ -252,12 +262,13 @@
 		var unitCanvasContext = renderer.getContext(gameContainer, 'unit-canvas');
 
 		if(levelIndex < 0){
-			var gameboard = createRandomGameboard();
+			var randomLevelIndex = Math.floor(Math.random() * LEVEL_STATS.length);
+			var gameboard = createRandomGameboard(randomLevelIndex);
 		}
 		else{
 			var gameboard = createGameboard(LEVEL_STATS[levelIndex]);
 		}
-		var levelSpritesheet = levelIndex >= 0 ? LEVEL_STATS[levelIndex].spritesheet : LEVEL_STATS[Math.floor(Math.random() * LEVEL_STATS.length)].spritesheet;
+		var levelSpritesheet = levelIndex >= 0 ? LEVEL_STATS[levelIndex].spritesheet : LEVEL_STATS[randomLevelIndex].spritesheet;
 
 		renderer.renderLevel(terrainCanvasContext, levelSpritesheet);
 		renderer.renderInitialGameboard(gameboard, unitCanvasContext);
