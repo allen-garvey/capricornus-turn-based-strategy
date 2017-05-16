@@ -130,16 +130,26 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 			return aiActionAttackUnit(unitToMove, endingCoordinate, attackCoordinate, memoizationObject);
 		}
 		// console.log("In Chase");
-		return blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unitToMove, enemyUnits[0])
+		return blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unitToMove, enemyUnits)
 		//return move for one unit
 	}
 	
-	function blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unit, target){
+	function blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unit, enemyUnits){
 		if(unit === null)
 		{
 			return aiActionEndTurn();
 		}
-		var unitPathToEnemy = pathfinder.AIPathFor(unit, target, gameboard, unitStatsArray, terrainStatsArray);
+		var pathsToEnemy = [];
+		var minPath = new Array(300);
+		for (var  ixx = 0; ixx < enemyUnits.length; ixx++)
+		{
+			 pathsToEnemy.push(pathfinder.AIPathFor(unit, enemyUnits[ixx], gameboard, unitStatsArray, terrainStatsArray));
+			 if(minPath.length > pathsToEnemy[ixx].length)
+			 {
+				 minPath = pathsToEnemy[ixx];
+			 }
+		}
+		var unitPathToEnemy = minPath;
 		var moveTo = null;
 		var izz = 0;
 		var unitStats = unitStatsArray[unit.unit.type];
