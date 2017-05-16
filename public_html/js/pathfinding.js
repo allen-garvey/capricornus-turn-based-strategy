@@ -188,7 +188,9 @@ app.pathfinder = (function(util){
 				validMoves.push({x: validMoves[index].x, y: validMoves[index].y - 1, cost: validMoves[index].cost + 1, fromX: validMoves[index].x, fromY: validMoves[index].y});
 			}
 			index++;
-			nextMoveDist = validMoves[index].cost + 1;
+			if(index < validMoves.length){
+				nextMoveDist = validMoves[index].cost + 1;
+			}
 		}
     	return validMoves;
     }
