@@ -345,17 +345,7 @@ app.renderer = (function(util, unitStats, terrainStats){
 	 	orientUnit(attackCoordinate, defenseCoordinate, attackingUnit);
 	 	redrawUnit(unitCanvasContext, attackCoordinate, attackingUnit);
 	 	//right now, simply display the new healthbars
-	 	eraseTile(unitCanvasContext, defenseCoordinate);
-	 	//see if unit died
-	 	if(defendingUnit.health > 0){
-	 		if(defendingUnit.canMove){
-	 			renderUnit(unitCanvasContext, defenseCoordinate, defendingUnit);
-	 		}
-	 		else{
-	 			renderUnitMoved(unitCanvasContext, defenseCoordinate, defendingUnit);
-	 		}
-	 		
-	 	}
+	 	redrawUnit(unitCanvasContext, defenseCoordinate, defendingUnit);
 
 	 	doneCallback();
 	 }
