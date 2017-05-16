@@ -33,12 +33,12 @@ app.damage = (function(){
 		
 		if(defendingUnitStats.applyDefense == true && defendingTerrainStats.defense == true)
 		{	
-			console.log('Initial attack = ', damage * 0.5);
+			// console.log('Initial attack = ', damage * 0.5);
 			return Math.floor(damage * 0.5); 
 		}
 		else
 		{
-			console.log('Initial attack = ', damage);
+			// console.log('Initial attack = ', damage);
 			return damage;
 		}	
 	}
@@ -57,7 +57,7 @@ app.damage = (function(){
 		//TODO: calculate damage done for counter attack
 		//for now just return percentage of attack damage
 		var counterDamage = Math.floor(damageForAttack(attackingUnit, defendingUnit, attackingTerrain, defendingTerrain, unitStatsArray, terrainStatsArray) * 0.5);
-		console.log('Counter attack damage = ', counterDamage);
+		// console.log('Counter attack damage = ', counterDamage);
 		return counterDamage;
 	}
 	
