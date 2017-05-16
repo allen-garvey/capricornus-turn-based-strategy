@@ -5,9 +5,10 @@
  */
 var app = app || {};
 
-app.renderer = (function(util, unitStats, terrainStats){
+app.renderer = (function(util, unitStats, terrainStats, animationStats){
 	var UNIT_STATS = unitStats.get();
 	var TERRAIN_STATS = terrainStats.get();
+	var ANIMATION_STATS = animationStats.get();
 
 	//constants used when rendering unit orientation and movement animation
 	var DIRECTIONS = {
@@ -24,8 +25,10 @@ app.renderer = (function(util, unitStats, terrainStats){
 	var TILE_SIZE = 32;
 	//number of pixels between each frame in the animation
 	var ANIMATION_PIXEL_STEP = 2;
-	//delay between frames in ms
+	//delay between frames in ms for unit movement animations
 	var ANIMATION_FRAME_DELAY = 10;
+	//delay between frames for static animations, like explosions
+	var STATIC_ANIMATION_FRAME_DELAY = 200;
 
 	function totalTiles(canvasParent){
 		return {x: Math.floor(canvasParent.offsetWidth / TILE_SIZE), y: Math.floor(canvasParent.offsetHeight / TILE_SIZE)};
@@ -341,14 +344,61 @@ app.renderer = (function(util, unitStats, terrainStats){
 	 */
 	 //defending unit should already have it's health adjusted before entering this function, the damage done, is used to calculate the 
 	 //damage that should be displayed to have been taken from the defender
-	 function renderAttack(unitCanvasContext, animationCanvasContext, attackCoordinate, defenseCoordinate, attackingUnit, defendingUnit, damageDone, doneCallback){
-	 	orientUnit(attackCoordinate, defenseCoordinate, attackingUnit);
-	 	redrawUnit(unitCanvasContext, attackCoordinate, attackingUnit);
-	 	//right now, simply display the new healthbars
-	 	redrawUnit(unitCanvasContext, defenseCoordinate, defendingUnit);
+	function renderAttack(unitCanvasContext, animationCanvasContext, attackCoordinate, defenseCoordinate, attackingUnit, defendingUnit, damageDone, doneCallback){
+		orientUnit(attackCoordinate, defenseCoordinate, attackingUnit);
+		//display attacker as having moved
+		redrawUnit(unitCanvasContext, attackCoordinate, attackingUnit);
+		//display the new healthbars or erase unit if dead
+		redrawUnit(unitCanvasContext, defenseCoordinate, defendingUnit);
+		//show explosion if defender died
+		if(defendingUnit.health <= 0){
+			renderExplosionAnimation(animationCanvasContext, defenseCoordinate, doneCallback);
+		}
+		else{
+			doneCallback();
+		}
+	}
 
-	 	doneCallback();
-	 }
+	/**
+	 * Rending animations
+	 */
+	//renders explosion animation at coordinate, calls doneCallback when completed
+	//based on: https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+	function renderExplosionAnimation(canvasContext, coordinate, doneCallback){
+		var explosionAnimation = ANIMATION_STATS.explosion;
+		var currentSpriteIndex = 0;
+
+		var start = null;
+		function step(timestamp){
+			if(start === null){
+				start = timestamp;	
+			}
+			var progress = timestamp - start;
+			//don't show next frame until certain amount of time has passed
+			if(progress < STATIC_ANIMATION_FRAME_DELAY){
+		    	window.requestAnimationFrame(step);
+		    	return;
+			}
+			//erase previous frame from animation
+			eraseTile(canvasContext, coordinate);
+			
+			if(currentSpriteIndex < explosionAnimation.spriteCoordinates.length){
+				//render current frame in animation
+				drawTile(canvasContext, explosionAnimation.spritesheet, coordinate, explosionAnimation.spriteCoordinates[currentSpriteIndex]);
+				currentSpriteIndex++;
+				//request animation frame one last time to erase final frame of animation
+				window.requestAnimationFrame(step);
+			}
+			//requires empty last animation to erase final frame of animation
+			else{
+				doneCallback();
+			}
+		}
+	 	window.requestAnimationFrame(step);
+	}
+
+
+
 
 	//exported functions and variables
 	return {
@@ -374,4 +424,4 @@ app.renderer = (function(util, unitStats, terrainStats){
 		redrawUnit: redrawUnit,
 		renderAttack: renderAttack
 	};
-})(app.util, app.unitStats, app.terrainStats);
+})(app.util, app.unitStats, app.terrainStats, app.animationStats);
