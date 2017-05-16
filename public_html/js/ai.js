@@ -134,7 +134,7 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		//return move for one unit
 	}
 	
-	function blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unit, target){
+	function blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unit, enemyUnits){
 		if(unit === null)
 		{
 			return aiActionEndTurn();
