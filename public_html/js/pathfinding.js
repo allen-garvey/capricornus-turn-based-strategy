@@ -279,7 +279,10 @@ app.pathfinder = (function(util){
 				}
 			}
 			index++;
-			nextMoveDist = validMoves[index].cost + 1;
+			if(index < validMoves.length){
+				nextMoveDist = validMoves[index].cost + 1;
+			}
+			
 		}
     	return validMoves;
 	}
