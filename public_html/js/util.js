@@ -27,6 +27,11 @@ app.util = (function(){
 		return (coordinate1.x === coordinate2.x && coordinate1.y === coordinate2.y);
 	}
 
+	//because can't use array prototype methods on NodeList
+    function forEach(iteratable, callback){ 
+    	return Array.prototype.forEach.call(iteratable, callback); 
+    }
+
 	//get json data at url, and passes parsed json data as argument into callback
 	function getJson(url, callback){
 		var request = new Request(url);
@@ -45,7 +50,8 @@ app.util = (function(){
 		isCoordinateInMovementSquares: isCoordinateInMovementSquares,
 		areCoordinatesEqual: areCoordinatesEqual,
 		coordinateFrom: coordinateFrom,
-		getJson: getJson
+		getJson: getJson,
+		forEach: forEach
 	};
     
 })();
