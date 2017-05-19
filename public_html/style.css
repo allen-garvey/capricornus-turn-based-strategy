@@ -141,13 +141,13 @@ html.loading{
 /*
 * Main Menu
 */
-.main-menu-container{
+.main-menu-container, .load-game-container{
 	display: none;
 }
 .menu-title{
 	margin-bottom: 0;
 }
-.show-menu .main-menu-container{
+.main-menu .main-menu-container, .load-game-menu .load-game-container{
 	display: flex;
 	align-items: center;
 	flex-direction: column;
