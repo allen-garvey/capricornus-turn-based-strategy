@@ -165,7 +165,7 @@ app.renderer = (function(util, unitStats, terrainStats, animationStats){
 				var currentCoordinate = {x: x, y: y};
 				var gameTile = gameTileForCoordinate(currentCoordinate, gameboard);
 				if(gameTile.unit){
-					renderUnit(unitCanvasContext, currentCoordinate, gameTile.unit);
+					redrawUnit(unitCanvasContext, currentCoordinate, gameTile.unit);
 				}
 			}
 		}
