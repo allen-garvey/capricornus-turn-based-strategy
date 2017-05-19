@@ -2,7 +2,7 @@
 /*
  * Logic to start game when all assets are loaded
  */
-(function(start, util, levelStats){
+(function(start, util, levelStats, saveGameController){
 	var levelStatsArray = levelStats.get();
 	var levelUnitDatas = [];
 	var levelTerrainDatas = [];
@@ -65,13 +65,56 @@
 
 	});
 
+
+	/*
+	 * Add load game menu item if there are games to load
+	 */
+	(function(){
+	  	var savedGames = saveGameController.getSaves();
+	  	
+	  	//don't add load game option if no saved games
+	  	if(!savedGames || savedGames.length === 0){
+	  		return;
+	  	}
+	  	var mainMenuList = document.getElementById('main-menu-list');
+  		var loadGameMenuItem = document.createElement('li');
+  		loadGameMenuItem.textContent = 'Load Game';
+  		mainMenuList.appendChild(loadGameMenuItem);
+
+
+  		var loadGamelist = document.getElementById('load-game-list');
+  		var loadGameListItems = document.createDocumentFragment();
+  		savedGames.forEach(function(savedGame){
+  			var listItem = document.createElement('li');
+  			listItem.textContent = savedGame.name + ' - Level ' + savedGame.gameMetadata.levelIndex + ' - ' + savedGame.formattedDate;
+  			listItem.onclick = function(){
+  				var fullSavedGame = saveGameController.getSave(savedGame.id);
+  				document.documentElement.classList.remove('load-game-menu');
+  				start(levelStatsArray, null, fullSavedGame);
+  			};
+
+  			loadGameListItems.appendChild(listItem);
+  		});
+  		loadGamelist.appendChild(loadGameListItems);
+  		
+  		loadGameMenuItem.onclick = function(){
+  			document.documentElement.classList.remove('main-menu');
+  			document.documentElement.classList.add('load-game-menu');
+  		};
+
+
+
+
+
+	})();
+
 	/*
 	 * Add options to select a level to main-menu-list
 	 */
 	(function(){
-		function menuItemClickHandler(index){
-			document.documentElement.classList.remove('show-menu');
-			start(levelStatsArray, index);
+		function startLevel(levelIndex){
+			document.documentElement.classList.remove('main-menu');
+			start(levelStatsArray, levelIndex);
 		}
 
 
@@ -82,15 +125,15 @@
 			var menuItem = document.createElement('li');
 			menuItem.textContent = level.name;
 			menuItem.onclick = function(){
-				menuItemClickHandler(index);
+				startLevel(index);
 			};
 			listItems.appendChild(menuItem);
 		});
 		mainMenuList.appendChild(listItems);
 
 		document.getElementById('menu_option_random').onclick = function(){
-			menuItemClickHandler(-1);
-		};	    
+			startLevel(-1);
+		};
 	})();
 
-})(app.game.start, app.util, app.levelStats);
+})(app.game.start, app.util, app.levelStats, app.saveGame);
