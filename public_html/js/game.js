@@ -3,8 +3,27 @@
 /*
 * Main game loop functionality
 */
- app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats, ai, damageCalculator, levelLoader, modal){
+ app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats, ai, damageCalculator, levelLoader, modal, saveGameController){
 	function start(LEVEL_STATS, levelIndex){
+
+		/**
+		 * Saving and loading game functions
+		 */
+		function saveGame(saveGameName){
+			var serializedGameboard = saveGameController.serializeGameboard(gameboard);
+			var gameMetadata = saveGameController.userInfoToGameMetadata(userInfo);
+			var saveSucceeded = saveGameController.createSave(saveGameName, serializedGameboard, gameMetadata);
+			if(!saveSucceeded){
+				modal.alert("Saving game failed");
+			}
+			else{
+				modal.alert("Game saved");
+			}
+		}
+
+		/**
+		 * Unit moving and attacking functionality
+		 */
 
 		//triggered when user's unit is attacking
 		//movementCoordinate is the coordinate the unit to move to before attacking
@@ -236,6 +255,7 @@
 
 		var gameContainer = document.getElementById('game-container');
 		var endTurnButton = document.getElementById('button-end-turn');
+		var saveGameButton = document.getElementById('button-save-game');
 		var TOTAL_TILES = renderer.totalTiles(gameContainer);
 		var UNIT_STATS = unitStats.get();
 		var TERRAIN_STATS = terrainStats.get();
@@ -252,7 +272,8 @@
 						unitSelectedShortestPath: false,
 						isUnitBeingMoved: false,
 						isAiTurn: false,
-						difficultyLevel: ai.DIFFICULTY_LEVELS.HARD
+						difficultyLevel: ai.DIFFICULTY_LEVELS.HARD,
+						levelIndex: levelIndex
 						};
 
 		
@@ -343,7 +364,14 @@
 		endTurnButton.onclick = function(){
 			triggerAiTurn();
 		};
+
+		saveGameButton.onclick = function(){
+			modal.prompt("Enter a name for your save game", function(saveGameName){
+				saveGame(saveGameName);
+			});
+		};
+
 	}
 	//exported functions
 	return {start: start};
- })(app.util, app.renderer, app.unitStats, app.terrainStats, app.pathfinder, app.levelStats, app.ai, app.damage, app.levelLoader, app.modal);
+ })(app.util, app.renderer, app.unitStats, app.terrainStats, app.pathfinder, app.levelStats, app.ai, app.damage, app.levelLoader, app.modal, app.saveGame);
