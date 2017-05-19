@@ -32,10 +32,12 @@
 		function userUnitAttack(startingCoordinate, attackCoordinate, movementCoordinate){
 			userInfo.isUnitBeingMoved = true;
 			endTurnButton.disabled = true;
+			saveGameButton.disabled = true;
 			var attackCallback = function(){
 				unitAttack(movementCoordinate, attackCoordinate, function(){
 					userInfo.isUnitBeingMoved = false;
 					endTurnButton.disabled = false;
+					saveGameButton.disabled = false;
 				});
 			};
 
@@ -98,9 +100,11 @@
 		function moveUserUnit(startingCoordinate, endingCoordinate){
 			userInfo.isUnitBeingMoved = true;
 			endTurnButton.disabled = true;
+			saveGameButton.disabled = true;
 			moveUnit(startingCoordinate, endingCoordinate, function(){
 				userInfo.isUnitBeingMoved = false;
 				endTurnButton.disabled = false;
+				saveGameButton.disabled = false;
 			});
 		}
 
@@ -166,11 +170,13 @@
 		function triggerAiTurn(){
 			userInfo.isAiTurn = true;
 			endTurnButton.disabled = true;
+			saveGameButton.disabled = true;
 			
 			aiTurnAction({}, function(){
 				resetGameboardForPlayerTurn();
 				userInfo.isAiTurn = false;
 				endTurnButton.disabled = false;
+				saveGameButton.disabled = false;
 			});
 		}
 
