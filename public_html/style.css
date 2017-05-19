@@ -173,9 +173,10 @@ html.loading{
 }
 
 /*
-* Game controls (end turn button)
+* Game controls (end turn and save game buttons)
 */
 .game-controls-container{
-	text-align: right;
+	display: flex;
+	justify-content: space-between;
 	margin-bottom: 10px;
 }
