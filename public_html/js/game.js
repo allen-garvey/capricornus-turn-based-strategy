@@ -4,7 +4,7 @@
 * Main game loop functionality
 */
  app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats, ai, damageCalculator, levelLoader, modal, saveGameController){
-	function start(LEVEL_STATS, levelIndex){
+	function start(LEVEL_STATS, levelIndex, savedGame){
 
 		/**
 		 * Saving and loading game functions
@@ -241,12 +241,64 @@
 						gameboard[i] = new Array(TOTAL_TILES.y);
 					}
 					gameboard[i][j] = {};
-					// gameboard[i][j].terrain = terrainStats.create(Math.round(Math.random()));
 					gameboard[i][j].terrain = levelLoader.terrainFor(level, i, j, TOTAL_TILES);
 					gameboard[i][j].unit = levelLoader.unitFor(level, j, i, TOTAL_TILES);
 				}
 			}
 			return gameboard;
+		}
+
+		/**
+		 * Loads units from saved game into initialized gameboard
+		 */
+		function loadGameboard(gameboard, savedGameboard){
+			for(var i = 0; i < gameboard.length; i++){
+				var subarray = gameboard[i];
+				for(var j = 0; j < subarray.length; j++){
+					gameboard[i][j].unit = savedGameboard[i][j].unit;
+				}
+			}
+		}
+
+		/**
+		 * Initializes global variables renders initial game
+		 * @param levelIndex - -1 for random setup or otherwise index of level in levelStats
+		 * @param difficultyLevel - constant from ai.DIFFICULTY_LEVELS
+		 * @param savedGame - either savedGame object if game is to be loaded or falsy value (null, false or undefined) if a new game is to be created
+		 */
+		function initializeGame(levelIndex, difficultyLevel, savedGame){
+			userInfo = {
+						cursor: {
+							coordinate: null,
+							spritesheet: document.getElementById('spritesheet'),
+							spriteCoordinate: {x: 1, y: 1}
+						},
+						unitSelected: false,
+						unitSelectedMovementSquares: false,
+						unitSelectedAttackSquares: false,
+						unitSelectedShortestPath: false,
+						isUnitBeingMoved: false,
+						isAiTurn: false,
+						difficultyLevel: difficultyLevel,
+						levelIndex: levelIndex
+						};
+
+			if(levelIndex < 0){
+				var randomLevelIndex = Math.floor(Math.random() * LEVEL_STATS.length);
+				userInfo.levelIndex = randomLevelIndex;
+				gameboard = createRandomGameboard(randomLevelIndex);
+				var levelSpritesheet = LEVEL_STATS[randomLevelIndex].spritesheet;
+			}
+			else{
+				gameboard = createGameboard(LEVEL_STATS[levelIndex]);
+				var levelSpritesheet = LEVEL_STATS[levelIndex].spritesheet;
+			}
+			if(savedGame){
+				loadGameboard(gameboard, savedGame.gameboard);
+			}
+
+			renderer.renderLevel(terrainCanvasContext, levelSpritesheet);
+			renderer.renderInitialGameboard(gameboard, unitCanvasContext);
 		}
 
 		/**
@@ -259,40 +311,24 @@
 		var TOTAL_TILES = renderer.totalTiles(gameContainer);
 		var UNIT_STATS = unitStats.get();
 		var TERRAIN_STATS = terrainStats.get();
-		
-		var userInfo = {
-						cursor: {
-							coordinate: null,
-							spritesheet: document.getElementById('spritesheet'),
-							spriteCoordinate: {x: 1, y: 1}
-						},
-						unitSelected: false,
-						unitSelectedMovementSquares: false,
-						unitSelectedAttackSquares: false,
-						unitSelectedShortestPath: false,
-						isUnitBeingMoved: false,
-						isAiTurn: false,
-						difficultyLevel: ai.DIFFICULTY_LEVELS.HARD,
-						levelIndex: levelIndex
-						};
 
-		
+		//get canvases
 		var cursorCanvasContext = renderer.getContext(gameContainer, 'cursor-canvas');
 		var unitSelectionCanvasContext = renderer.getContext(gameContainer, 'unit-selection-canvas');
 		var terrainCanvasContext = renderer.getContext(gameContainer, 'terrain-canvas');
 		var unitCanvasContext = renderer.getContext(gameContainer, 'unit-canvas');
 
-		if(levelIndex < 0){
-			var randomLevelIndex = Math.floor(Math.random() * LEVEL_STATS.length);
-			var gameboard = createRandomGameboard(randomLevelIndex);
+		//global variables containing game state
+		var gameboard;
+		var userInfo;
+
+		//setup global variables and render initial gamestate
+		if(savedGame){
+			initializeGame(savedGame.gameMetadata.levelIndex, savedGame.gameMetadata.difficultyLevel, savedGame);
 		}
 		else{
-			var gameboard = createGameboard(LEVEL_STATS[levelIndex]);
+			initializeGame(levelIndex, ai.DIFFICULTY_LEVELS.HARD, savedGame);
 		}
-		var levelSpritesheet = levelIndex >= 0 ? LEVEL_STATS[levelIndex].spritesheet : LEVEL_STATS[randomLevelIndex].spritesheet;
-
-		renderer.renderLevel(terrainCanvasContext, levelSpritesheet);
-		renderer.renderInitialGameboard(gameboard, unitCanvasContext);
 
 
 		/**
