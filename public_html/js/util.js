@@ -44,6 +44,13 @@ app.util = (function(){
 		});
 	}
 
+	//creates deep copy of an object and returns it
+	//note this will only copy serializable properties, not functions
+	//based on: http://stackoverflow.com/questions/728360/how-do-i-correctly-clone-a-javascript-object
+	function cloneObject(object){
+		return JSON.parse(JSON.stringify(object));
+	}
+
 	//exported functions and variables
 	return {
 		copyCoordinate: copyCoordinate,
@@ -51,7 +58,8 @@ app.util = (function(){
 		areCoordinatesEqual: areCoordinatesEqual,
 		coordinateFrom: coordinateFrom,
 		getJson: getJson,
-		forEach: forEach
+		forEach: forEach,
+		cloneObject: cloneObject
 	};
     
 })();
