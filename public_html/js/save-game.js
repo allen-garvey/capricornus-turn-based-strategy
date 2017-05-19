@@ -4,7 +4,42 @@
  */
 var app = app || {};
 
-app.saveGame = (function(){
+app.saveGame = (function(util){
+
+	/**
+	 * Makes a deep copy of the gameboard to prepare it to be saved, and discards unnecessary properties not needed
+	 * for loading a game from it-
+	 * @param gameboard - 2d array of units and terrain
+	 * @returns deep copy of the gameboard with properties that don't need to be saved discarded
+	 */
+	function serializeGameboard(gameboard){
+		var serializedGameboard = new Array(gameboard.length);
+
+		for(var i = 0; i < gameboard.length; i++){
+			var subarray = gameboard[i]; 
+			serializedGameboard[i] = new Array(subarray.length);
+
+			for(var j = 0; j < subarray.length; j++){
+			serializedGameboard[i][j] = {};
+			serializedGameboard[i][j].unit = util.cloneObject(gameboard[i][j].unit);
+			}
+		}
+		return serializedGameboard;
+	}
+
+	/**
+	 * Takes data from userInfo object and prepares a new object with data that needs to be saved
+	 * @param userIndo - object with various game user info and meta data
+	 * @returns new object with game data that needs to be saved
+	 */
+	function userInfoToGameMetadata(userInfo){
+		var gameMetadata = {};
+
+		gameMetadata.difficultyLevel = userInfo.difficultyLevel;
+		gameMetadata.levelIndex = userInfo.levelIndex;
+
+		return gameMetadata;
+	}
 
 	/*
 	 * Created  a saved game and save in browser localStorage
@@ -158,7 +193,9 @@ app.saveGame = (function(){
 		getSaves: getSaves,
 		getSave: getSave,
 		deleteSave: deleteSave,
-		createSave: createSave
+		createSave: createSave,
+		serializeGameboard: serializeGameboard,
+		userInfoToGameMetadata: userInfoToGameMetadata
 	};
     
-})();
+})(app.util);
