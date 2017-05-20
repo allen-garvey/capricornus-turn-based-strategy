@@ -163,13 +163,16 @@ html.loading{
 	list-style-type: none;
 	padding-left: 0;
 }
-.main-menu-list li, .nav-list li{
+.main-menu-list li, .nav-list li, .menu-item{
 	cursor: pointer;
 	padding: 1em 2em;
 }
-.main-menu-list li:hover, .nav-list li:hover, .nav-list li.active{
+.main-menu-list li:hover, .nav-list li:hover, .nav-list li.active, .menu-item:hover{
 	background-color: black;
 	color: white;
+}
+#button-load-game-back{
+	margin-bottom: 5px;
 }
 
 /*

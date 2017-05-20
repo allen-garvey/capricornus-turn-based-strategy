@@ -102,8 +102,11 @@
   			document.documentElement.classList.add('load-game-menu');
   		};
 
-
-
+  		var backToMainMenuButton = document.getElementById('button-load-game-back');
+  		backToMainMenuButton.onclick = function(){
+  			document.documentElement.classList.remove('load-game-menu');
+  			document.documentElement.classList.add('main-menu');
+  		};
 
 
 	})();
