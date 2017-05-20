@@ -9,12 +9,18 @@ app.templater = (function(){
 	/**
 	 * creates DOM element
 	 * @param elementName - string -name of element to be created
-	 * @param textContent - textContent to be placed in the element
+	 * @param textContent - string - textContent to be placed in the element
+	 * @param className - string - space delimited css classes to add to element
 	 * @returns - Element object 
 	 */
-	function createElement(elementName, textContent){
+	function createElement(elementName, textContent, className){
 		var el = document.createElement(elementName);
-		el.textContent = textContent;
+		if(textContent){
+			el.textContent = textContent;
+		}
+		if(className){
+			el.className = className;
+		}
 		return el;
 	}
 
