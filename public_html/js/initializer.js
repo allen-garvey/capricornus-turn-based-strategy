@@ -2,7 +2,7 @@
 /*
  * Logic to start game when all assets are loaded
  */
-(function(start, util, levelStats, saveGameController, templater){
+(function(start, util, levelStats, saveGameController, templater, modal){
 	var levelStatsArray = levelStats.get();
 	var levelUnitDatas = [];
 	var levelTerrainDatas = [];
@@ -85,12 +85,26 @@
   		var loadGamelist = document.getElementById('load-game-list');
   		var loadGameListItems = document.createDocumentFragment();
   		savedGames.forEach(function(savedGame){
-  			var listItem = templater.createElement('li', savedGame.name + ' - Level ' + savedGame.gameMetadata.levelIndex + ' - ' + savedGame.formattedDate);
-  			listItem.onclick = function(){
+  			var listItem = templater.createElement('li');
+  			
+  			var levelButton = templater.createElement('div', savedGame.name + ' - Level ' + savedGame.gameMetadata.levelIndex + ' - ' + savedGame.formattedDate, 'menu-item');
+  			var deleteButton = templater.createElement('div', 'Delete', 'menu-item menu-item-danger');
+
+  			levelButton.onclick = function(){
   				var fullSavedGame = saveGameController.getSave(savedGame.id);
   				document.documentElement.classList.remove('load-game-menu');
   				start(levelStatsArray, null, fullSavedGame);
   			};
+
+  			deleteButton.onclick = function(){
+  				modal.confirm('Are you sure you want to delete ' + savedGame.name + '?', function(){
+  					listItem.remove();
+  					saveGameController.deleteSave(savedGame.id);
+  				});
+  			};
+
+  			listItem.appendChild(levelButton);
+  			listItem.appendChild(deleteButton);
 
   			loadGameListItems.appendChild(listItem);
   		});
@@ -137,4 +151,4 @@
 		};
 	})();
 
-})(app.game.start, app.util, app.levelStats, app.saveGame, app.templater);
+})(app.game.start, app.util, app.levelStats, app.saveGame, app.templater, app.modal);
