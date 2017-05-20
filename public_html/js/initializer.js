@@ -2,7 +2,7 @@
 /*
  * Logic to start game when all assets are loaded
  */
-(function(start, util, levelStats, saveGameController){
+(function(start, util, levelStats, saveGameController, templater){
 	var levelStatsArray = levelStats.get();
 	var levelUnitDatas = [];
 	var levelTerrainDatas = [];
@@ -85,8 +85,7 @@
   		var loadGamelist = document.getElementById('load-game-list');
   		var loadGameListItems = document.createDocumentFragment();
   		savedGames.forEach(function(savedGame){
-  			var listItem = document.createElement('li');
-  			listItem.textContent = savedGame.name + ' - Level ' + savedGame.gameMetadata.levelIndex + ' - ' + savedGame.formattedDate;
+  			var listItem = templater.createElement('li', savedGame.name + ' - Level ' + savedGame.gameMetadata.levelIndex + ' - ' + savedGame.formattedDate);
   			listItem.onclick = function(){
   				var fullSavedGame = saveGameController.getSave(savedGame.id);
   				document.documentElement.classList.remove('load-game-menu');
@@ -125,8 +124,7 @@
 		var listItems = document.createDocumentFragment();
 
 		levelStatsArray.forEach(function(level, index){
-			var menuItem = document.createElement('li');
-			menuItem.textContent = level.name;
+			var menuItem = templater.createElement('li', level.name);
 			menuItem.onclick = function(){
 				startLevel(index);
 			};
@@ -139,4 +137,4 @@
 		};
 	})();
 
-})(app.game.start, app.util, app.levelStats, app.saveGame);
+})(app.game.start, app.util, app.levelStats, app.saveGame, app.templater);
