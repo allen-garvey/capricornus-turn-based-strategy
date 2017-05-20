@@ -180,3 +180,51 @@ html.loading{
 	justify-content: space-between;
 	margin-bottom: 10px;
 }
+
+/*
+* Modal Windows
+*/
+.modal-overlay, .modal-window{
+	display: none;
+}
+
+.show-modal .modal-overlay{
+	display: block;
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background-color: black;
+	opacity: 0.7;
+	z-index: 200;
+}
+.show-modal .modal-window{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-content: space-between;;
+	position: fixed;
+	z-index: 210;
+	background-color: white;
+	width: 600px;
+	left: calc(50% - 300px);
+	height: 350px;
+	top: calc(50% - 175px);
+	border-radius: 4px;
+}
+.modal-window > div{
+	flex-basis: 100%;
+}
+.modal-text-container{
+	padding: 40px;
+}
+.modal-button-container{
+	display: flex;
+	justify-content: center;
+	align-self: flex-end;
+	padding: 16px 0;
+}
+#modal-button-cancel{
+	margin-right: 20px;
+}
