@@ -203,7 +203,6 @@ html.loading{
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
-	align-content: space-between;;
 	position: fixed;
 	z-index: 210;
 	background-color: white;
@@ -218,12 +217,24 @@ html.loading{
 }
 .modal-text-container{
 	padding: 40px;
+	text-align: center;
 }
+.modal-input-container{
+	display: none;
+}
+.modal-window.prompt .modal-input-container{
+	display: block;
+	text-align: center;
+}
+
 .modal-button-container{
 	display: flex;
 	justify-content: center;
 	align-self: flex-end;
 	padding: 16px 0;
+}
+.modal-window.alert #modal-button-cancel{
+	display: none;
 }
 #modal-button-cancel{
 	margin-right: 20px;
