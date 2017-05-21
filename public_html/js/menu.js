@@ -27,7 +27,7 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
   		savedGames.forEach(function(savedGame){
   			var listItem = templater.createElement('li');
   			
-  			var levelButton = templater.createElement('div', savedGame.name + ' - Level ' + savedGame.gameMetadata.levelIndex + ' - ' + savedGame.formattedDate, 'menu-item');
+  			var levelButton = templater.createElement('div', savedGame.name + ' - ' + levelStatsArray[savedGame.gameMetadata.levelIndex].name + ' - ' + savedGame.formattedDate, 'menu-item');
   			var deleteButton = templater.createElement('div', 'Delete', 'menu-item menu-item-danger');
 
   			levelButton.onclick = function(){
