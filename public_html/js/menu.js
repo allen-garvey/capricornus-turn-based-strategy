@@ -27,10 +27,17 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
   		savedGames.forEach(function(savedGame){
   			var listItem = templater.createElement('li');
   			
-  			var levelButton = templater.createElement('div', savedGame.name + ' - ' + levelStatsArray[savedGame.gameMetadata.levelIndex].name + ' - ' + savedGame.formattedDate, 'menu-item');
+  			//button with information about saved game - click to load it
+  			var saveGameContainer = templater.createElement('div', null, 'menu-item');
+  			var saveGameNameContainer = templater.createElement('div', savedGame.name);
+  			var saveGameInfoContainer = templater.createElement('div', levelStatsArray[savedGame.gameMetadata.levelIndex].name + ' - ' + savedGame.formattedDate, 'save-game-info');
+  			saveGameContainer.appendChild(saveGameNameContainer);
+  			saveGameContainer.appendChild(saveGameInfoContainer);
+
+  			//button to delete saved game
   			var deleteButton = templater.createElement('div', 'Delete', 'menu-item menu-item-danger');
 
-  			levelButton.onclick = function(){
+  			saveGameContainer.onclick = function(){
   				var fullSavedGame = saveGameController.getSave(savedGame.id);
   				document.documentElement.classList.remove('load-game-menu');
   				start(levelStatsArray, null, fullSavedGame);
@@ -43,7 +50,7 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
   				});
   			};
 
-  			listItem.appendChild(levelButton);
+  			listItem.appendChild(saveGameContainer);
   			listItem.appendChild(deleteButton);
 
   			loadGameListItems.appendChild(listItem);
