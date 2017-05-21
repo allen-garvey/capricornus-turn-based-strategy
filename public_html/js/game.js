@@ -5,6 +5,21 @@
 */
  app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats, ai, damageCalculator, levelLoader, modal, saveGameController){
 	function start(LEVEL_STATS, levelIndex, savedGame){
+		/**
+		 * Utility functions
+		 */
+		//reenable buttons after an action has occurred
+		function enableButtons(){
+			userInfo.buttonsEnabled = true;
+			endTurnButton.disabled = false;
+			saveGameButton.disabled = false;
+		}
+		//used to disable buttons during animations or AI turn
+		function disableButtons(){
+			userInfo.buttonsEnabled = false;
+			endTurnButton.disabled = true;
+			saveGameButton.disabled = true;
+		}
 
 		/**
 		 * Saving and loading game functions
@@ -31,13 +46,11 @@
 		//if it is, pick a random valid one
 		function userUnitAttack(startingCoordinate, attackCoordinate, movementCoordinate){
 			userInfo.isUnitBeingMoved = true;
-			endTurnButton.disabled = true;
-			saveGameButton.disabled = true;
+			disableButtons();
 			var attackCallback = function(){
 				unitAttack(movementCoordinate, attackCoordinate, function(){
 					userInfo.isUnitBeingMoved = false;
-					endTurnButton.disabled = false;
-					saveGameButton.disabled = false;
+					enableButtons();
 				});
 			};
 
@@ -99,12 +112,10 @@
 
 		function moveUserUnit(startingCoordinate, endingCoordinate){
 			userInfo.isUnitBeingMoved = true;
-			endTurnButton.disabled = true;
-			saveGameButton.disabled = true;
+			disableButtons();
 			moveUnit(startingCoordinate, endingCoordinate, function(){
 				userInfo.isUnitBeingMoved = false;
-				endTurnButton.disabled = false;
-				saveGameButton.disabled = false;
+				enableButtons();
 			});
 		}
 
@@ -169,14 +180,12 @@
 
 		function triggerAiTurn(){
 			userInfo.isAiTurn = true;
-			endTurnButton.disabled = true;
-			saveGameButton.disabled = true;
+			disableButtons();
 			
 			aiTurnAction({}, function(){
 				resetGameboardForPlayerTurn();
 				userInfo.isAiTurn = false;
-				endTurnButton.disabled = false;
-				saveGameButton.disabled = false;
+				enableButtons();
 			});
 		}
 
@@ -286,7 +295,8 @@
 						isUnitBeingMoved: false,
 						isAiTurn: false,
 						difficultyLevel: difficultyLevel,
-						levelIndex: levelIndex
+						levelIndex: levelIndex,
+						buttonsEnabled: true
 						};
 
 			if(levelIndex < 0){
@@ -404,10 +414,16 @@
 		}
 
 		endTurnButton.onclick = function(){
+			if(!userInfo.buttonsEnabled){
+				return;
+			}
 			triggerAiTurn();
 		};
 
 		saveGameButton.onclick = function(){
+			if(!userInfo.buttonsEnabled){
+				return;
+			}
 			modal.prompt("Enter a name for your save game", function(saveGameName){
 				saveGame(saveGameName);
 			});
