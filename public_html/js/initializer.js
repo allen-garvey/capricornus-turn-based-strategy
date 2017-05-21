@@ -2,13 +2,14 @@
 /*
  * Logic to start game when all assets are loaded
  */
-(function(start, util, levelStats, saveGameController, templater, modal){
+(function(start, util, levelStats, menu, levelLoader){
 	var levelStatsArray = levelStats.get();
 	var levelUnitDatas = [];
 	var levelTerrainDatas = [];
 
 	var imageSprites = document.querySelectorAll('img.spritesheet');
 
+	//2 * levelStats array, since each level has a unit and terrain file to download
 	var assetsLeftToLoad = imageSprites.length + (2 * levelStatsArray.length);
 
 	//called after a single asset loads
@@ -21,22 +22,15 @@
 
 	//called when all assets are loaded
 	function allAssetsFinishedLoading(){
-		initializeLevelData();
+		//put unit and terrain placement data into level array
+		levelLoader.initializeLevelData(levelStatsArray, levelUnitDatas, levelTerrainDatas);
+		
+		//create menus once levelStatArray has been loaded with data
+		menu.initializeLoadgameMenu(levelStatsArray);
+		menu.initializeMainMenu(levelStatsArray);
+
+		//remove loading screen
 		document.documentElement.classList.remove('loading');
-
-	}
-
-	function initializeLevelData(){
-		levelStatsArray.forEach(function(item, index){
-			//load unit level data into the level stats
-			if(levelUnitDatas[index]){
-				item.dataUnits = levelUnitDatas[index];
-			}
-			//load terrain level data into the level stats
-			if(levelTerrainDatas[index]){
-				item.dataTerrain = levelTerrainDatas[index];
-			}
-		});
 	}
 
 	//don't start game until all images are loaded
@@ -51,12 +45,15 @@
 		}
 	});
 
+	//download level unit placements and terrain data
 	levelStatsArray.forEach(function(level, index){
+		//unit placement
 		util.getJson(level.dataUnitsUrl, function(json){
 			levelUnitDatas[index] = json;
 			assetDidLoad();
 		});
 
+		//terrain data
 		util.getJson(level.dataTerrainUrl, function(json){
 			levelTerrainDatas[index] = json;
 			assetDidLoad();
@@ -65,90 +62,4 @@
 
 	});
 
-
-	/*
-	 * Add load game menu item if there are games to load
-	 */
-	(function(){
-	  	var savedGames = saveGameController.getSaves();
-	  	
-	  	//don't add load game option if no saved games
-	  	if(!savedGames || savedGames.length === 0){
-	  		return;
-	  	}
-	  	var mainMenuList = document.getElementById('main-menu-list');
-  		var loadGameMenuItem = document.createElement('li');
-  		loadGameMenuItem.textContent = 'Load Game';
-  		mainMenuList.appendChild(loadGameMenuItem);
-
-
-  		var loadGamelist = document.getElementById('load-game-list');
-  		var loadGameListItems = document.createDocumentFragment();
-  		savedGames.forEach(function(savedGame){
-  			var listItem = templater.createElement('li');
-  			
-  			var levelButton = templater.createElement('div', savedGame.name + ' - Level ' + savedGame.gameMetadata.levelIndex + ' - ' + savedGame.formattedDate, 'menu-item');
-  			var deleteButton = templater.createElement('div', 'Delete', 'menu-item menu-item-danger');
-
-  			levelButton.onclick = function(){
-  				var fullSavedGame = saveGameController.getSave(savedGame.id);
-  				document.documentElement.classList.remove('load-game-menu');
-  				start(levelStatsArray, null, fullSavedGame);
-  			};
-
-  			deleteButton.onclick = function(){
-  				modal.confirm('Are you sure you want to delete ' + savedGame.name + '?', function(){
-  					listItem.remove();
-  					saveGameController.deleteSave(savedGame.id);
-  				});
-  			};
-
-  			listItem.appendChild(levelButton);
-  			listItem.appendChild(deleteButton);
-
-  			loadGameListItems.appendChild(listItem);
-  		});
-  		loadGamelist.appendChild(loadGameListItems);
-  		
-  		loadGameMenuItem.onclick = function(){
-  			document.documentElement.classList.remove('main-menu');
-  			document.documentElement.classList.add('load-game-menu');
-  		};
-
-  		var backToMainMenuButton = document.getElementById('button-load-game-back');
-  		backToMainMenuButton.onclick = function(){
-  			document.documentElement.classList.remove('load-game-menu');
-  			document.documentElement.classList.add('main-menu');
-  		};
-
-
-	})();
-
-	/*
-	 * Add options to select a level to main-menu-list
-	 */
-	(function(){
-		function startLevel(levelIndex){
-			document.documentElement.classList.remove('main-menu');
-			start(levelStatsArray, levelIndex);
-		}
-
-
-		var mainMenuList = document.getElementById('main-menu-list');
-		var listItems = document.createDocumentFragment();
-
-		levelStatsArray.forEach(function(level, index){
-			var menuItem = templater.createElement('li', level.name);
-			menuItem.onclick = function(){
-				startLevel(index);
-			};
-			listItems.appendChild(menuItem);
-		});
-		mainMenuList.appendChild(listItems);
-
-		document.getElementById('menu_option_random').onclick = function(){
-			startLevel(-1);
-		};
-	})();
-
-})(app.game.start, app.util, app.levelStats, app.saveGame, app.templater, app.modal);
+})(app.game.start, app.util, app.levelStats, app.menu, app.levelLoader);
