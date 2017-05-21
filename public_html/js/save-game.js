@@ -20,8 +20,8 @@ app.saveGame = (function(util){
 			serializedGameboard[i] = new Array(subarray.length);
 
 			for(var j = 0; j < subarray.length; j++){
-			serializedGameboard[i][j] = {};
-			serializedGameboard[i][j].unit = util.cloneObject(gameboard[i][j].unit);
+				serializedGameboard[i][j] = {};
+				serializedGameboard[i][j].unit = util.cloneObject(gameboard[i][j].unit);
 			}
 		}
 		return serializedGameboard;
