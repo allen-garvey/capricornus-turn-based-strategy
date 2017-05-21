@@ -148,12 +148,32 @@ app.levelLoader = (function(unitStats, terrainStats){
 		}
 	}
 
+	/**
+	 * puts level unit placements and terrain data into level array
+	 * @param levelStatsArray - array returned by level-stats module
+	 * @param levelUnitDatas - array of data with the downloaded contents of the level stats array dataUnitsUrl property
+	 * @param levelTerrainDatas - array of data with the downloaded contents of the level stats array dataTerrainUrl property
+	 */
+	function initializeLevelData(levelStatsArray, levelUnitDatas, levelTerrainDatas){
+		levelStatsArray.forEach(function(item, index){
+			//load unit level data into the level stats
+			if(levelUnitDatas[index]){
+				item.dataUnits = levelUnitDatas[index];
+			}
+			//load terrain level data into the level stats
+			if(levelTerrainDatas[index]){
+				item.dataTerrain = levelTerrainDatas[index];
+			}
+		});
+	}
+
 
 
 	//exported functions and variables
 	return {
 		unitFor: unitFor,
-		terrainFor: terrainFor
+		terrainFor: terrainFor,
+		initializeLevelData: initializeLevelData
 	};
     
 })(app.unitStats, app.terrainStats);
