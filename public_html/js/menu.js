@@ -9,7 +9,7 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
 	 * Add load game menu item if there are games to load
 	 * @param levelStatsArray - array from level-stats module with data preloaded
 	 */
-	function initializeLoadgameMenu(levelStatsArray){
+	function initializeLoadgameMenu(levelStatsArray, audioStatsArray){
 	  	var savedGames = saveGameController.getSaves();
 	  	
 	  	//don't add load game option if no saved games
@@ -40,7 +40,7 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
   			saveGameContainer.onclick = function(){
   				var fullSavedGame = saveGameController.getSave(savedGame.id);
   				document.documentElement.classList.remove('load-game-menu');
-  				start(levelStatsArray, null, fullSavedGame);
+  				start(levelStatsArray, audioStatsArray, null, fullSavedGame);
   			};
 
   			deleteButton.onclick = function(){
@@ -73,10 +73,10 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
 	 * Creates main menu, and adds options to select each level
 	 * @param levelStatsArray - array from level-stats module with data preloaded
 	 */
-	function initializeMainMenu(levelStatsArray){
+	function initializeMainMenu(levelStatsArray, audioStatsArray){
 		function startLevel(levelIndex){
 			document.documentElement.classList.remove('main-menu');
-			start(levelStatsArray, levelIndex);
+			start(levelStatsArray, audioStatsArray, levelIndex);
 		}
 
 

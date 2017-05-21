@@ -3,8 +3,8 @@
 /*
 * Main game loop functionality
 */
- app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats, ai, damageCalculator, levelLoader, modal, saveGameController){
-	function start(LEVEL_STATS, levelIndex, savedGame){
+ app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats, ai, damageCalculator, levelLoader, modal, saveGameController, mixer){
+	function start(LEVEL_STATS, AUDIO_STATS, levelIndex, savedGame){
 		/**
 		 * Utility functions
 		 */
@@ -129,9 +129,10 @@
 				doneCallback();
 				return;
 			}
-
+			var moveSoundEffect = mixer.playAudioBuffer(AUDIO_STATS.units[unitToBeMoved.type].move, true);
 			var path = pathfinder.pathFor(startingCoordinate, endingCoordinate, gameboard, UNIT_STATS, TERRAIN_STATS);
 			renderer.renderUnitMovement(unitCanvasContext, unitSelectionCanvasContext, unitToBeMoved, path, function(){
+				mixer.stopSound(moveSoundEffect, 300);
 				renderer.renderUnitMoved(unitCanvasContext, endingCoordinate, unitToBeMoved);
 				//update gameboard
 				unitToBeMoved.canMove = false;
@@ -432,4 +433,4 @@
 	}
 	//exported functions
 	return {start: start};
- })(app.util, app.renderer, app.unitStats, app.terrainStats, app.pathfinder, app.levelStats, app.ai, app.damage, app.levelLoader, app.modal, app.saveGame);
+ })(app.util, app.renderer, app.unitStats, app.terrainStats, app.pathfinder, app.levelStats, app.ai, app.damage, app.levelLoader, app.modal, app.saveGame, app.mixer);
