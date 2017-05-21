@@ -173,6 +173,11 @@ html.loading{
 	background-color: black;
 	color: white;
 }
+.menu-item{
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+}
 
 /*
 * Load game menu
@@ -189,6 +194,9 @@ html.loading{
 
 .menu-item.menu-item-danger:hover{
 	background-color: crimson;
+}
+.save-game-info{
+	color: grey;
 }
 
 /*
