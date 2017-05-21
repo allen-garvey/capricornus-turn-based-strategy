@@ -2,15 +2,16 @@
 /*
  * Logic to start game when all assets are loaded
  */
-(function(start, util, levelStats, menu, levelLoader){
+(function(start, util, levelStats, menu, levelLoader, mixer, audioStats){
 	var levelStatsArray = levelStats.get();
 	var levelUnitDatas = [];
 	var levelTerrainDatas = [];
+	var audioStatsArray = audioStats.get();
 
 	var imageSprites = document.querySelectorAll('img.spritesheet');
 
 	//2 * levelStats array, since each level has a unit and terrain file to download
-	var assetsLeftToLoad = imageSprites.length + (2 * levelStatsArray.length);
+	var assetsLeftToLoad = imageSprites.length + (2 * levelStatsArray.length) + (3 * audioStatsArray.units.length);
 
 	//called after a single asset loads
 	function assetDidLoad(){
@@ -26,8 +27,8 @@
 		levelLoader.initializeLevelData(levelStatsArray, levelUnitDatas, levelTerrainDatas);
 		
 		//create menus once levelStatArray has been loaded with data
-		menu.initializeLoadgameMenu(levelStatsArray);
-		menu.initializeMainMenu(levelStatsArray);
+		menu.initializeLoadgameMenu(levelStatsArray, audioStatsArray);
+		menu.initializeMainMenu(levelStatsArray, audioStatsArray);
 
 		//remove loading screen
 		document.documentElement.classList.remove('loading');
@@ -58,8 +59,21 @@
 			levelTerrainDatas[index] = json;
 			assetDidLoad();
 		});
-
-
 	});
 
-})(app.game.start, app.util, app.levelStats, app.menu, app.levelLoader);
+	audioStatsArray.units.forEach(function(unitSound, index){
+		mixer.getAudioBuffer(unitSound.moveUrl, function(buffer){
+			unitSound.move = buffer;
+			assetDidLoad();
+		});
+		mixer.getAudioBuffer(unitSound.dieUrl, function(buffer){
+			unitSound.die = buffer;
+			assetDidLoad();
+		});
+		mixer.getAudioBuffer(unitSound.attackUrl, function(buffer){
+			unitSound.attack = buffer;
+			assetDidLoad();
+		});
+	});
+
+})(app.game.start, app.util, app.levelStats, app.menu, app.levelLoader, app.mixer, app.audioStats);
