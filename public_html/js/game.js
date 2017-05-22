@@ -99,14 +99,18 @@
 			else{
 				defendingUnit.health -= damageDone;
 			}
+			var attackSound = mixer.playAudioBuffer(AUDIO_STATS.units[attackingUnit.type].attack);
 			renderer.renderAttack(unitCanvasContext, unitSelectionCanvasContext, attackerCoordinate, defenderCoordinate, attackingUnit, defendingUnit, damageDone, function(){
-				//do counterattack if defender is still alive, and we're not already in a counterattack
-				if(!isCounterattack && defendingUnit.health > 0){
-					unitAttack(defenderCoordinate, attackerCoordinate, doneCallback, true);
-				}
-				else{
-					doneCallback();
-				}
+				setTimeout(function(){
+					mixer.stopSound(attackSound);
+					//do counterattack if defender is still alive, and we're not already in a counterattack
+					if(!isCounterattack && defendingUnit.health > 0){
+						unitAttack(defenderCoordinate, attackerCoordinate, doneCallback, true);
+					}
+					else{
+						doneCallback();
+					}	
+				}, 800);
 			});
 		}
 
