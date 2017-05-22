@@ -130,6 +130,10 @@ app.levelLoader = (function(unitStats, terrainStats){
 			case 86:
 				return terrainStats.create(4);
 				break;
+			//deep water
+			case 23:
+				return terrainStats.create(7);
+				break;
 			//bridge
 			case 365:
 			case 381:
