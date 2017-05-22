@@ -101,6 +101,11 @@
 			}
 			var attackSound = mixer.playAudioBuffer(AUDIO_STATS.units[attackingUnit.type].attack);
 			renderer.renderAttack(unitCanvasContext, unitSelectionCanvasContext, attackerCoordinate, defenderCoordinate, attackingUnit, defendingUnit, damageDone, function(){
+				//play death sound immediately if applicable, since death animation is already playing
+				if(defendingUnit.health <= 0){
+					mixer.playAudioBuffer(AUDIO_STATS.units[defendingUnit.type].die);
+				}
+				//show counter-attack after a delay, so it will have time to register
 				setTimeout(function(){
 					mixer.stopSound(attackSound);
 					//do counterattack if defender is still alive, and we're not already in a counterattack
