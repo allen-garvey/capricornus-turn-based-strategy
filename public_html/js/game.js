@@ -91,7 +91,7 @@
 			}
 			
 			//check to see if damage done is more than unit's current health
-			if(damageDone > defendingUnit.health){
+			if(damageDone >= defendingUnit.health){
 				damageDone = defendingUnit.health;
 				defendingUnit.health = 0;
 				renderer.gameTileForCoordinate(defenderCoordinate, gameboard).unit = null;
