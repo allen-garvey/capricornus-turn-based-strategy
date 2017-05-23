@@ -41,7 +41,7 @@ app.unitStats = (function(){
             canTraverse: [true, false, false, false, true, true, true, false], //if a unit can traverse the type of terrain cross-referenced to terrainStats array index
     		applyDefense: false, //gets defense from cover
     		hitpoints: 150, //hitpoints contained in new unit
-    		attackTable: [50, 40, 20], //damage inflicted to a unit of the same type as the array index
+    		attackTable: [50, 40, 30], //damage inflicted to a unit of the same type as the array index
     		movementSpeed: 4 //how many tiles unit can move
     	});
     	stats.push({
