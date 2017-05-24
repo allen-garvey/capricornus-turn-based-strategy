@@ -52,7 +52,10 @@ app.levelLoader = (function(unitStats, terrainStats){
 		if(unit === null){
 			return unit;
 		}
-		if(column < TOTAL_TILES.x/2){
+		//face unit towards the center of the map by default
+		//this seems like this should be wrong, but the rows and columns have
+		//gotten a bit muddled, so just go with this
+		if(row < TOTAL_TILES.x/2){
 			unit.currentDirection = unitStats.UNIT_DIRECTIONS.RIGHT;
 		}
 		else{
