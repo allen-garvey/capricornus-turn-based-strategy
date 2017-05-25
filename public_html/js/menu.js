@@ -5,6 +5,7 @@
 var app = app || {};
 
 app.menu = (function(start, util, levelStats, saveGameController, templater, modal, ai){
+	var SHOW_DEBUG_MENUS = true;
 	/*
 	 * shared menu initialization functionality
 	 */
@@ -109,9 +110,25 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
 	 * @param levelStatsArray - array from level-stats module with data preloaded
 	 */
 	function initializeMainMenu(levelStatsArray, audioStatsArray){
+		document.getElementById('menu_option_new_game').onclick = function(){
+			showDifficultyLevelMenu(levelStatsArray, audioStatsArray, 0);
+		};
+
+		if(!SHOW_DEBUG_MENUS){
+			return;
+		}
+
 		var mainMenuList = document.getElementById('main-menu-list');
 		var listItems = document.createDocumentFragment();
 
+		//add option for random setup
+		var randomSetupMenuOption = templater.createElement('li', 'Random Setup');
+		randomSetupMenuOption.onclick = function(){
+			showDifficultyLevelMenu(levelStatsArray, audioStatsArray, -1);
+		};
+		listItems.appendChild(randomSetupMenuOption);
+
+		//add options to start each individual level
 		levelStatsArray.forEach(function(level, index){
 			var menuItem = templater.createElement('li', level.name);
 			menuItem.onclick = function(){
@@ -119,14 +136,7 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
 			};
 			listItems.appendChild(menuItem);
 		});
-		mainMenuList.appendChild(listItems);
-
-		document.getElementById('menu_option_random').onclick = function(){
-			showDifficultyLevelMenu(levelStatsArray, audioStatsArray, -1);
-		};
-		document.getElementById('menu_option_new_game').onclick = function(){
-			showDifficultyLevelMenu(levelStatsArray, audioStatsArray, 0);
-		};
+		mainMenuList.appendChild(listItems);		
 	}
 	
 
