@@ -120,6 +120,9 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
 		document.getElementById('menu_option_random').onclick = function(){
 			showDifficultyLevelMenu(levelStatsArray, audioStatsArray, -1);
 		};
+		document.getElementById('menu_option_new_game').onclick = function(){
+			showDifficultyLevelMenu(levelStatsArray, audioStatsArray, 0);
+		};
 	}
 	
 
