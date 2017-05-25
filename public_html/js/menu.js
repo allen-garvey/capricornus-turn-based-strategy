@@ -12,13 +12,17 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
 		//add onclick listeners for back to main menu buttons
 	    util.forEach(document.querySelectorAll('[data-button-target="main-menu"]'), function(backToMainMenuButton, index){
 	    	backToMainMenuButton.onclick = function(){
-	    		document.documentElement.classList.remove('load-game-menu');
-	    		document.documentElement.classList.remove('difficulty-menu');
-  				document.documentElement.classList.add('main-menu');
+	    		displayMainMenu();
 	    	};
 	    	
 	    });
 	})();
+
+	function displayMainMenu(){
+		document.documentElement.classList.remove('load-game-menu');
+		document.documentElement.classList.remove('difficulty-menu');
+		document.documentElement.classList.add('main-menu');
+	}
 
 	//shows difficulty level menu, once an option is clicked the game will start
 	function showDifficultyLevelMenu(levelStatsArray, audioStatsArray, levelIndex){
