@@ -28,16 +28,24 @@
                     <p>Capricornus Squadron is loading&hellip;</p>
                     <div class="loader"></div>
                 </div>
-                <div class="main-menu-container">
+                <div class="main-menu-container menu-container">
                     <h2 class="menu-title">Main Menu</h2>
                     <ul class="main-menu-list" id="main-menu-list">
                         <li id="menu_option_random">Random Setup</li>
                     </ul>
                 </div>
-                <div class="load-game-container">
-                    <div class="menu-item" id="button-load-game-back">Back to Main Menu</div>
+                <div class="load-game-container menu-container">
+                    <div class="menu-item back-button" id="button-load-game-back" data-button-target="main-menu">Back to Main Menu</div>
                     <h2 class="menu-title">Load Game</h2>
                     <ul class="load-game-list" id="load-game-list">
+                    </ul>
+                </div>
+                <div class="difficulty-level-container menu-container">
+                    <div class="menu-item" data-button-target="main-menu">Back to Main Menu</div>
+                    <h2 class="menu-title">Select Difficulty</h2>
+                    <ul class="main-menu-list">
+                        <li id="difficulty-level-button-easy">Easy</li>
+                        <li id="difficulty-level-button-hard">Hard</li>
                     </ul>
                 </div>
                 <div class="game-controls-container">

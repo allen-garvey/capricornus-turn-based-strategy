@@ -6,6 +6,41 @@ var app = app || {};
 
 app.menu = (function(start, util, levelStats, saveGameController, templater, modal, ai){
 	/*
+	 * shared menu initialization functionality
+	 */
+	(function(){
+		//add onclick listeners for back to main menu buttons
+	    util.forEach(document.querySelectorAll('[data-button-target="main-menu"]'), function(backToMainMenuButton, index){
+	    	backToMainMenuButton.onclick = function(){
+	    		document.documentElement.classList.remove('load-game-menu');
+	    		document.documentElement.classList.remove('difficulty-menu');
+  				document.documentElement.classList.add('main-menu');
+	    	};
+	    	
+	    });
+	})();
+
+	//shows difficulty level menu, once an option is clicked the game will start
+	function showDifficultyLevelMenu(levelStatsArray, audioStatsArray, levelIndex){
+		function startLevel(diffultyLevel){
+			document.documentElement.classList.remove('difficulty-menu');
+			start(levelStatsArray, audioStatsArray, levelIndex, diffultyLevel);
+		}
+		var easyDifficultyButton = document.getElementById('difficulty-level-button-easy');
+		var hardDifficultyButton = document.getElementById('difficulty-level-button-hard');
+
+		easyDifficultyButton.onclick = function(){
+			startLevel(ai.DIFFICULTY_LEVELS.EASY);
+		};
+		hardDifficultyButton.onclick = function(){
+			startLevel(ai.DIFFICULTY_LEVELS.HARD);
+		};
+		document.documentElement.classList.remove('load-game-menu');
+	    document.documentElement.classList.remove('main-menu');
+		document.documentElement.classList.add('difficulty-menu');
+	}
+
+	/*
 	 * Add load game menu item if there are games to load
 	 * @param levelStatsArray - array from level-stats module with data preloaded
 	 */
@@ -61,12 +96,6 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
   			document.documentElement.classList.remove('main-menu');
   			document.documentElement.classList.add('load-game-menu');
   		};
-
-  		var backToMainMenuButton = document.getElementById('button-load-game-back');
-  		backToMainMenuButton.onclick = function(){
-  			document.documentElement.classList.remove('load-game-menu');
-  			document.documentElement.classList.add('main-menu');
-  		};
 	}
 
 	/*
@@ -74,26 +103,20 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
 	 * @param levelStatsArray - array from level-stats module with data preloaded
 	 */
 	function initializeMainMenu(levelStatsArray, audioStatsArray){
-		function startLevel(levelIndex){
-			document.documentElement.classList.remove('main-menu');
-			start(levelStatsArray, audioStatsArray, levelIndex, ai.DIFFICULTY_LEVELS.HARD);
-		}
-
-
 		var mainMenuList = document.getElementById('main-menu-list');
 		var listItems = document.createDocumentFragment();
 
 		levelStatsArray.forEach(function(level, index){
 			var menuItem = templater.createElement('li', level.name);
 			menuItem.onclick = function(){
-				startLevel(index);
+				showDifficultyLevelMenu(levelStatsArray, audioStatsArray, index);
 			};
 			listItems.appendChild(menuItem);
 		});
 		mainMenuList.appendChild(listItems);
 
 		document.getElementById('menu_option_random').onclick = function(){
-			startLevel(-1);
+			showDifficultyLevelMenu(levelStatsArray, audioStatsArray, -1);
 		};
 	}
 	

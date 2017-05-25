@@ -143,13 +143,13 @@ html.loading{
 /*
 * Main Menu
 */
-.main-menu-container, .load-game-container{
+.menu-container{
 	display: none;
 }
 .menu-title{
 	margin-bottom: 0;
 }
-.main-menu .main-menu-container, .load-game-menu .load-game-container{
+.main-menu .main-menu-container, .load-game-menu .load-game-container, .difficulty-menu .difficulty-level-container{
 	display: flex;
 	align-items: center;
 	flex-direction: column;
@@ -183,7 +183,7 @@ html.loading{
 * Load game menu
 */
 
-#button-load-game-back{
+.menu-item.back-button{
 	margin-bottom: 5px;
 }
 
