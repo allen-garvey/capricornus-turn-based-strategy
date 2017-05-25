@@ -24,6 +24,9 @@ app.modal = (function(){
 	function resetModal(){
 		modalWindow.classList.remove('prompt');
 		modalWindow.classList.remove('alert');
+		modalButtonOk.classList.remove('btn-default');
+		modalButtonOk.classList.remove('btn-danger');
+		modalButtonOk.classList.remove('btn-primary');
 		//clear input field, in case something was already there
 		modalTextInput.value = null;
 	}
@@ -32,6 +35,7 @@ app.modal = (function(){
 	function alert(alertText){
 		resetModal();
 		modalWindow.classList.add('alert');
+		modalButtonOk.classList.add('btn-default');
 		modalTextContainer.textContent = alertText;
 		modalButtonOk.onclick = function(){
 			hideModal();
@@ -44,6 +48,7 @@ app.modal = (function(){
 	//if cancel is selected, confirmCallback is not run
 	function confirm(confirmText, confirmCallback){
 		resetModal();
+		modalButtonOk.classList.add('btn-danger');
 		modalTextContainer.textContent = confirmText;
 		
 		modalButtonOk.onclick = function(){
@@ -59,6 +64,7 @@ app.modal = (function(){
 	function prompt(promptText, callback){
 		resetModal();
 		modalWindow.classList.add('prompt');
+		modalButtonOk.classList.add('btn-primary');
 		modalTextContainer.textContent = promptText;
 		
 		modalButtonOk.onclick = function(){
