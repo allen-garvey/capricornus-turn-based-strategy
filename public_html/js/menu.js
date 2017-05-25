@@ -26,6 +26,12 @@ app.menu = (function(util, levelStats, saveGameController, templater, modal, ai)
 		document.documentElement.classList.add('main-menu');
 	}
 
+	function displayLoadGameMenu(){
+		document.documentElement.classList.remove('main-menu');
+		document.documentElement.classList.remove('difficulty-menu');
+  		document.documentElement.classList.add('load-game-menu');
+	}
+
 	/**
 	* shows difficulty level menu, once an option is clicked the game will start
 	* @param levelStatsArray - array from level-stats module with data preloaded
@@ -109,8 +115,7 @@ app.menu = (function(util, levelStats, saveGameController, templater, modal, ai)
   		loadGamelist.appendChild(loadGameListItems);
   		
   		loadGameMenuItem.onclick = function(){
-  			document.documentElement.classList.remove('main-menu');
-  			document.documentElement.classList.add('load-game-menu');
+  			displayLoadGameMenu();
   		};
 	}
 
