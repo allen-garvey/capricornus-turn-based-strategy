@@ -21,6 +21,15 @@ app.menu = (function(util, levelStats, saveGameController, templater, modal, ai)
 	})();
 
 	function displayMainMenu(){
+		//hide or show load game button based on whether there are saved games
+		var savedGames = saveGameController.getSaves();
+		if(!savedGames || savedGames.length <= 0){
+			document.getElementById('menu_option_load_game').style.display = 'none';
+		}
+		else{
+			document.getElementById('menu_option_load_game').style.display = '';
+		}
+
 		document.documentElement.classList.remove('load-game-menu');
 		document.documentElement.classList.remove('difficulty-menu');
 		document.documentElement.classList.add('main-menu');
@@ -66,18 +75,16 @@ app.menu = (function(util, levelStats, saveGameController, templater, modal, ai)
 	 */
 	function initializeLoadgameMenu(levelStatsArray, audioStatsArray, startGameFunc){
 	  	var savedGames = saveGameController.getSaves();
-	  	
-	  	//don't add load game option if no saved games
+
+  		var loadGamelist = document.getElementById('load-game-list');
+  		//clear the list
+  		loadGamelist.innerHTML = '';
+
+  		//don't do anything else (leave list blank) if no saved games
 	  	if(!savedGames || savedGames.length === 0){
 	  		return;
 	  	}
-	  	var mainMenuList = document.getElementById('main-menu-list');
-  		var loadGameMenuItem = document.createElement('li');
-  		loadGameMenuItem.textContent = 'Load Game';
-  		mainMenuList.appendChild(loadGameMenuItem);
 
-
-  		var loadGamelist = document.getElementById('load-game-list');
   		var loadGameListItems = document.createDocumentFragment();
   		savedGames.forEach(function(savedGame){
   			var listItem = templater.createElement('li');
@@ -113,10 +120,6 @@ app.menu = (function(util, levelStats, saveGameController, templater, modal, ai)
   			loadGameListItems.appendChild(listItem);
   		});
   		loadGamelist.appendChild(loadGameListItems);
-  		
-  		loadGameMenuItem.onclick = function(){
-  			displayLoadGameMenu();
-  		};
 	}
 
 	/*
@@ -126,10 +129,18 @@ app.menu = (function(util, levelStats, saveGameController, templater, modal, ai)
 	 * @param startGameFunc - function used to start the game (app.game.start)
 	 */
 	function initializeMainMenu(levelStatsArray, audioStatsArray, startGameFunc){
+		//listeners for new game and load game button
 		document.getElementById('menu_option_new_game').onclick = function(){
 			showDifficultyLevelMenu(levelStatsArray, audioStatsArray, 0, startGameFunc);
 		};
 
+		document.getElementById('menu_option_load_game').onclick = function(){
+			//initialize the load game menu each time button clicked, so that the list of saved games is always current
+  			initializeLoadgameMenu(levelStatsArray, audioStatsArray, startGameFunc);
+  			displayLoadGameMenu();
+  		};
+
+		//code to create debug menu options below
 		if(!SHOW_DEBUG_MENUS){
 			return;
 		}
@@ -158,7 +169,6 @@ app.menu = (function(util, levelStats, saveGameController, templater, modal, ai)
 
 	//exported functions and variables
 	return {
-		initializeLoadgameMenu: initializeLoadgameMenu,
 		initializeMainMenu: initializeMainMenu,
 		displayMainMenu: displayMainMenu
 	};
