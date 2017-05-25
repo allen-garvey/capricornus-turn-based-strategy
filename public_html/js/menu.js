@@ -66,8 +66,10 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
   			var saveGameContainer = templater.createElement('div', null, 'menu-item');
   			var saveGameNameContainer = templater.createElement('div', savedGame.name);
   			var saveGameInfoContainer = templater.createElement('div', levelStatsArray[savedGame.gameMetadata.levelIndex].name + ' - ' + savedGame.formattedDate, 'save-game-info');
+  			var saveGameDifficultyContainer = templater.createElement('div', 'Difficulty: ' + (savedGame.gameMetadata.difficultyLevel === ai.DIFFICULTY_LEVELS.HARD ? 'Hard' : 'Easy'), 'save-game-info');
   			saveGameContainer.appendChild(saveGameNameContainer);
   			saveGameContainer.appendChild(saveGameInfoContainer);
+  			saveGameContainer.appendChild(saveGameDifficultyContainer);
 
   			//button to delete saved game
   			var deleteButton = templater.createElement('div', 'Delete', 'menu-item menu-item-danger');
