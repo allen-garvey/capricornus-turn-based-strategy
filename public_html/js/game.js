@@ -3,7 +3,7 @@
 /*
 * Main game loop functionality
 */
- app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats, ai, damageCalculator, levelLoader, modal, saveGameController, mixer){
+ app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats, ai, damageCalculator, levelLoader, modal, saveGameController, mixer, menu){
 	function start(LEVEL_STATS, AUDIO_STATS, levelIndex, difficultyLevel, savedGame){
 		/**
 		 * Utility functions
@@ -11,14 +11,18 @@
 		//reenable buttons after an action has occurred
 		function enableButtons(){
 			userInfo.buttonsEnabled = true;
-			endTurnButton.disabled = false;
-			saveGameButton.disabled = false;
+			
+			[endTurnButton, saveGameButton, exitGameButton].forEach(function(button){
+				button.disabled = false;
+			});
 		}
 		//used to disable buttons during animations or AI turn
 		function disableButtons(){
 			userInfo.buttonsEnabled = false;
-			endTurnButton.disabled = true;
-			saveGameButton.disabled = true;
+			
+			[endTurnButton, saveGameButton, exitGameButton].forEach(function(button){
+				button.disabled = true;
+			});
 		}
 
 		/**
@@ -334,6 +338,7 @@
 		var gameContainer = document.getElementById('game-container');
 		var endTurnButton = document.getElementById('button-end-turn');
 		var saveGameButton = document.getElementById('button-save-game');
+		var exitGameButton = document.getElementById('button-exit-game');
 		var TOTAL_TILES = renderer.totalTiles(gameContainer);
 		var UNIT_STATS = unitStats.get();
 		var TERRAIN_STATS = terrainStats.get();
@@ -439,7 +444,16 @@
 			});
 		};
 
+		exitGameButton.onclick = function(){
+			if(!userInfo.buttonsEnabled){
+				return;
+			}
+			modal.confirm('Are you sure you want to quit? All unsaved progress will be lost.', function(){
+				menu.displayMainMenu();
+			});
+		};
+
 	}
 	//exported functions
 	return {start: start};
- })(app.util, app.renderer, app.unitStats, app.terrainStats, app.pathfinder, app.levelStats, app.ai, app.damage, app.levelLoader, app.modal, app.saveGame, app.mixer);
+ })(app.util, app.renderer, app.unitStats, app.terrainStats, app.pathfinder, app.levelStats, app.ai, app.damage, app.levelLoader, app.modal, app.saveGame, app.mixer, app.menu);
