@@ -27,8 +27,8 @@
 		levelLoader.initializeLevelData(levelStatsArray, levelUnitDatas, levelTerrainDatas);
 		
 		//create menus once levelStatArray has been loaded with data
-		menu.initializeLoadgameMenu(levelStatsArray, audioStatsArray);
-		menu.initializeMainMenu(levelStatsArray, audioStatsArray);
+		menu.initializeLoadgameMenu(levelStatsArray, audioStatsArray, start);
+		menu.initializeMainMenu(levelStatsArray, audioStatsArray, start);
 
 		//remove loading screen
 		document.documentElement.classList.remove('loading');

@@ -4,8 +4,9 @@
  */
 var app = app || {};
 
-app.menu = (function(start, util, levelStats, saveGameController, templater, modal, ai){
+app.menu = (function(util, levelStats, saveGameController, templater, modal, ai){
 	var SHOW_DEBUG_MENUS = true;
+
 	/*
 	 * shared menu initialization functionality
 	 */
@@ -25,11 +26,17 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
 		document.documentElement.classList.add('main-menu');
 	}
 
-	//shows difficulty level menu, once an option is clicked the game will start
-	function showDifficultyLevelMenu(levelStatsArray, audioStatsArray, levelIndex){
-		function startLevel(diffultyLevel){
+	/**
+	* shows difficulty level menu, once an option is clicked the game will start
+	* @param levelStatsArray - array from level-stats module with data preloaded
+	* @param audioStatsArray - array from audio-stats module with data preloaded
+	* @param levelIndex - int - index in level stats array for level to be started (or -1 for random setup)
+	* @param startGameFunc - function used to start the game (app.game.start)
+	*/
+	function showDifficultyLevelMenu(levelStatsArray, audioStatsArray, levelIndex, startGameFunc){
+		function startLevel(difficultyLevel){
 			document.documentElement.classList.remove('difficulty-menu');
-			start(levelStatsArray, audioStatsArray, levelIndex, diffultyLevel);
+			startGameFunc(levelStatsArray, audioStatsArray, levelIndex, difficultyLevel);
 		}
 		var easyDifficultyButton = document.getElementById('difficulty-level-button-easy');
 		var hardDifficultyButton = document.getElementById('difficulty-level-button-hard');
@@ -48,8 +55,10 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
 	/*
 	 * Add load game menu item if there are games to load
 	 * @param levelStatsArray - array from level-stats module with data preloaded
+	 * @param audioStatsArray - array from audio-stats module with data preloaded
+	 * @param startGameFunc - function used to start the game (app.game.start)
 	 */
-	function initializeLoadgameMenu(levelStatsArray, audioStatsArray){
+	function initializeLoadgameMenu(levelStatsArray, audioStatsArray, startGameFunc){
 	  	var savedGames = saveGameController.getSaves();
 	  	
 	  	//don't add load game option if no saved games
@@ -82,7 +91,7 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
   			saveGameContainer.onclick = function(){
   				var fullSavedGame = saveGameController.getSave(savedGame.id);
   				document.documentElement.classList.remove('load-game-menu');
-  				start(levelStatsArray, audioStatsArray, null, null, fullSavedGame);
+  				startGameFunc(levelStatsArray, audioStatsArray, null, null, fullSavedGame);
   			};
 
   			deleteButton.onclick = function(){
@@ -108,10 +117,12 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
 	/*
 	 * Creates main menu, and adds options to select each level
 	 * @param levelStatsArray - array from level-stats module with data preloaded
+	 * @param audioStatsArray - array from audio-stats module with data preloaded
+	 * @param startGameFunc - function used to start the game (app.game.start)
 	 */
-	function initializeMainMenu(levelStatsArray, audioStatsArray){
+	function initializeMainMenu(levelStatsArray, audioStatsArray, startGameFunc){
 		document.getElementById('menu_option_new_game').onclick = function(){
-			showDifficultyLevelMenu(levelStatsArray, audioStatsArray, 0);
+			showDifficultyLevelMenu(levelStatsArray, audioStatsArray, 0, startGameFunc);
 		};
 
 		if(!SHOW_DEBUG_MENUS){
@@ -124,7 +135,7 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
 		//add option for random setup
 		var randomSetupMenuOption = templater.createElement('li', 'Random Setup');
 		randomSetupMenuOption.onclick = function(){
-			showDifficultyLevelMenu(levelStatsArray, audioStatsArray, -1);
+			showDifficultyLevelMenu(levelStatsArray, audioStatsArray, -1, startGameFunc);
 		};
 		listItems.appendChild(randomSetupMenuOption);
 
@@ -132,7 +143,7 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
 		levelStatsArray.forEach(function(level, index){
 			var menuItem = templater.createElement('li', level.name);
 			menuItem.onclick = function(){
-				showDifficultyLevelMenu(levelStatsArray, audioStatsArray, index);
+				showDifficultyLevelMenu(levelStatsArray, audioStatsArray, index, startGameFunc);
 			};
 			listItems.appendChild(menuItem);
 		});
@@ -143,7 +154,8 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
 	//exported functions and variables
 	return {
 		initializeLoadgameMenu: initializeLoadgameMenu,
-		initializeMainMenu: initializeMainMenu
+		initializeMainMenu: initializeMainMenu,
+		displayMainMenu: displayMainMenu
 	};
     
-})(app.game.start, app.util, app.levelStats, app.saveGame, app.templater, app.modal, app.ai);
+})(app.util, app.levelStats, app.saveGame, app.templater, app.modal, app.ai);
