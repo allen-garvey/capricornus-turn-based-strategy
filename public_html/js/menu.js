@@ -4,7 +4,7 @@
  */
 var app = app || {};
 
-app.menu = (function(start, util, levelStats, saveGameController, templater, modal){
+app.menu = (function(start, util, levelStats, saveGameController, templater, modal, ai){
 	/*
 	 * Add load game menu item if there are games to load
 	 * @param levelStatsArray - array from level-stats module with data preloaded
@@ -40,7 +40,7 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
   			saveGameContainer.onclick = function(){
   				var fullSavedGame = saveGameController.getSave(savedGame.id);
   				document.documentElement.classList.remove('load-game-menu');
-  				start(levelStatsArray, audioStatsArray, null, fullSavedGame);
+  				start(levelStatsArray, audioStatsArray, null, null, fullSavedGame);
   			};
 
   			deleteButton.onclick = function(){
@@ -76,7 +76,7 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
 	function initializeMainMenu(levelStatsArray, audioStatsArray){
 		function startLevel(levelIndex){
 			document.documentElement.classList.remove('main-menu');
-			start(levelStatsArray, audioStatsArray, levelIndex);
+			start(levelStatsArray, audioStatsArray, levelIndex, ai.DIFFICULTY_LEVELS.HARD);
 		}
 
 
@@ -104,4 +104,4 @@ app.menu = (function(start, util, levelStats, saveGameController, templater, mod
 		initializeMainMenu: initializeMainMenu
 	};
     
-})(app.game.start, app.util, app.levelStats, app.saveGame, app.templater, app.modal);
+})(app.game.start, app.util, app.levelStats, app.saveGame, app.templater, app.modal, app.ai);

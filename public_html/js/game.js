@@ -4,7 +4,7 @@
 * Main game loop functionality
 */
  app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats, ai, damageCalculator, levelLoader, modal, saveGameController, mixer){
-	function start(LEVEL_STATS, AUDIO_STATS, levelIndex, savedGame){
+	function start(LEVEL_STATS, AUDIO_STATS, levelIndex, difficultyLevel, savedGame){
 		/**
 		 * Utility functions
 		 */
@@ -353,7 +353,7 @@
 			initializeGame(savedGame.gameMetadata.levelIndex, savedGame.gameMetadata.difficultyLevel, savedGame);
 		}
 		else{
-			initializeGame(levelIndex, ai.DIFFICULTY_LEVELS.HARD, savedGame);
+			initializeGame(levelIndex, difficultyLevel, savedGame);
 		}
 
 
