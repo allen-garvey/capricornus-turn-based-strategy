@@ -85,6 +85,11 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		//parse map
 		var friendlyUnits = [];
 		var enemyUnits = [];
+		var unitsCanAttack = 0;
+		
+		if (memoizationObject !== null && memoizationObject.doneMoving === undefined){
+			memoizationObject.doneMoving = false;
+		}
 		
 		for (var i = 0; i < gameboard.length; i++)
 		{
@@ -103,12 +108,40 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 				}
 			}
 		}
+
+		if (memoizationObject !== null && memoizationObject.EnemyCentroid === undefined){
+			memoizationObject.EnemyCentroid = getUnitCentroid(enemyUnits);
+		}
+		if (memoizationObject !== null && memoizationObject.AICentroid === undefined){
+			memoizationObject.AICentroid = getUnitCentroid(friendlyUnits);
+			console.log(memoizationObject.AICentroid);
+		}
+		console.log(getNearestCover(gameboard, unitStatsArray, terrainStatsArray, memoizationObject.AICentroid));
+		//Determine how many units can attack
+		if (memoizationObject !== null && memoizationObject.UnitsCanAttack === undefined){
+			for (var ixx = 0; ixx < friendlyUnits.length; ixx++)
+			{
+				if(friendlyUnits[ixx].unit.canMove)
+				{
+					if(pathfinder.attackCoordinatesFor(friendlyUnits[ixx], gameboard, unitStatsArray, terrainStatsArray).length > 0){
+						unitsCanAttack++;
+					}
+				}
+			}
+		}
+		else{
+			unitsCanAttack = memoizationObject.UnitsCanAttack;
+		}
+		memoizationObject.UnitsCanAttack = unitsCanAttack;
+		
+		
 		var unitToMove = null;
 		for (var ixx = 0; ixx < friendlyUnits.length; ixx++)
 		{
 			if(friendlyUnits[ixx].unit.canMove)
 			{
 				unitToMove = friendlyUnits[ixx];
+				break;
 			}
 		}
 		if(unitToMove === null)
@@ -132,6 +165,16 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		// console.log("In Chase");
 		return blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unitToMove, enemyUnits)
 		//return move for one unit
+	}
+	
+	function groupAndFortify(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, units, enemyUnits)
+	{
+		if(memoizationObject.doneMoving === undefined && memoizationObject.doneMoving === true)
+		{
+			return aiActionEndTurn();
+		}
+		var cover = getNearestCover(gameboard, unitStatsArray, terrainStatsArray, memoizationObject.AICentroid);
+		
 	}
 	
 	function blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unit, enemyUnits){
@@ -159,11 +202,124 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 			moveTo = unitPathToEnemy[izz];
 			izz++
 		}
-		
 		return aiActionMoveUnit(unit, moveTo, memoizationObject);
 	}
 	
-	//example function, picks random AI action
+	function coverArea(){
+		
+	}
+	
+	function getUnitCentroid(unitArray){
+		if(unitArray !== undefined && unitArray.length > 0)
+		{
+			var xAvg = 0;
+			var yAvg = 0;
+			for (var ixx = 0; ixx < unitArray.length; ixx++)
+			{
+				xAvg += unitArray[ixx].x;
+				yAvg += unitArray[ixx].y;
+			}
+			xAvg = xAvg / unitArray.length;
+			yAvg = yAvg / unitArray.length;
+		}
+		
+		return {x: toInt(xAvg), y: toInt(yAvg)};
+	}
+	
+	function getNearestCover(gameboard, unitStatsArray, terrainStatsArray, centroid){
+		var onBoard = true;
+		var coverFound = false;
+		var x = centroid.x;
+		var y = centroid.y;
+		var coverX = 0;
+		var coverY = 0;
+		var counter = 1;
+		console.log(terrainStatsArray[gameboard[centroid.x][centroid.y].terrain.type].defense);
+		if(terrainStatsArray[gameboard[centroid.x][centroid.y].terrain.type].defense)
+		{
+			return {x: centroid.x, centroid:y};
+		}
+		while( !coverFound && counter < 20)
+		{
+			//Sweep quadrant 1
+			if( !coverFound){
+				for(var iyy = 0; iyy < counter; iyy++)
+				{
+					if(y + iyy - counter > -1 && y + iyy - counter < gameboard[x].length && x + iyy > -1 && x + iyy < gameboard.length )
+					{
+						if (terrainStatsArray[gameboard[x + iyy][y + iyy - counter].terrain.type].defense)
+						{
+							coverFound = true;
+							coverX = x + iyy;
+							coverY = y + iyy - counter;
+							break;
+						}
+					}
+				}
+			}
+			//Sweep quadrant 4
+			if( !coverFound){
+				for(var ixx = 0; ixx < counter; ixx++)
+				{
+					if(y + ixx > -1 && y + ixx < gameboard[x].length && x - ixx + counter > -1 && x - ixx  + counter < gameboard.length )
+					{
+						if (terrainStatsArray[gameboard[x - ixx + counter][y + ixx].terrain.type].defense)
+						{
+							coverFound = true;
+							coverX = x - ixx + counter;
+							coverY = y + ixx;
+							break;
+						}
+					}	
+				}
+			}
+			//Sweep quadrant 3
+			if( !coverFound){
+				for(var iyy = 0; iyy < counter; iyy++)
+				{
+					if(y - iyy + counter > -1 && y - iyy + counter < gameboard[x].length && x - iyy > -1 && x - iyy < gameboard.length )
+					{
+						if (terrainStatsArray[gameboard[x - iyy][y - iyy + counter].terrain.type].defense)
+						{
+							coverFound = true;
+							coverX = x - iyy;
+							coverY = y - iyy + counter;
+							break;
+						}
+					}	
+				}
+			}
+			//Sweep quadrant 2
+			if( !coverFound){
+				for(var ixx = 0; ixx < counter; ixx++)
+				{
+					if(y - ixx > -1 && y - ixx < gameboard[x].length && x + ixx - counter > -1 && x + ixx - counter < gameboard.length )
+					{
+						if (terrainStatsArray[gameboard[x + ixx - counter][y - ixx].terrain.type].defense)
+						{
+							coverFound = true;
+							coverX = x + ixx - counter;
+							coverY = y - ixx;
+							break;
+						}
+					}	
+				}
+			}
+			if(coverFound)
+			{
+				break;
+				return {x: centroid.x, centroid:y};
+			}
+			counter += 1;
+		}
+		return {x: coverX, y: coverY};
+		
+	}
+	
+	function toInt(n){ return Math.round(Number(n)); };	//example function, picks random AI action
+	
+	
+	
 	function randomAiAction(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject){
 		if(Math.random() * 100 <= 20){
 			return aiActionEndTurn();

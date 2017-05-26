@@ -242,7 +242,7 @@ app.pathfinder = (function(util){
 			for (var ixx = 0 + offSet; ixx < offSet + 4; ixx++)
 			{
 				if(ixx % 4 === 0){
-				//0
+				//0 offset
 					if(validMoves[index].y + 1 <= ymax 
 					&& unitStats.canTraverse[gameboard[validMoves[index].x][validMoves[index].y + 1].terrain.type]
 					&& !arrayContainsCoords(validMoves, validMoves[index].x, validMoves[index].y + 1)
@@ -251,7 +251,7 @@ app.pathfinder = (function(util){
 					}
 				}
 				if(ixx % 4 === 1){
-				//1
+				//1 offset
 					if(validMoves[index].x - 1 >= 0 
 					&& unitStats.canTraverse[gameboard[validMoves[index].x - 1][validMoves[index].y].terrain.type]
 					&& !arrayContainsCoords(validMoves, validMoves[index].x - 1, validMoves[index].y)
@@ -260,7 +260,7 @@ app.pathfinder = (function(util){
 					}
 				}
 				if(ixx % 4 === 2){
-				//2
+				//2 offset
 					if(validMoves[index].y - 1 >= 0 
 					&& unitStats.canTraverse[gameboard[validMoves[index].x][validMoves[index].y - 1].terrain.type]
 					&& !arrayContainsCoords(validMoves, validMoves[index].x, validMoves[index].y - 1)
@@ -269,7 +269,7 @@ app.pathfinder = (function(util){
 					}
 				}
 				if(ixx % 4 === 3){
-				//3
+				//3 offset
 					if(validMoves[index].x + 1 <= xmax 
 					&& unitStats.canTraverse[gameboard[validMoves[index].x + 1][validMoves[index].y].terrain.type]
 					&& !arrayContainsCoords(validMoves, validMoves[index].x + 1, validMoves[index].y)
