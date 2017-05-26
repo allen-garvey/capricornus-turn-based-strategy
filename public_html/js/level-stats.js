@@ -12,24 +12,24 @@ app.levelStats = (function(){
     	stats.push({
     		name: 'Level 0', //for debugging purposes
     		spritesheet: document.getElementById('level1_sprite'),
-            dataUnitsUrl: 'data/level1sprites.json', //file to load unit sprite locations from
-            dataUnits: null, //where the data will be stored from dataUnitsUrl when it is loaded
+            dataUnitsUrls: ['data/level1sprites.json', 'data/level1spriteshard.json'], //files to load unit sprite locations from, array indexes correspond to ai module difficulty levels
+            dataUnits: [], //where the data will be stored from dataUnitsUrls when it is loaded
             dataTerrainUrl: 'data/level1.json', //url for terrain types for level
             dataTerrain: null //where data from dataTerrainUrl will be stored after it is loaded
     	});
     	stats.push({
     		name: 'Level 1', //for debugging purposes
     		spritesheet: document.getElementById('level2_sprite'),
-            dataUnitsUrl: 'data/level2sprites.json', //file to load unit sprite locations from
-            dataUnits: null, //where the data will be stored from dataUnitsUrl when it is loaded
+            dataUnitsUrls: ['data/level2sprites.json', 'data/level2spriteshard.json'], //files to load unit sprite locations from, array indexes correspond to ai module difficulty levels
+            dataUnits: [], //where the data will be stored from dataUnitsUrls when it is loaded
             dataTerrainUrl: 'data/level2.json', //url for terrain types for level
             dataTerrain: null //where data from dataTerrainUrl will be stored after it is loaded
     	});
     	stats.push({
     		name: 'Level 2', //for debugging purposes
     		spritesheet: document.getElementById('level3_sprite'),
-    		dataUnitsUrl: 'data/level3sprites.json', //file to load unit sprite locations from
-            dataUnits: null, //where the data will be stored from dataUnitsUrl when it is loaded
+    		dataUnitsUrls: ['data/level3sprites.json', 'data/level3spriteshard.json'], //files to load unit sprite locations from, array indexes correspond to ai module difficulty levels
+            dataUnits: [], //where the data will be stored from dataUnitsUrls when it is loaded
             dataTerrainUrl: 'data/level3.json', //url for terrain types for level
             dataTerrain: null //where data from dataTerrainUrl will be stored after it is loaded
         });

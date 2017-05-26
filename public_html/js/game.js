@@ -271,7 +271,7 @@
 					}
 					gameboard[i][j] = {};
 					gameboard[i][j].terrain = levelLoader.terrainFor(level, i, j, TOTAL_TILES);
-					gameboard[i][j].unit = levelLoader.unitFor(level, j, i, TOTAL_TILES);
+					gameboard[i][j].unit = levelLoader.unitFor(level.dataUnits[userInfo.difficultyLevel], j, i, TOTAL_TILES);
 				}
 			}
 			return gameboard;

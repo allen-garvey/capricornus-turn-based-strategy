@@ -13,20 +13,20 @@ app.levelLoader = (function(unitStats, terrainStats){
 	 * Used to get the correct unit type for a square in the map
 	 * note that the column, row coordinates are reversed from the gameboard, since the gameboard
 	 * stores data in row, column format
-	 * @param level - an item from the array returned from unit-stats with data preloaded
+	 * @param dataUnits - item from level-stats module dataUnits array
 	 * @param column - int - column index
 	 * @param row - int - row index
 	 * @param TOTAL_TILES - total number of tiles in game, return value from renderer.totalTiles
 	 * @Returns unit instance from unitStats, or null if there is no unit in that square
 	 */
-	function unitFor(level, column, row, TOTAL_TILES){
+	function unitFor(dataUnits, column, row, TOTAL_TILES){
 		//check to see if indexes are valid
 		//gameboard is actually mistakenly rotated, so we have to rotate the level data to match it
-		if(level.dataUnits.units[column] === undefined || level.dataUnits.units[column][row] === undefined){
+		if(dataUnits.units[column] === undefined || dataUnits.units[column][row] === undefined){
 			return null;
 		}
 		var unit;
-		switch(level.dataUnits.units[column][row]){
+		switch(dataUnits.units[column][row]){
 			case 1:
 				unit = unitStats.create(0,0);
 				break;

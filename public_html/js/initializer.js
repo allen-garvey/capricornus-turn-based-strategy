@@ -4,14 +4,15 @@
  */
 (function(start, util, levelStats, menu, levelLoader, mixer, audioStats){
 	var levelStatsArray = levelStats.get();
-	var levelUnitDatas = [];
+	var levelUnitDatas = levelStatsArray.map(function(){ return [null, null]; });
 	var levelTerrainDatas = [];
 	var audioStatsArray = audioStats.get();
 
 	var imageSprites = document.querySelectorAll('img.spritesheet');
 
-	//2 * levelStats array, since each level has a unit and terrain file to download
-	var assetsLeftToLoad = imageSprites.length + (2 * levelStatsArray.length) + (3 * audioStatsArray.units.length);
+	//3 * levelStats array, since each level has a 2 unit files and 1 terrain file to download
+	//3 * audioStats unit array, since each unit has 3 sound effects files
+	var assetsLeftToLoad = imageSprites.length + (3 * levelStatsArray.length) + (3 * audioStatsArray.units.length);
 
 	//called after a single asset loads
 	function assetDidLoad(){
@@ -49,9 +50,11 @@
 	//download level unit placements and terrain data
 	levelStatsArray.forEach(function(level, index){
 		//unit placement
-		util.getJson(level.dataUnitsUrl, function(json){
-			levelUnitDatas[index] = json;
-			assetDidLoad();
+		level.dataUnitsUrls.forEach(function(dataUnitUrl, innerIndex){
+			util.getJson(dataUnitUrl, function(json){
+				levelUnitDatas[index][innerIndex] = json;
+				assetDidLoad();
+			});
 		});
 
 		//terrain data
