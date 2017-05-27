@@ -37,6 +37,7 @@ app.saveGame = (function(util){
 
 		gameMetadata.difficultyLevel = userInfo.difficultyLevel;
 		gameMetadata.levelIndex = userInfo.levelIndex;
+		gameMetadata.turnNum = userInfo.turnNum;
 
 		return gameMetadata;
 	}

@@ -3,7 +3,7 @@
 /*
 * Main game loop functionality
 */
- app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats, ai, damageCalculator, levelLoader, modal, saveGameController, mixer, menu){
+ app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats, ai, damageCalculator, levelLoader, modal, saveGameController, mixer, menu, textOverlay){
 	function start(LEVEL_STATS, AUDIO_STATS, levelIndex, difficultyLevel, savedGame){
 		/**
 		 * Utility functions
@@ -23,6 +23,24 @@
 			[endTurnButton, saveGameButton, exitGameButton].forEach(function(button){
 				button.disabled = true;
 			});
+		}
+
+		/**
+		 * Functions to show text overlay after turn or when game is won or lost
+		 */
+		function displayTurnText(text, callback){
+			userInfo.isTextOverlayDisplayed = true;
+			textOverlay.displayHeading(text, 2500, function(){
+				userInfo.isTextOverlayDisplayed = false;
+				callback();
+			});
+		}
+		function displayUserTurnText(callback){
+			displayTurnText('Turn ' + (userInfo.turnNum + 1), callback);
+		}
+
+		function displayAiTurnText(callback){
+			displayTurnText('Computer Turn', callback);
 		}
 
 		/**
@@ -49,11 +67,9 @@
 		//depending on where the mouse is before clicking the attack square this might be an invalid coordinate
 		//if it is, pick a random valid one
 		function userUnitAttack(startingCoordinate, attackCoordinate, movementCoordinate){
-			userInfo.isUnitBeingMoved = true;
 			disableButtons();
 			var attackCallback = function(){
 				unitAttack(movementCoordinate, attackCoordinate, function(){
-					userInfo.isUnitBeingMoved = false;
 					enableButtons();
 				});
 			};
@@ -125,11 +141,9 @@
 		}
 
 		function moveUserUnit(startingCoordinate, endingCoordinate){
-			userInfo.isUnitBeingMoved = true;
 			disableButtons();
 			mixer.playAudioBuffer(AUDIO_STATS.cursor.deselect.audio);
 			moveUnit(startingCoordinate, endingCoordinate, function(){
-				userInfo.isUnitBeingMoved = false;
 				enableButtons();
 			});
 		}
@@ -195,13 +209,15 @@
 		}
 
 		function triggerAiTurn(){
-			userInfo.isAiTurn = true;
 			disableButtons();
-			
-			aiTurnAction({}, function(){
-				resetGameboardForPlayerTurn();
-				userInfo.isAiTurn = false;
-				enableButtons();
+			displayAiTurnText(function(){
+				aiTurnAction({}, function(){
+					resetGameboardForPlayerTurn();
+					userInfo.turnNum++;
+					displayUserTurnText(function(){
+						enableButtons();	
+					});
+				});	
 			});
 		}
 
@@ -308,12 +324,13 @@
 						unitSelectedMovementSquares: false,
 						unitSelectedAttackSquares: false,
 						unitSelectedShortestPath: false,
-						isUnitBeingMoved: false,
-						isAiTurn: false,
 						difficultyLevel: difficultyLevel,
 						levelIndex: levelIndex,
-						buttonsEnabled: true
+						buttonsEnabled: true,
+						turnNum: 0,
+						isTextOverlayDisplayed: false
 						};
+			disableButtons();
 
 			if(levelIndex < 0){
 				var randomLevelIndex = Math.floor(Math.random() * LEVEL_STATS.length);
@@ -326,11 +343,15 @@
 				var levelSpritesheet = LEVEL_STATS[levelIndex].spritesheet;
 			}
 			if(savedGame){
+				userInfo.turnNum = savedGame.gameMetadata.turnNum
 				loadGameboard(gameboard, savedGame.gameboard);
 			}
 
 			renderer.renderLevel(terrainCanvasContext, levelSpritesheet);
 			renderer.renderInitialGameboard(gameboard, unitCanvasContext);
+			displayUserTurnText(function(){
+				enableButtons();
+			});
 		}
 
 		/**
@@ -369,6 +390,10 @@
 		 */
 		//cursor rendering
 		gameContainer.onmousemove = function(e){
+			//don't update cursor during text overlay
+			if(userInfo.isTextOverlayDisplayed){
+				return;
+			}
 			var coordinate = renderer.pixelCoordinateToTileCoordinate({x: e.offsetX, y: e.offsetY});
 			//not required if first time drawing cursor
 			if(userInfo.cursor.coordinate != null){
@@ -391,8 +416,8 @@
 
 		gameContainer.onclick = function(e){
 			// console.log(renderer.gameTileForCoordinate(userInfo.cursor.coordinate, gameboard).terrain);
-			//don't do anything if unit is currently moving
-			if(userInfo.isUnitBeingMoved || userInfo.isAiTurn){
+			//don't do anything if user interaction is currently disabled
+			if(!userInfo.buttonsEnabled){
 				return;
 			}
 			//move unit if one is currently selected, is on the player's team, and valid movement tile is clicked
@@ -459,4 +484,4 @@
 	}
 	//exported functions
 	return {start: start};
- })(app.util, app.renderer, app.unitStats, app.terrainStats, app.pathfinder, app.levelStats, app.ai, app.damage, app.levelLoader, app.modal, app.saveGame, app.mixer, app.menu);
+ })(app.util, app.renderer, app.unitStats, app.terrainStats, app.pathfinder, app.levelStats, app.ai, app.damage, app.levelLoader, app.modal, app.saveGame, app.mixer, app.menu, app.textOverlay);

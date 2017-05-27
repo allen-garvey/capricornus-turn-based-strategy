@@ -153,7 +153,7 @@ html.loading{
 	display: flex;
 	align-items: center;
 	flex-direction: column;
-	z-index: 105;
+	z-index: 120;
 	position: absolute;
 	top: 0;
 	bottom: 0;
@@ -265,4 +265,33 @@ html.loading{
 }
 #modal-button-cancel{
 	margin-right: 20px;
+}
+
+/*
+* Text overlay for turn text and win/lose screen
+*/
+
+.text-overlay-container{
+	display: none;
+}
+.show-text-overlay .text-overlay-container{
+	display: block;
+	z-index: 110;
+}
+
+.text-overlay-container, .text-overlay-message-container, .text-overlay-background{
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.text-overlay-message-container{
+	text-align: center;
+	padding-top: 150px;
+}
+
+.text-overlay-heading{
+	font-size: 2.50em;
 }
