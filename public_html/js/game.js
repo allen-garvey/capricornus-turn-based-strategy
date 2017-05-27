@@ -103,7 +103,8 @@
 			else{
 				defendingUnit.health -= damageDone;
 			}
-			var attackSound = mixer.playAudioBuffer(AUDIO_STATS.units[attackingUnit.type].attack);
+			//start attack sound after a delay, so that it will sync with attack animation
+			var attackSound = mixer.playAudioBuffer(AUDIO_STATS.units[attackingUnit.type].attack, false, 2200);
 			renderer.renderAttack(unitCanvasContext, unitSelectionCanvasContext, attackerCoordinate, defenderCoordinate, attackingUnit, defendingUnit, damageDone, function(){
 				//play death sound immediately if applicable, since death animation is already playing
 				if(defendingUnit.health <= 0){
