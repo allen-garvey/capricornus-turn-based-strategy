@@ -46,6 +46,19 @@ app.audioStats = (function(){
             damage: null, //AudioBuffer object is placed here once corresponding audio file is preloaded
             die: null //AudioBuffer object is placed here once corresponding audio file is preloaded
     	});
+
+        //sounds cursor, such as selecting and deselecting units
+        stats.cursor = {
+            select: {
+                url: 'sounds/select.ogg', //location of audio file
+                audio: null //AudioBuffer object placed here when audio file is loaded
+            },
+            deselect: {
+                url: 'sounds/deselect.ogg',
+                audio: null
+            }
+        };
+
     	return stats;
     }
 

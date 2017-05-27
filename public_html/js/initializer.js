@@ -7,12 +7,13 @@
 	var levelUnitDatas = levelStatsArray.map(function(){ return [null, null]; });
 	var levelTerrainDatas = [];
 	var audioStatsArray = audioStats.get();
+	var cursorAudioKeys = ['select', 'deselect'];
 
 	var imageSprites = document.querySelectorAll('img.spritesheet');
 
 	//3 * levelStats array, since each level has a 2 unit files and 1 terrain file to download
 	//3 * audioStats unit array, since each unit has 3 sound effects files
-	var assetsLeftToLoad = imageSprites.length + (3 * levelStatsArray.length) + (3 * audioStatsArray.units.length);
+	var assetsLeftToLoad = imageSprites.length + (3 * levelStatsArray.length) + (3 * audioStatsArray.units.length) + cursorAudioKeys.length;
 
 	//called after a single asset loads
 	function assetDidLoad(){
@@ -64,7 +65,7 @@
 		});
 	});
 
-	audioStatsArray.units.forEach(function(unitSound, index){
+	audioStatsArray.units.forEach(function(unitSound){
 		mixer.getAudioBuffer(unitSound.moveUrl, function(buffer){
 			unitSound.move = buffer;
 			assetDidLoad();
@@ -75,6 +76,13 @@
 		});
 		mixer.getAudioBuffer(unitSound.attackUrl, function(buffer){
 			unitSound.attack = buffer;
+			assetDidLoad();
+		});
+	});
+	cursorAudioKeys.forEach(function(cursorAudioKey){
+		var cursorItem = audioStatsArray.cursor[cursorAudioKey];
+		mixer.getAudioBuffer(cursorItem.url, function(buffer){
+			cursorItem.audio = buffer;
 			assetDidLoad();
 		});
 	});

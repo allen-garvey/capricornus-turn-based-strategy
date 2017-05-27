@@ -75,7 +75,7 @@
 				}
 				
 			}
-			
+			mixer.playAudioBuffer(AUDIO_STATS.cursor.deselect.audio);
 			moveUnit(startingCoordinate, movementCoordinate, attackCallback);
 			
 		}
@@ -127,6 +127,7 @@
 		function moveUserUnit(startingCoordinate, endingCoordinate){
 			userInfo.isUnitBeingMoved = true;
 			disableButtons();
+			mixer.playAudioBuffer(AUDIO_STATS.cursor.deselect.audio);
 			moveUnit(startingCoordinate, endingCoordinate, function(){
 				userInfo.isUnitBeingMoved = false;
 				enableButtons();
@@ -134,7 +135,6 @@
 		}
 
 		function moveUnit(startingCoordinate, endingCoordinate, doneCallback){
-			
 			var unitToBeMoved = renderer.gameTileForCoordinate(startingCoordinate, gameboard).unit;
 			//don't render movement if starting and ending coordinates are the same
 			if(util.areCoordinatesEqual(startingCoordinate, endingCoordinate)){
@@ -175,6 +175,7 @@
 			renderer.renderUnitMovementSquares(unitSelectionCanvasContext, movementTilesCoordinates);
 			renderer.renderUnitAttackSquares(unitSelectionCanvasContext, attackTilesCoordinates);
 			renderer.renderUnitSelectionOutline(unitSelectionCanvasContext, unitCoordinate);
+			mixer.playAudioBuffer(AUDIO_STATS.cursor.select.audio);
 		}
 		function renderUnitDeselected(){
 			renderer.eraseCanvas(unitSelectionCanvasContext);
@@ -415,6 +416,7 @@
 
 			//deselect previously selected unit if any, since non-valid movement tile clicked, or AI unit was selected
 			if(userInfo.unitSelected){
+				mixer.playAudioBuffer(AUDIO_STATS.cursor.deselect.audio);
 				userInfo.unitSelected = false;
 				//userInfo.unitSelectedMovementSquares = false;
 				renderUnitDeselected();
