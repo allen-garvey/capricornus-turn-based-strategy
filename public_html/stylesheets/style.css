@@ -276,6 +276,7 @@ html.loading{
 }
 .show-text-overlay .text-overlay-container{
 	display: block;
+	overflow: hidden;
 	z-index: 110;
 }
 
@@ -294,4 +295,14 @@ html.loading{
 
 .text-overlay-heading{
 	font-size: 2.50em;
+	-webkit-animation: text-overlay-heading-animation 2.6s ease-in-out;
+	-o-animation: text-overlay-heading-animation 2.6s ease-in-out;
+	animation: text-overlay-heading-animation 2.6s ease-in-out;
+}
+
+@keyframes text-overlay-heading-animation {
+  0%   { transform: translateX(-2000px); }
+  20%   { transform: translateX(0px); }
+  80%   { transform: translateX(0px); }
+  100% { transform: translateX(2000px); }
 }

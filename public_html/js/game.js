@@ -30,6 +30,7 @@
 		 */
 		function displayTurnText(text, callback){
 			userInfo.isTextOverlayDisplayed = true;
+			//duration should be slightly shorter than duration for text-overlay-heading-animation css
 			textOverlay.displayHeading(text, 2500, function(){
 				userInfo.isTextOverlayDisplayed = false;
 				callback();
