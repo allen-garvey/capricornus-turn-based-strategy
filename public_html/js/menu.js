@@ -93,7 +93,7 @@ app.menu = (function(util, levelStats, saveGameController, templater, modal, ai)
   			var saveGameContainer = templater.createElement('div', null, 'menu-item');
   			var saveGameNameContainer = templater.createElement('div', savedGame.name);
   			var saveGameInfoContainer = templater.createElement('div', levelStatsArray[savedGame.gameMetadata.levelIndex].name + ' - ' + savedGame.formattedDate, 'save-game-info');
-  			var saveGameDifficultyContainer = templater.createElement('div', 'Difficulty: ' + (savedGame.gameMetadata.difficultyLevel === ai.DIFFICULTY_LEVELS.HARD ? 'Hard' : 'Easy'), 'save-game-info');
+  			var saveGameDifficultyContainer = templater.createElement('div', 'Turn: ' + (savedGame.gameMetadata.turnNum + 1) + ' Difficulty: ' + (savedGame.gameMetadata.difficultyLevel === ai.DIFFICULTY_LEVELS.HARD ? 'Hard' : 'Easy'), 'save-game-info');
   			saveGameContainer.appendChild(saveGameNameContainer);
   			saveGameContainer.appendChild(saveGameInfoContainer);
   			saveGameContainer.appendChild(saveGameDifficultyContainer);
