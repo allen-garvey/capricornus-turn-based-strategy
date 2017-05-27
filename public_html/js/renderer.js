@@ -345,18 +345,25 @@ app.renderer = (function(util, unitStats, terrainStats, animationStats){
 	 //defending unit should already have it's health adjusted before entering this function, the damage done, is used to calculate the 
 	 //damage that should be displayed to have been taken from the defender
 	function renderAttack(unitCanvasContext, animationCanvasContext, attackCoordinate, defenseCoordinate, attackingUnit, defendingUnit, damageDone, doneCallback){
+		function finishRenderAttack(){
+			//display the new healthbars or erase unit if dead
+			redrawUnit(unitCanvasContext, defenseCoordinate, defendingUnit);
+			//show explosion if defender died
+			if(defendingUnit.health <= 0){
+				renderStaticAnimation(animationCanvasContext, ANIMATION_STATS.explosion, defenseCoordinate, doneCallback);
+			}
+			else{
+				doneCallback();
+			}	
+		}
+
 		orientUnit(attackCoordinate, defenseCoordinate, attackingUnit);
 		//display attacker as having moved
 		redrawUnit(unitCanvasContext, attackCoordinate, attackingUnit);
-		//display the new healthbars or erase unit if dead
-		redrawUnit(unitCanvasContext, defenseCoordinate, defendingUnit);
-		//show explosion if defender died
-		if(defendingUnit.health <= 0){
-			renderStaticAnimation(animationCanvasContext, ANIMATION_STATS.explosion, defenseCoordinate, doneCallback);
-		}
-		else{
-			doneCallback();
-		}
+		//show animation of defender taking damage
+		renderStaticColorAnimation(animationCanvasContext, ANIMATION_STATS.unitDamage, defenseCoordinate, finishRenderAttack);
+
+		
 	}
 
 	/**
@@ -364,7 +371,7 @@ app.renderer = (function(util, unitStats, terrainStats, animationStats){
 	 */
 
 	//renders animation at coordinate, calls doneCallback when completed
-	//animation should be an entry from the explosionStats object
+	//animation should be an entry from the animationStats object with type 'static animation'
 	//based on: https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
 	function renderStaticAnimation(canvasContext, animation, coordinate, doneCallback){
 		var currentSpriteIndex = 0;
@@ -387,6 +394,43 @@ app.renderer = (function(util, unitStats, terrainStats, animationStats){
 				//render current frame in animation
 				drawTile(canvasContext, animation.spritesheet, coordinate, animation.spriteCoordinates[currentSpriteIndex]);
 				currentSpriteIndex++;
+				//request animation frame one last time to erase final frame of animation
+				window.requestAnimationFrame(step);
+			}
+			//requires empty last animation to erase final frame of animation
+			else{
+				doneCallback();
+			}
+		}
+	 	window.requestAnimationFrame(step);
+	}
+
+	//renders animation of solid colors at coordinate, calls doneCallback when completed
+	//animation should be an entry from the animationStats object with type 'static color animation'
+	//based on: https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+	function renderStaticColorAnimation(canvasContext, animation, coordinate, doneCallback){
+		var pixelCoordinate = tileCoordinateToPixelCoordinate(coordinate);
+		var currentColorCellIndex = 0;
+
+		var start = null;
+		function step(timestamp){
+			if(start === null){
+				start = timestamp;	
+			}
+			var progress = timestamp - start;
+			//don't show next frame until certain amount of time has passed
+			if(progress < STATIC_ANIMATION_FRAME_DELAY){
+		    	window.requestAnimationFrame(step);
+		    	return;
+			}
+			//erase previous frame from animation
+			eraseTile(canvasContext, coordinate);
+			
+			if(currentColorCellIndex < animation.colorCells.length){
+				//render current frame in animation
+				canvasContext.fillStyle = animation.colorCells[currentColorCellIndex];
+				canvasContext.fillRect(pixelCoordinate.x, pixelCoordinate.y, TILE_SIZE, TILE_SIZE);
+				currentColorCellIndex++;
 				//request animation frame one last time to erase final frame of animation
 				window.requestAnimationFrame(step);
 			}
