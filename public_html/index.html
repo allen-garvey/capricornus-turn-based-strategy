@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="loading main-menu">
+<html class="loading">
     <head>
         <meta charset="utf-8"/>
         <title>Capricornus Squadron</title>
@@ -26,7 +26,8 @@
 		<main class="main container">
             <div class="game-section tab" data-tab="game">
                 <div class="loading-message-container">
-                    <p>Capricornus Squadron is loading&hellip;</p>
+                    <h2 class="menu-title">Capricornus Squadron is loading</h2>
+                    <p>Please wait&hellip;</p>
                     <div class="loader"></div>
                 </div>
                 <div class="main-menu-container menu-container">
@@ -56,6 +57,12 @@
                     <button class="btn btn-primary" id="button-end-turn">End Turn</button>
                 </div>
                 <div class="game-container" id="game-container">
+                    <div class="text-overlay-container" id="text-overlay-container">
+                        <div class="text-overlay-message-container">
+                            <h2 class="text-overlay-heading" id="text-overlay-heading"></h2>
+                            <div class="menu-item text-overlay-button" id="text-overlay-button"></div>
+                        </div>
+                    </div>
                     <canvas class="game-canvas" id="cursor-canvas"></canvas>
                     <canvas class="game-canvas" id="unit-selection-canvas"></canvas>
                     <canvas class="game-canvas" id="unit-canvas"></canvas>
@@ -63,17 +70,12 @@
                 </div>
             </div>
             <div class="tab" data-tab="instructions">
-                <h2>Instructions</h2>
+                <h2 class="section-title">Instructions</h2>
                 <p>Placeholder text</p>
             </div>
             <div class="tab" data-tab="credits">
-                <h2>Credits</h2>
-                <h3>Graphics and Engine Developer</h3>
-				<h5>Allen Garvey</h5>
-                <h3>AI Developer</h3>
-				<h5>Kyle Livermore</h5>				
-                <h3>Game Designer</h3>
-				<h5>Stephen Griffin</h5>				
+                <h2 class="section-title">Credits</h2>
+                <p>Placeholder text</p>
             </div>
 		</main>
         <div class="modal-overlay"></div>
@@ -99,11 +101,15 @@
         <img src="images/blueSoldierSprite.png" class="spritesheet" id="soldier_blue_sprite">
         <img src="images/blueTankSprite.png" class="spritesheet" id="tank_blue_sprite">
         <img src="images/bluePlaneSprite.png" class="spritesheet" id="plane_blue_sprite">
+        <img src="images/soldier-attack-animation.png" class="spritesheet" id="soldier_attack_sprite">
+        <img src="images/plane-attack-animation.png" class="spritesheet" id="plane_attack_sprite">
+        <img src="images/tank-attack-animation.png" class="spritesheet" id="tank_attack_sprite">
 		<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
         <script src="js/util.js"></script>
         <script src="js/templater.js"></script>
         <script src="js/tabs.js"></script>
         <script src="js/modal.js"></script>
+        <script src="js/text-overlay.js"></script>
         <script src="js/damage.js"></script>
         <script src="js/terrain-stats.js"></script>
         <script src="js/unit-stats.js"></script>
@@ -121,4 +127,3 @@
         <script src="js/initializer.js"></script>
     </body>
 </html>
-
