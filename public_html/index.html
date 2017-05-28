@@ -68,14 +68,30 @@
                     <canvas class="game-canvas" id="unit-canvas"></canvas>
                     <canvas class="game-canvas" id="terrain-canvas"></canvas>
                 </div>
+				
             </div>
             <div class="tab" data-tab="instructions">
                 <h2 class="section-title">Instructions</h2>
-                <p>Placeholder text</p>
+				<p>Each level begins with two teams of six units. The red unit is controlled by the user and the blue unit is controlled by AI.</p>
+				<p>The goal of the game is to defeat the AI's team before they defeat yours for each level. As each level is completed, you will progress on to the next one until completing all three. </p>
+                <h3>How To Play</h3>
+					<li>Select an individual unit by clicking on it (you can deselect the unit simply by clicking on it again).</li>
+					<li>Once selected, you can move that unit by clicking on any tile shown in the blue area surrounding the unit.</li>
+					<li>To attack an enemy unit, click on it if it is highlighted red within your unit's area of available movement. This will also trigger a counter-attack from the enemy unit.</li>
+					<li>When you have completed all of your unit's actions, click the "End Turn" button above the top right of the map which will initiate the AI's turn.</li>
+					<li>Repeat this process until one team defeats the other.</li>
+			
+				
+				
             </div>
             <div class="tab" data-tab="credits">
                 <h2 class="section-title">Credits</h2>
-                <p>Placeholder text</p>
+                <h3>Graphics and Engine Developer</h3>
+				<h5>Allen Garvey</h5>
+                <h3>AI Developer</h3>
+				<h5>Kyle Livermore</h5>				
+                <h3>Game Designer</h3>
+				<h5>Stephen Griffin</h5>		
             </div>
 		</main>
         <div class="modal-overlay"></div>
@@ -90,6 +106,8 @@
             </div>
         </div>
 
+		
+		
         <img src="images/spritesheet.png" class="spritesheet" id="spritesheet">
         <img src="images/level1.png" class="spritesheet" id="level1_sprite">
         <img src="images/level2.png" class="spritesheet" id="level2_sprite">
@@ -101,9 +119,6 @@
         <img src="images/blueSoldierSprite.png" class="spritesheet" id="soldier_blue_sprite">
         <img src="images/blueTankSprite.png" class="spritesheet" id="tank_blue_sprite">
         <img src="images/bluePlaneSprite.png" class="spritesheet" id="plane_blue_sprite">
-        <img src="images/soldier-attack-animation.png" class="spritesheet" id="soldier_attack_sprite">
-        <img src="images/plane-attack-animation.png" class="spritesheet" id="plane_attack_sprite">
-        <img src="images/tank-attack-animation.png" class="spritesheet" id="tank_attack_sprite">
 		<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
         <script src="js/util.js"></script>
         <script src="js/templater.js"></script>
