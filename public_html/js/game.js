@@ -44,6 +44,32 @@
 			displayTurnText('Computer Turn', callback);
 		}
 
+		function displayLevelFailed(){
+			disableButtons();
+			userInfo.isTextOverlayDisplayed = true;
+			textOverlay.displayMenu('Mission Failed', 'Restart mission', function(){
+				start(LEVEL_STATS, AUDIO_STATS, userInfo.levelIndex, userInfo.difficultyLevel);
+			});
+		}
+
+		function displayLevelPassed(){
+			disableButtons();
+			userInfo.isTextOverlayDisplayed = true;
+			//go to next level if there are more
+			if(userInfo.levelIndex < LEVEL_STATS.length - 1){
+				textOverlay.displayMenu('Mission Complete', 'Next level', function(){
+					start(LEVEL_STATS, AUDIO_STATS, userInfo.levelIndex + 1, userInfo.difficultyLevel);
+				});
+
+			}
+			//player beat last level, so show congratulations
+			else{
+				textOverlay.displayMenu('Mission Complete', 'Return to main menu', function(){
+					menu.displayMainMenu();
+				});	
+			}
+		}
+
 		/**
 		 * Saving and loading game functions
 		 */
@@ -115,6 +141,7 @@
 			if(damageDone >= defendingUnit.health){
 				damageDone = defendingUnit.health;
 				defendingUnit.health = 0;
+				userInfo.numUnits[defendingUnit.team]--;
 				renderer.gameTileForCoordinate(defenderCoordinate, gameboard).unit = null;
 			}
 			else{
@@ -135,7 +162,17 @@
 						unitAttack(defenderCoordinate, attackerCoordinate, doneCallback, true);
 					}
 					else{
-						doneCallback();
+						//check to see if game has been won or lost before proceeding
+						if(userInfo.numUnits[unitStats.TEAMS.PLAYER] <= 0){
+							displayLevelFailed();
+						}
+						else if(userInfo.numUnits[unitStats.TEAMS.AI] <= 0){
+							displayLevelPassed();
+						}
+						else{
+							doneCallback();	
+						}
+						
 					}	
 				}, 800);
 			});
@@ -216,7 +253,7 @@
 					resetGameboardForPlayerTurn();
 					userInfo.turnNum++;
 					displayUserTurnText(function(){
-						enableButtons();	
+						enableButtons();
 					});
 				});	
 			});
@@ -268,6 +305,7 @@
 					//able to traverse the current type of terrain
 					if(UNIT_STATS[unit.type].canTraverse[terrain.type] && Math.random() * 100 < 10){
 						gameboard[i][j].unit = unit;
+						userInfo.numUnits[unit.team]++;
 					}
 					else{
 						gameboard[i][j].unit = null;
@@ -290,7 +328,11 @@
 					}
 					gameboard[i][j] = {};
 					gameboard[i][j].terrain = levelLoader.terrainFor(level, i, j, TOTAL_TILES);
-					gameboard[i][j].unit = levelLoader.unitFor(level.dataUnits[userInfo.difficultyLevel], j, i, TOTAL_TILES);
+					var unit = levelLoader.unitFor(level.dataUnits[userInfo.difficultyLevel], j, i, TOTAL_TILES);
+					gameboard[i][j].unit = unit;
+					if(unit){
+						userInfo.numUnits[unit.team]++;
+					}
 				}
 			}
 			return gameboard;
@@ -303,7 +345,11 @@
 			for(var i = 0; i < gameboard.length; i++){
 				var subarray = gameboard[i];
 				for(var j = 0; j < subarray.length; j++){
-					gameboard[i][j].unit = savedGameboard[i][j].unit;
+					var unit = savedGameboard[i][j].unit;
+					gameboard[i][j].unit = unit;
+					if(unit){
+						userInfo.numUnits[unit.team]++;
+					}
 				}
 			}
 		}
@@ -316,20 +362,21 @@
 		 */
 		function initializeGame(levelIndex, difficultyLevel, savedGame){
 			userInfo = {
-						cursor: {
-							coordinate: null,
-							spritesheet: document.getElementById('spritesheet'),
-							spriteCoordinate: {x: 1, y: 1}
-						},
-						unitSelected: false,
-						unitSelectedMovementSquares: false,
-						unitSelectedAttackSquares: false,
-						unitSelectedShortestPath: false,
-						difficultyLevel: difficultyLevel,
-						levelIndex: levelIndex,
-						buttonsEnabled: true,
-						turnNum: 0,
-						isTextOverlayDisplayed: false
+							cursor: {
+								coordinate: null,
+								spritesheet: document.getElementById('spritesheet'),
+								spriteCoordinate: {x: 1, y: 1}
+							},
+							unitSelected: false,
+							unitSelectedMovementSquares: false,
+							unitSelectedAttackSquares: false,
+							unitSelectedShortestPath: false,
+							difficultyLevel: difficultyLevel,
+							levelIndex: levelIndex,
+							buttonsEnabled: true,
+							turnNum: 0,
+							isTextOverlayDisplayed: false,
+							numUnits: Object.keys(unitStats.TEAMS).map(function(){return 0;}) //array of integers corresponding to number of units; index corresponds to team. Used to determine if level has been passed/failed
 						};
 			disableButtons();
 
