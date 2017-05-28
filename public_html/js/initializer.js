@@ -8,12 +8,13 @@
 	var levelTerrainDatas = [];
 	var audioStatsArray = audioStats.get();
 	var cursorAudioKeys = ['select', 'deselect'];
+	var levelAudioKeys = ['passed', 'failed'];
 
 	var imageSprites = document.querySelectorAll('img.spritesheet');
 
 	//3 * levelStats array, since each level has a 2 unit files and 1 terrain file to download
 	//3 * audioStats unit array, since each unit has 3 sound effects files
-	var assetsLeftToLoad = imageSprites.length + (3 * levelStatsArray.length) + (3 * audioStatsArray.units.length) + cursorAudioKeys.length;
+	var assetsLeftToLoad = imageSprites.length + (3 * levelStatsArray.length) + (3 * audioStatsArray.units.length) + cursorAudioKeys.length + levelAudioKeys.length;
 
 	//called after a single asset loads
 	function assetDidLoad(){
@@ -83,6 +84,13 @@
 		var cursorItem = audioStatsArray.cursor[cursorAudioKey];
 		mixer.getAudioBuffer(cursorItem.url, function(buffer){
 			cursorItem.audio = buffer;
+			assetDidLoad();
+		});
+	});
+	levelAudioKeys.forEach(function(levelAudioKey){
+		var levelItem = audioStatsArray.level[levelAudioKey];
+		mixer.getAudioBuffer(levelItem.url, function(buffer){
+			levelItem.audio = buffer;
 			assetDidLoad();
 		});
 	});

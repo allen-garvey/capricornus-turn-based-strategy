@@ -47,6 +47,18 @@ app.audioStats = (function(){
             die: null //AudioBuffer object is placed here once corresponding audio file is preloaded
     	});
 
+        //sounds for when level is passed or failed
+        stats.level = {
+            passed: {
+                url: 'sounds/levelComplete.ogg', //location of audio file
+                audio: null //AudioBuffer object placed here when audio file is loaded
+            },
+            failed: {
+                url: 'sounds/levelFailure.ogg',
+                audio: null
+            }
+        };
+
         //sounds cursor, such as selecting and deselecting units
         stats.cursor = {
             select: {
