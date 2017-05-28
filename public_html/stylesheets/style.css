@@ -153,9 +153,11 @@ html.loading{
 .menu-container{
 	display: none;
 }
-.menu-title{
-	margin-bottom: 0;
+.menu-title, .section-title{
 	text-shadow: 1px 1px #ddd;
+}
+.menu-container .menu-title{
+	margin-bottom: 0;
 }
 .main-menu .main-menu-container, .load-game-menu .load-game-container, .difficulty-menu .difficulty-level-container{
 	display: flex;
