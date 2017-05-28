@@ -15,7 +15,7 @@ app.audioStats = (function(){
 
     	stats.units.push({
     		name: 'Infantry', //for debugging purposes
-    		attackUrl: 'sounds/soldierAttack.ogg', //url for sound effect audio file used when unit attacks 
+    		attackUrl: 'sounds/soldierAttackShort.ogg', //url for sound effect audio file used when unit attacks 
             moveUrl: 'sounds/soldierMove.ogg', //url for sound effect audio file used when unit moves
             damageUrl: '', //url for sound effect audio file used when unit takes damage
             dieUrl: 'sounds/planeAttack.ogg', //url for sound effect audio file used when unit dies
