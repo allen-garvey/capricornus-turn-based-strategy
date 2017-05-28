@@ -16,6 +16,9 @@ ul{
 	list-style-type: none;
 	padding-left: 0;
 }
+p{
+	margin-top: 0;
+}
 
 .container{
 	width: 1216px;
@@ -123,6 +126,9 @@ and through JavaScript or it will mess up rendering
 }
 html.loading{
 	cursor: progress;
+}
+.loading-message-container .menu-title{
+	margin-bottom: 1em;
 }
 /*
 * based on: https://www.w3schools.com/howto/howto_css_loader.asp
