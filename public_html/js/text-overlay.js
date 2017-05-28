@@ -6,9 +6,13 @@ var app = app || {};
 
 app.textOverlay = (function(){
 
+	var textOverlayContainer = document.getElementById('text-overlay-container');
 	var textOverlayHeading = document.getElementById('text-overlay-heading');
+	var textOverlayButton = document.getElementById('text-overlay-button');
 
 	function resetOverlay(){
+		textOverlayContainer.classList.remove('show-heading-animation');
+		textOverlayContainer.classList.remove('show-menu');
 		textOverlayHeading.textContent = '';
 	}
 
@@ -29,6 +33,7 @@ app.textOverlay = (function(){
 	function displayHeading(heading, duration, callback){
 		callback = callback || function(){};
 		resetOverlay();
+		textOverlayContainer.classList.add('show-heading-animation');
 		textOverlayHeading.textContent = heading;
 
 		showOverlay();
@@ -42,13 +47,32 @@ app.textOverlay = (function(){
 			hideOverlay();
 			callback();
 		}
+	}
 
+	/**
+	* Used to display a heading with button over the gameboard
+	* @param heading - string - text to display as heading
+	* @param buttonText - string - text to display in button
+	* @param buttonCallback - function - callback that will be called when button is pressed
+	*/
+	function displayMenu(heading, buttonText, buttonCallback){
+		resetOverlay();
+		textOverlayContainer.classList.add('show-menu');
+		textOverlayHeading.textContent = heading;
+		textOverlayButton.textContent = buttonText;
+		textOverlayButton.onclick = function(){
+			hideOverlay();
+			buttonCallback();
+		};
+
+		showOverlay();
 	}
 
 
 	//exported functions and variables
 	return {
-		displayHeading: displayHeading 
+		displayHeading: displayHeading,
+		displayMenu: displayMenu
 	};
     
 })();
