@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html class="loading">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Capricornus Squadron</title>
+        <meta name="description" content=""/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link href="https://fonts.googleapis.com/css?family=Orbitron:700" rel="stylesheet"/>
+        <link rel="stylesheet" type="text/css" href="stylesheets/lib/bootstrap-buttons.css"/>
+        <link rel="stylesheet" type="text/css" href="stylesheets/style.css"/>
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    </head>
+    <body>
+    	<header class="header">
+            <div class="container">
+                <h1 class="brand">Capricornus Squadron</h1>
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li data-tab="game">Play</li>
+                        <li data-tab="instructions">Instructions</li>
+                        <li data-tab="credits">Credits</li>
+                    </ul>
+                </nav>
+            </div>
+    	</header>
+		<main class="main container">
+            <div class="game-section tab" data-tab="game">
+                <div class="loading-message-container">
+                    <h2 class="menu-title">Capricornus Squadron is loading</h2>
+                    <p>Please wait&hellip;</p>
+                    <div class="loader"></div>
+                </div>
+                <div class="main-menu-container menu-container">
+                    <h2 class="menu-title">Main Menu</h2>
+                    <ul class="main-menu-list" id="main-menu-list">
+                        <li id="menu_option_new_game">New Game</li>
+                        <li id="menu_option_load_game">Load Game</li>
+                    </ul>
+                </div>
+                <div class="load-game-container menu-container">
+                    <div class="menu-item back-button" id="button-load-game-back" data-button-target="main-menu">Back to Main Menu</div>
+                    <h2 class="menu-title">Load Game</h2>
+                    <ul class="load-game-list" id="load-game-list">
+                    </ul>
+                </div>
+                <div class="difficulty-level-container menu-container">
+                    <div class="menu-item back-button" data-button-target="main-menu">Back to Main Menu</div>
+                    <h2 class="menu-title">Select Difficulty</h2>
+                    <ul class="main-menu-list">
+                        <li id="difficulty-level-button-easy">Easy</li>
+                        <li id="difficulty-level-button-hard">Hard</li>
+                    </ul>
+                </div>
+                <div class="game-controls-container">
+                    <button class="btn btn-danger" id="button-exit-game">Exit Game</button>
+                    <button class="btn btn-default" id="button-save-game">Save Game</button>
+                    <button class="btn btn-primary" id="button-end-turn">End Turn</button>
+                </div>
+                <div class="game-container" id="game-container">
+                    <div class="text-overlay-container" id="text-overlay-container">
+                        <div class="text-overlay-message-container">
+                            <h2 class="text-overlay-heading" id="text-overlay-heading"></h2>
+                            <div class="menu-item text-overlay-button" id="text-overlay-button"></div>
+                        </div>
+                    </div>
+                    <canvas class="game-canvas" id="cursor-canvas"></canvas>
+                    <canvas class="game-canvas" id="unit-selection-canvas"></canvas>
+                    <canvas class="game-canvas" id="unit-canvas"></canvas>
+                    <canvas class="game-canvas" id="terrain-canvas"></canvas>
+                </div>
+            </div>
+            <div class="tab" data-tab="instructions">
+                <h2 class="section-title">Instructions</h2>
+                <p>Each level begins with two teams of six units. The red unit is controlled by the user and the blue unit is controlled by AI.</p>
+				<p>The goal of the game is to defeat the AI's team before they defeat yours for each level. As each level is completed, you will progress on to the next one until completing all three. </p>
+                <h3>How To Play</h3>
+					<li>Select an individual unit by clicking on it (you can deselect the unit simply by clicking on it again).</li>
+					<li>Once selected, you can move that unit by clicking on any tile shown in the blue area surrounding the unit.</li>
+					<li>To attack an enemy unit, click on it if it is highlighted red within your unit's area of available movement. This will also trigger a counter-attack from the enemy unit.</li>
+					<li>When you have completed all of your unit's actions, click the "End Turn" button above the top right of the map which will initiate the AI's turn.</li>
+					<li>Repeat this process until one team defeats the other.</li>
+            </div>
+            <div class="tab" data-tab="credits">
+                <h2 class="section-title">Credits</h2>
+                <h3>Graphics and Engine Developer</h3>
+				<h5>Allen Garvey</h5>
+                <h3>AI Developer</h3>
+				<h5>Kyle Livermore</h5>				
+                <h3>Game Designer</h3>
+				<h5>Stephen Griffin</h5>		
+            </div>
+		</main>
+        <div class="modal-overlay"></div>
+        <div class="modal-window" id="modal-window">
+            <div class="modal-text-container" id="modal-text-container"></div>
+            <div class="modal-input-container">
+                <input type="text" id="modal-text-input" />
+            </div>
+            <div class="modal-button-container">
+                <button class="btn btn-default" id="modal-button-cancel">Cancel</button>
+                <button class="btn" id="modal-button-ok">Ok</button>
+            </div>
+        </div>
+
+        <img src="images/spritesheet.png" class="spritesheet" id="spritesheet">
+        <img src="images/level1.png" class="spritesheet" id="level1_sprite">
+        <img src="images/level2.png" class="spritesheet" id="level2_sprite">
+        <img src="images/level3.png" class="spritesheet" id="level3_sprite">
+        <img src="images/explosion.png" class="spritesheet" id="explosion_spritesheet">
+        <img src="images/redSoldierSprite.png" class="spritesheet" id="soldier_red_sprite">
+        <img src="images/redTankSprite.png" class="spritesheet" id="tank_red_sprite">
+        <img src="images/redPlaneSprite.png" class="spritesheet" id="plane_red_sprite">
+        <img src="images/blueSoldierSprite.png" class="spritesheet" id="soldier_blue_sprite">
+        <img src="images/blueTankSprite.png" class="spritesheet" id="tank_blue_sprite">
+        <img src="images/bluePlaneSprite.png" class="spritesheet" id="plane_blue_sprite">
+        <img src="images/soldier-attack-animation.png" class="spritesheet" id="soldier_attack_sprite">
+        <img src="images/plane-attack-animation.png" class="spritesheet" id="plane_attack_sprite">
+        <img src="images/tank-attack-animation.png" class="spritesheet" id="tank_attack_sprite">
+		<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+        <script src="js/util.js"></script>
+        <script src="js/templater.js"></script>
+        <script src="js/tabs.js"></script>
+        <script src="js/modal.js"></script>
+        <script src="js/text-overlay.js"></script>
+        <script src="js/damage.js"></script>
+        <script src="js/terrain-stats.js"></script>
+        <script src="js/unit-stats.js"></script>
+        <script src="js/animation-stats.js"></script>
+        <script src="js/level-stats.js"></script>
+        <script src="js/level-loader.js"></script>
+        <script src="js/audio-stats.js"></script>
+        <script src="js/mixer.js"></script>
+        <script src="js/renderer.js"></script>
+        <script src="js/pathfinding.js"></script>
+        <script src="js/ai.js"></script>
+        <script src="js/save-game.js"></script>
+        <script src="js/menu.js"></script>
+        <script src="js/game.js"></script>
+        <script src="js/initializer.js"></script>
+    </body>
+</html>
