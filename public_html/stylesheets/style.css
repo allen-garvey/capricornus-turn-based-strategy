@@ -38,6 +38,7 @@ img.spritesheet{
 .brand{
 	font-size: 2.3em;
 	margin-top: 0;
+	text-shadow: 3px 3px #333;
 }
 
 /*
@@ -148,6 +149,7 @@ html.loading{
 }
 .menu-title{
 	margin-bottom: 0;
+	text-shadow: 1px 1px #ddd;
 }
 .main-menu .main-menu-container, .load-game-menu .load-game-container, .difficulty-menu .difficulty-level-container{
 	display: flex;
