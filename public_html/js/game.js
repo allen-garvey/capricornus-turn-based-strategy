@@ -47,6 +47,7 @@
 		function displayLevelFailed(){
 			disableButtons();
 			userInfo.isTextOverlayDisplayed = true;
+			mixer.playAudioBuffer(AUDIO_STATS.level.failed.audio);
 			textOverlay.displayMenu('Mission Failed', 'Restart mission', function(){
 				start(LEVEL_STATS, AUDIO_STATS, userInfo.levelIndex, userInfo.difficultyLevel);
 			});
@@ -55,6 +56,7 @@
 		function displayLevelPassed(){
 			disableButtons();
 			userInfo.isTextOverlayDisplayed = true;
+			mixer.playAudioBuffer(AUDIO_STATS.level.passed.audio);
 			//go to next level if there are more
 			if(userInfo.levelIndex < LEVEL_STATS.length - 1){
 				textOverlay.displayMenu('Mission Complete', 'Next level', function(){
