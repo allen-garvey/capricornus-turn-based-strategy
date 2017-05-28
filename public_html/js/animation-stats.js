@@ -23,6 +23,28 @@ app.animationStats = (function(){
             colorCells: ['rgba(255,0,0, 0.1)', 'rgba(255,0,0, 0.3)', 'rgba(255,0,0, 0.3)', 'rgba(255,0,0, 0.5)', 'rgba(255,0,0, 0.7)', 'rgba(255,0,0, 8.0)', 'rgba(255,0,0, 0.7)', 'rgba(255,0,0, 0.5)', 'rgba(255,0,0, 0.3)', 'rgba(255,0,0, 0.3)', 'rgba(255,0,0, 0.1)'] //array of css colors for used for tile colors for animation
         };
 
+        //unit attack animations are mapped to unitStats array indexes
+        stats.unitAttack = [
+            {
+                name: 'Infantry', //for debugging purposes
+                type: 'static animation',
+                spritesheet: document.getElementById('soldier_attack_sprite'),
+                spriteCoordinates: [[{x: 0, y: 0}, {x: 1, y: 0}, {x: 3, y: 0}, {x: 3, y: 0}, {x: 3, y: 0}, {x: 3, y: 0}, {x: 0, y: 0}, {x: 1, y: 0}, {x: 3, y: 0}, {x: 3, y: 0}, {x: 3, y: 0}, {x: 3, y: 0}], [{x: 2, y: 0}, {x: 4, y: 0}, {x: 5, y: 0}, {x: 5, y: 0}, {x: 5, y: 0}, {x: 5, y: 0}, {x: 2, y: 0}, {x: 4, y: 0}, {x: 5, y: 0}, {x: 5, y: 0}, {x: 5, y: 0}, {x: 5, y: 0}]] //array of coordinates are mapped to unit's current orientation index
+            },
+            {
+                name: 'Tank',
+                type: 'static animation',
+                spritesheet: document.getElementById('tank_attack_sprite'),
+                spriteCoordinates: [[{x: 0, y: 0}, {x: 1, y: 0}, {x: 1, y: 0}, {x: 2, y: 0}, {x: 2, y: 0}, {x: 2, y: 0}, {x: 2, y: 0}, {x: 2, y: 0}], [{x: 3, y: 0}, {x: 4, y: 0}, {x: 4, y: 0}, {x: 5, y: 0}, {x: 5, y: 0}, {x: 5, y: 0}, {x: 5, y: 0}, {x: 5, y: 0}]]
+            },
+            {
+                name: 'Plane',
+                type: 'static animation',
+                spritesheet: document.getElementById('plane_attack_sprite'),
+                spriteCoordinates: [[{x: 0, y: 0}, {x: 1, y: 0}, {x: 1, y: 0}, {x: 2, y: 0}, {x: 2, y: 0}, {x: 2, y: 0}], [{x: 3, y: 0}, {x: 4, y: 0}, {x: 4, y: 0}, {x: 5, y: 0}, {x: 5, y: 0}, {x: 5, y: 0}]]
+            }
+        ];
+
     	return stats;
     }
 

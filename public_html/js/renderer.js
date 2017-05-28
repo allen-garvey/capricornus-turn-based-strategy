@@ -360,8 +360,29 @@ app.renderer = (function(util, unitStats, terrainStats, animationStats){
 		orientUnit(attackCoordinate, defenseCoordinate, attackingUnit);
 		//display attacker as having moved
 		redrawUnit(unitCanvasContext, attackCoordinate, attackingUnit);
+		
+		//since animations are asynchronous, need to keep track of how many to complete before calling finishRenderAttack()
+		var animationsToRender = 2;
+		
+		//show animation of unit attacking
+		var unitAttackAnimationInfo = ANIMATION_STATS.unitAttack[attackingUnit.type];
+		var unitAttackAnimation = {
+									spritesheet: unitAttackAnimationInfo.spritesheet, 
+									spriteCoordinates: unitAttackAnimationInfo.spriteCoordinates[attackingUnit.currentDirection]
+								};
+		renderStaticAnimation(animationCanvasContext, unitAttackAnimation, attackCoordinate, function(){
+			animationsToRender--;
+			if(animationsToRender <= 0){
+				finishRenderAttack();
+			}
+		});
 		//show animation of defender taking damage
-		renderStaticColorAnimation(animationCanvasContext, ANIMATION_STATS.unitDamage, defenseCoordinate, finishRenderAttack);
+		renderStaticColorAnimation(animationCanvasContext, ANIMATION_STATS.unitDamage, defenseCoordinate, function(){
+			animationsToRender--;
+			if(animationsToRender <= 0){
+				finishRenderAttack();
+			}
+		});
 
 		
 	}
