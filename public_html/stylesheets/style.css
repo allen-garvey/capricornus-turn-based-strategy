@@ -295,6 +295,7 @@ html.loading{
 
 .text-overlay-heading{
 	font-size: 2.50em;
+	text-shadow: 2px 2px #ccc;
 }
 
 .text-overlay-container.show-heading-animation .text-overlay-heading{
