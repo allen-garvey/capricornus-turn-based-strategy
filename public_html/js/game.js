@@ -3,7 +3,7 @@
 /*
 * Main game loop functionality
 */
- app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats, ai, damageCalculator, levelLoader, modal, saveGameController, mixer, menu, textOverlay){
+ app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats, ai, damageCalculator, levelLoader, modal, saveGameController, mixer, menu, textOverlay, uiStats){
 	function start(LEVEL_STATS, AUDIO_STATS, levelIndex, difficultyLevel, savedGame){
 		/**
 		 * Utility functions
@@ -367,9 +367,7 @@
 		function initializeGame(levelIndex, difficultyLevel, savedGame){
 			userInfo = {
 							cursor: {
-								coordinate: null,
-								spritesheet: document.getElementById('spritesheet'),
-								spriteCoordinate: {x: 1, y: 1}
+								coordinate: null
 							},
 							unitSelected: false,
 							unitSelectedMovementSquares: false,
@@ -417,6 +415,7 @@
 		var TOTAL_TILES = renderer.totalTiles(gameContainer);
 		var UNIT_STATS = unitStats.get();
 		var TERRAIN_STATS = terrainStats.get();
+		var UI_STATS = uiStats.get();
 
 		//get canvases
 		var cursorCanvasContext = renderer.getContext(gameContainer, 'cursor-canvas');
@@ -458,7 +457,13 @@
 			}
 			//set new cursor location and draw cursor
 			userInfo.cursor.coordinate = coordinate;
-			renderer.drawTile(cursorCanvasContext, userInfo.cursor.spritesheet, userInfo.cursor.coordinate, userInfo.cursor.spriteCoordinate);
+			//show attack cursor if player unit selected and cursor is over enemy unit
+			if(userInfo.unitSelected && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.team === unitStats.TEAMS.PLAYER && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.canMove && util.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedAttackSquares)){
+				renderer.drawTile(cursorCanvasContext, UI_STATS.cursor.attack.spritesheet, userInfo.cursor.coordinate, UI_STATS.cursor.attack.spriteCoordinate);
+			}
+			else{
+				renderer.drawTile(cursorCanvasContext, UI_STATS.cursor.select.spritesheet, userInfo.cursor.coordinate, UI_STATS.cursor.select.spriteCoordinate);
+			}
 
 			//draw unit path preview tiles, if applicable
 			if(userInfo.unitSelected && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.team === unitStats.TEAMS.PLAYER && util.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedMovementSquares)){
@@ -536,4 +541,4 @@
 	}
 	//exported functions
 	return {start: start};
- })(app.util, app.renderer, app.unitStats, app.terrainStats, app.pathfinder, app.levelStats, app.ai, app.damage, app.levelLoader, app.modal, app.saveGame, app.mixer, app.menu, app.textOverlay);
+ })(app.util, app.renderer, app.unitStats, app.terrainStats, app.pathfinder, app.levelStats, app.ai, app.damage, app.levelLoader, app.modal, app.saveGame, app.mixer, app.menu, app.textOverlay, app.uiStats);
