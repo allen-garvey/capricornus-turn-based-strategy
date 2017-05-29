@@ -344,6 +344,8 @@
 		 * Loads units from saved game into initialized gameboard
 		 */
 		function loadGameboard(gameboard, savedGameboard){
+			//reset count of units
+			userInfo.numUnits = Object.keys(unitStats.TEAMS).map(function(){return 0;});
 			for(var i = 0; i < gameboard.length; i++){
 				var subarray = gameboard[i];
 				for(var j = 0; j < subarray.length; j++){
