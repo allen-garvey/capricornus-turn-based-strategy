@@ -18,7 +18,7 @@ app.audioStats = (function(){
     		attackUrl: 'sounds/soldierAttackShort.ogg', //url for sound effect audio file used when unit attacks 
             moveUrl: 'sounds/soldierMove.ogg', //url for sound effect audio file used when unit moves
             damageUrl: '', //url for sound effect audio file used when unit takes damage
-            dieUrl: 'sounds/planeAttack.ogg', //url for sound effect audio file used when unit dies
+            dieUrl: 'sounds/death.ogg', //url for sound effect audio file used when unit dies
             move: null, //AudioBuffer object is placed here once corresponding audio file is preloaded
             attack: null, //AudioBuffer object is placed here once corresponding audio file is preloaded
             damage: null, //AudioBuffer object is placed here once corresponding audio file is preloaded
@@ -29,7 +29,7 @@ app.audioStats = (function(){
     		attackUrl: 'sounds/tankAttack.ogg', //url for sound effect audio file used when unit attacks 
             moveUrl: 'sounds/tankMove.ogg', //url for sound effect audio file used when unit moves
             damageUrl: '', //url for sound effect audio file used when unit takes damage
-            dieUrl: 'sounds/planeAttack.ogg', //url for sound effect audio file used when unit dies
+            dieUrl: 'sounds/death.ogg', //url for sound effect audio file used when unit dies
             move: null, //AudioBuffer object is placed here once corresponding audio file is preloaded
             attack: null, //AudioBuffer object is placed here once corresponding audio file is preloaded
             damage: null, //AudioBuffer object is placed here once corresponding audio file is preloaded
@@ -37,10 +37,10 @@ app.audioStats = (function(){
     	});
     	stats.units.push({
     		name: 'Plane', //for debugging purposes
-    		attackUrl: 'sounds/death.ogg', //url for sound effect audio file used when unit attacks 
+    		attackUrl: 'sounds/planeAttack.ogg', //url for sound effect audio file used when unit attacks 
             moveUrl: 'sounds/planeMove.ogg', //url for sound effect audio file used when unit moves
             damageUrl: '', //url for sound effect audio file used when unit takes damage
-            dieUrl: 'sounds/planeAttack.ogg', //url for sound effect audio file used when unit dies
+            dieUrl: 'sounds/death.ogg', //url for sound effect audio file used when unit dies
             move: null, //AudioBuffer object is placed here once corresponding audio file is preloaded
             attack: null, //AudioBuffer object is placed here once corresponding audio file is preloaded
             damage: null, //AudioBuffer object is placed here once corresponding audio file is preloaded
