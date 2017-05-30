@@ -77,6 +77,7 @@
 		function disableButtons(){
 			userInfo.buttonsEnabled = false;
 			userInfo.gameInteractionEnabled = false;
+			disableEndTurnButtonAnimation();
 			//hide cursor when user can't interact with game
 			disableCursor();
 			gameContainer.classList.add('interaction-disabled');	
@@ -84,6 +85,30 @@
 			[endTurnButton, saveGameButton, exitGameButton].forEach(function(button){
 				button.disabled = true;
 			});
+		}
+
+		function areThereUserUnitsLeftToMove(){
+			for(var i = 0; i < gameboard.length; i++){
+				var subarray = gameboard[i];
+				for(var j = 0; j < subarray.length; j++){
+					var unit = gameboard[i][j].unit;
+					if(unit && unit.team === unitStats.TEAMS.PLAYER && unit.canMove){
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		//used to display animation when no more units can move
+		function displayIfAreUnitsLeftToMove(){
+			if(!areThereUserUnitsLeftToMove()){
+				gameControlsContainer.classList.add('all-units-moved');
+			}
+		}
+
+		function disableEndTurnButtonAnimation(){
+			gameControlsContainer.classList.remove('all-units-moved');
 		}
 
 		/**
@@ -159,6 +184,7 @@
 			var attackCallback = function(){
 				unitAttack(movementCoordinate, attackCoordinate, function(){
 					enableButtons();
+					displayIfAreUnitsLeftToMove();
 				});
 			};
 
@@ -244,6 +270,7 @@
 			mixer.playAudioBuffer(AUDIO_STATS.cursor.deselect.audio);
 			moveUnit(startingCoordinate, endingCoordinate, function(){
 				enableButtons();
+				displayIfAreUnitsLeftToMove();
 			});
 		}
 
@@ -501,6 +528,7 @@
 		 */
 
 		var gameContainer = document.getElementById('game-container');
+		var gameControlsContainer = document.getElementById('game-controls-container');
 		var endTurnButton = document.getElementById('button-end-turn');
 		var saveGameButton = document.getElementById('button-save-game');
 		var exitGameButton = document.getElementById('button-exit-game');
