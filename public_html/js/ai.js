@@ -22,6 +22,9 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		return {actionType: AI_ACTION_TYPES.END_TURN};
 	}
 
+	//Constants for optimization
+	var HealthRatioForAdvantage = 0.8;
+	
 	/*
 	 * Used for when AI wants to move a unit
 	 * use as return value for aiAction function
@@ -63,7 +66,6 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		}
 	}
 
-
 	/*
 	* Used to get a single AI action
 	* 
@@ -99,24 +101,32 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 				{
 					if(gameboard[i][j].unit.team === unitStats.TEAMS.PLAYER)
 					{
-						enemyUnits.push({x: i, y: j, unit: gameboard[i][j].unit});
+						enemyUnits.push({x: i, y: j, unit: gameboard[i][j].unit, 
+						moves: pathfinder.movementCoordinatesFor({x: i, y: j}, gameboard, unitStatsArray, terrainStatsArray)});
 					}
 					if(gameboard[i][j].unit.team === unitStats.TEAMS.AI)
 					{
-						friendlyUnits.push({x: i, y: j, unit: gameboard[i][j].unit});
+						friendlyUnits.push({x: i, y: j, unit: gameboard[i][j].unit, 
+						moves: pathfinder.movementCoordinatesFor({x: i, y: j}, gameboard, unitStatsArray, terrainStatsArray)});
 					}
 				}
 			}
 		}
-
+		//console.log(totalHealth(enemyUnits));
 		if (memoizationObject !== null && memoizationObject.EnemyCentroid === undefined){
 			memoizationObject.EnemyCentroid = getUnitCentroid(enemyUnits);
 		}
 		if (memoizationObject !== null && memoizationObject.AICentroid === undefined){
 			memoizationObject.AICentroid = getUnitCentroid(friendlyUnits);
-			console.log(memoizationObject.AICentroid);
+			//console.log(memoizationObject.AICentroid);
 		}
-		console.log(getNearestCover(gameboard, unitStatsArray, terrainStatsArray, memoizationObject.AICentroid));
+		// var nearCover = getNearestCover(gameboard, unitStatsArray, terrainStatsArray, memoizationObject.AICentroid);
+		
+		// var defensiveObject = getDeffensiveShape(gameboard, unitStatsArray, terrainStatsArray, nearCover);
+		// console.log(defensiveObject);
+		// var defenseEdge = getDefenseEdgeNearCentroid(memoizationObject.EnemyCentroid, defensiveObject);
+		// console.log(defenseEdge);
+		
 		//Determine how many units can attack
 		if (memoizationObject !== null && memoizationObject.UnitsCanAttack === undefined){
 			for (var ixx = 0; ixx < friendlyUnits.length; ixx++)
@@ -167,14 +177,95 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		//return move for one unit
 	}
 	
-	function groupAndFortify(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, units, enemyUnits)
+	function groupAndFortify(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, AIunits, enemyUnits)
 	{
-		if(memoizationObject.doneMoving === undefined && memoizationObject.doneMoving === true)
+		if(memoizationObject.doneMoving !== undefined && memoizationObject.doneMoving === true)
 		{
 			return aiActionEndTurn();
 		}
 		var cover = getNearestCover(gameboard, unitStatsArray, terrainStatsArray, memoizationObject.AICentroid);
+		var defensiveObject = getDeffensiveShape(gameboard, unitStatsArray, terrainStatsArray, nearCover);
+		var defenseEdge = getDefenseEdgeNearCentroid(memoizationObject.EnemyCentroid, defensiveObject);
 		
+		// advantageous to seek cover
+		if(seekCover(AIunits, enemyUnits))
+		{
+			var leftLocations = {x: defenseEdge[0].x - defenseEdge[1].x, y: defenseEdge[0].y - defenseEdge[1].y};
+			var rightLocations = {x: defenseEdge[defenseEdge.length].x - defenseEdge[defenseEdge.length - 1].x,
+			y: defenseEdge[defenseEdge.length].y - defenseEdge[defenseEdge.length - 1].y};
+			
+			for(var ixx = 0; ixx < AIUnits.length; ixx++)
+			{
+				if(AIUnits[ixx].unit.canMove)
+				{
+					if(AIUnits[ixx].unit.name === "Infantry")
+					{
+						var targetLocation;
+						for(var iyy = 0; iyy < defenseEdge.length; iyy++)
+						{
+							if(gameboard[defenseEdge[iyy].x][defenseEdge[iyy].y].unit === undefined)
+							{
+								
+								break;
+							}
+						}
+					}
+					else
+					{
+						var moveLocation = getTileNearCover(gameboard, defenseEdge, leftAdd, rightAdd);
+					}
+				}
+			}
+		}
+		// advantageous to group up away from cover
+		else
+		{
+			
+		}
+		return aiActionEndTurn();
+	}
+	
+	function getTileNearCover(gameboard, defenseEdge, leftAdd, rightAdd){
+		
+	}
+	
+	function seekCover(AIUnits, enemyUnits){
+		var enemyTanks = 0;
+		var AITanks = 0;
+		var enemyInfantry = 0;
+		var AIInfantry = 0;
+		
+		for(var ixx = 0; ixx < AIUnits.length; ixx++)
+		{
+			if(AIUnits[ixx].unit.name === "Tank")
+			{
+				AITanks++;
+			}
+			if(AIUnits[ixx].unit.name === "Infantry")
+			{
+				AIInfantry++;
+			}
+		}
+		for(var ixx = 0; ixx < enemyUnits.length; ixx++)
+		{
+			if(enemyUnits[ixx].unit.name === "Tank")
+			{
+				enemyTanks++;
+			}
+			if(enemyUnits[ixx].unit.name === "Infantry")
+			{
+				enemyInfantry++;
+			}
+		}
+		
+		var enemyHealth = totalHealth(enemyUnits);
+		var AIHealth = totalHealth(AIUnits);
+		
+		if(AIInfantry >= enemyInfantry && AIInfantry > 0)
+		{
+			return true;
+		}
+		return false;
 	}
 	
 	function blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unit, enemyUnits){
@@ -202,11 +293,8 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 			moveTo = unitPathToEnemy[izz];
 			izz++
 		}
+		//console.log(potentialDamageTakenOnMove(gameboard, unitStatsArray, terrainStatsArray, enemyUnits, unit, moveTo));
 		return aiActionMoveUnit(unit, moveTo, memoizationObject);
-	}
-	
-	function coverArea(){
-		
 	}
 	
 	function getUnitCentroid(unitArray){
@@ -234,10 +322,10 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		var coverX = 0;
 		var coverY = 0;
 		var counter = 1;
-		console.log(terrainStatsArray[gameboard[centroid.x][centroid.y].terrain.type].defense);
+		//console.log(terrainStatsArray[gameboard[centroid.x][centroid.y].terrain.type].defense);
 		if(terrainStatsArray[gameboard[centroid.x][centroid.y].terrain.type].defense)
 		{
-			return {x: centroid.x, centroid:y};
+			return {x: centroid.x, y: centroid.y};
 		}
 		while( !coverFound && counter < 20)
 		{
@@ -308,7 +396,7 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 			if(coverFound)
 			{
 				break;
-				return {x: centroid.x, centroid:y};
+				return {x: centroid.x, y: centroid.y};
 			}
 			counter += 1;
 		}
@@ -316,10 +404,533 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		
 	}
 	
-	function toInt(n){ return Math.round(Number(n)); };	//example function, picks random AI action
+	function toInt(n){ return Math.round(Number(n)); };	
 	
+	function getDeffensiveShape(gameboard, unitStatsArray, terrainStatsArray, coverLocationSeed){
+		var deffensiveTerrain = [];
+		deffensiveTerrain.push(coverLocationSeed);
+		var ixx = 0;
+		
+		while (ixx < deffensiveTerrain.length && ixx < 20)
+		{
+			if (deffensiveTerrain[ixx].x - 1 > 0 && terrainStatsArray[gameboard[deffensiveTerrain[ixx].x - 1][deffensiveTerrain[ixx].y].terrain.type].defense)
+			{
+				if(!arrayContainsCoords(deffensiveTerrain, deffensiveTerrain[ixx].x - 1, deffensiveTerrain[ixx].y)){
+					deffensiveTerrain.push({x: deffensiveTerrain[ixx].x - 1, y: deffensiveTerrain[ixx].y});
+				}	
+			}
+			if (deffensiveTerrain[ixx].y + 1 < gameboard[deffensiveTerrain[ixx].x].length && terrainStatsArray[gameboard[deffensiveTerrain[ixx].x][deffensiveTerrain[ixx].y + 1].terrain.type].defense)
+			{
+				if(!arrayContainsCoords(deffensiveTerrain, deffensiveTerrain[ixx].x, deffensiveTerrain[ixx].y + 1)){
+					deffensiveTerrain.push({x: deffensiveTerrain[ixx].x, y: deffensiveTerrain[ixx].y + 1});
+				}
+			}
+			if (deffensiveTerrain[ixx].x + 1 < gameboard.length && terrainStatsArray[gameboard[deffensiveTerrain[ixx].x + 1][deffensiveTerrain[ixx].y].terrain.type].defense)
+			{
+				if(!arrayContainsCoords(deffensiveTerrain, deffensiveTerrain[ixx].x + 1, deffensiveTerrain[ixx].y)){
+					deffensiveTerrain.push({x: deffensiveTerrain[ixx].x + 1, y: deffensiveTerrain[ixx].y});
+				}
+			}
+			if (deffensiveTerrain[ixx].y - 1 > 0 && terrainStatsArray[gameboard[deffensiveTerrain[ixx].x][deffensiveTerrain[ixx].y - 1].terrain.type].defense)
+			{
+				if(!arrayContainsCoords(deffensiveTerrain, deffensiveTerrain[ixx].x, deffensiveTerrain[ixx].y - 1)){
+					deffensiveTerrain.push({x: deffensiveTerrain[ixx].x, y: deffensiveTerrain[ixx].y - 1});
+				}
+			}
+			ixx++;
+		}
+		
+		//might need to arrange array to be useful
+		
+		return deffensiveTerrain;
+	}
 	
+	function getDefenseEdgeNearCentroid(centroid, defensiveObject){
+		
+		var closestTile = {x: 100, y: 100};
+		var distanceToTile = closestTile.x * closestTile.x + closestTile.y * closestTile.y;
+		for(var ixx = 0; ixx < defensiveObject.length; ixx++)
+		{
+			var tempDistance = (defensiveObject[ixx].x - centroid.x) * (defensiveObject[ixx].x - centroid.x) 
+			  + (defensiveObject[ixx].y - centroid.y) * (defensiveObject[ixx].y - centroid.y);
+			if(tempDistance <  distanceToTile)
+			{
+				closestTile = defensiveObject[ixx];
+				distanceToTile = tempDistance;
+			}
+		}
+		
+		var hasUp = arrayContainsCoords(defensiveObject, closestTile.x, closestTile.y - 1);
+		var hasDown = arrayContainsCoords(defensiveObject, closestTile.x, closestTile.y + 1);
+		var hasLeft = arrayContainsCoords(defensiveObject, closestTile.x - 1, closestTile.y);
+		var hasRight = arrayContainsCoords(defensiveObject, closestTile.x + 1, closestTile.y);
+		
+		console.log({up: hasUp, down: hasDown, left: hasLeft, right: hasRight});
+		//handle all 8 possible cases
+		//add elements to the array in a top to bottom left to right order
+		
+		//does both left and right edge cases
+		var currentPosition = closestTile;
+		var edgeArray = [];
+		// if(hasUp && hasDown)
+		// {
+			// edgeArray = [];
+			// var upMore = true;
+			// while (upMore)
+			// {
+				// if(arrayContainsCoords(defensiveObject, currentPosition.x, currentPosition.y - 1))
+				// {
+					// currentPosition = {x: currentPosition.x, y: currentPosition.y - 1};
+				// }
+				// else
+				// {
+					// upMore = false;
+				// }
+			// }
+			
+			// var moredown = true;
+			// while (moredown)
+			// {
+				// edgeArray.push(currentPosition);
+				// currentPosition = {x: currentPosition.x, y: currentPosition.y + 1};
+				// if(!arrayContainsCoords(defensiveObject, currentPosition.x, currentPosition.y))
+				// {
+					// moredown = false;
+				// }
+			// }
+		// }
+		//does both top and bottom edge cases
+		// if(hasLeft && hasRight)
+		// {
+			// edgeArray = [];
+			// var leftMore = true;
+			// while (leftMore)
+			// {
+				// if(arrayContainsCoords(defensiveObject, currentPosition.x - 1, currentPosition.y))
+				// {
+					// currentPosition = {x: currentPosition.x - 1, y: currentPosition.y};
+				// }
+				// else
+				// {
+					// leftMore = false;
+				// }
+			// }
+			
+			// var moreRight = true;
+			// while (moreRight)
+			// {
+				// edgeArray.push(currentPosition);
+				// currentPosition = {x: currentPosition.x + 1, y: currentPosition.y};
+				// if(!arrayContainsCoords(defensiveObject, currentPosition.x, currentPosition.y))
+				// {
+					// moreRight = false;
+				// }
+			// }
+		// }
+		//top left vertex case
+		if(hasDown && hasRight)
+		{
+			edgeArray = [];
+			var downMore = true;
+			while (downMore)
+			{
+				if(arrayContainsCoords(defensiveObject, currentPosition.x, currentPosition.y + 1))
+				{
+					currentPosition = {x: currentPosition.x, y: currentPosition.y + 1};
+				}
+				else
+				{
+					downMore = false;
+				}
+			}
+			
+			var moreUp = true;
+			while (moreUp)
+			{
+				edgeArray.push(currentPosition);
+				currentPosition = {x: currentPosition.x, y: currentPosition.y - 1};
+				if(!arrayContainsCoords(defensiveObject, currentPosition.x, currentPosition.y))
+				{
+					moreUp = false;
+				}
+			}
+			currentPosition = {x: currentPosition.x + 1, y: currentPosition.y + 1};
+			var moreRight = true;
+			while (moreRight)
+			{
+				edgeArray.push(currentPosition);
+				currentPosition = {x: currentPosition.x + 1, y: currentPosition.y};
+				if(!arrayContainsCoords(defensiveObject, currentPosition.x, currentPosition.y))
+				{
+					moreRight = false;
+				}
+			}
+		}
+		//top right vertex case
+		if(hasDown && hasLeft)
+		{
+			edgeArray = [];
+			var downMore = true;
+			while (downMore)
+			{
+				if(arrayContainsCoords(defensiveObject, currentPosition.x, currentPosition.y + 1))
+				{
+					currentPosition = {x: currentPosition.x, y: currentPosition.y + 1};
+				}
+				else
+				{
+					downMore = false;
+				}
+			}
+			
+			var moreUp = true;
+			while (moreUp)
+			{
+				edgeArray.push(currentPosition);
+				currentPosition = {x: currentPosition.x, y: currentPosition.y - 1};
+				if(!arrayContainsCoords(defensiveObject, currentPosition.x, currentPosition.y))
+				{
+					moreUp = false;
+				}
+			}
+			currentPosition = {x: currentPosition.x - 1, y: currentPosition.y + 1};
+			var moreLeft = true;
+			while (moreLeft)
+			{
+				edgeArray.push(currentPosition);
+				currentPosition = {x: currentPosition.x - 1, y: currentPosition.y};
+				if(!arrayContainsCoords(defensiveObject, currentPosition.x, currentPosition.y))
+				{
+					moreLeft = false;
+				}
+			}
+		}
+		//bottom left vertex case
+		if(hasUp && hasRight)
+		{
+			edgeArray = [];
+			var upMore = true;
+			while (upMore)
+			{
+				if(arrayContainsCoords(defensiveObject, currentPosition.x, currentPosition.y - 1))
+				{
+					currentPosition = {x: currentPosition.x, y: currentPosition.y - 1};
+				}
+				else
+				{
+					upMore = false;
+				}
+			}
+			
+			var moreDown = true;
+			while (moreDown)
+			{
+				edgeArray.push(currentPosition);
+				currentPosition = {x: currentPosition.x, y: currentPosition.y + 1};
+				if(!arrayContainsCoords(defensiveObject, currentPosition.x, currentPosition.y))
+				{
+					moreDown = false;
+				}
+			}
+			currentPosition = {x: currentPosition.x + 1, y: currentPosition.y - 1};
+			var moreRight = true;
+			while (moreRight)
+			{
+				edgeArray.push(currentPosition);
+				currentPosition = {x: currentPosition.x + 1, y: currentPosition.y};
+				if(!arrayContainsCoords(defensiveObject, currentPosition.x, currentPosition.y))
+				{
+					moreRight = false;
+				}
+			}
+		}
+		//bottom right vertex case
+		if(hasUp && hasLeft)
+		{
+			edgeArray = [];
+			var upMore = true;
+			while (upMore)
+			{
+				if(arrayContainsCoords(defensiveObject, currentPosition.x, currentPosition.y - 1))
+				{
+					currentPosition = {x: currentPosition.x, y: currentPosition.y - 1};
+				}
+				else
+				{
+					upMore = false;
+				}
+			}
+			
+			var moreDown = true;
+			while (moreDown)
+			{
+				edgeArray.push(currentPosition);
+				currentPosition = {x: currentPosition.x, y: currentPosition.y + 1};
+				if(!arrayContainsCoords(defensiveObject, currentPosition.x, currentPosition.y))
+				{
+					moreDown = false;
+				}
+			}
+			currentPosition = {x: currentPosition.x - 1, y: currentPosition.y - 1};
+			var moreLeft = true;
+			while (moreLeft)
+			{
+				edgeArray.push(currentPosition);
+				currentPosition = {x: currentPosition.x - 1, y: currentPosition.y};
+				if(!arrayContainsCoords(defensiveObject, currentPosition.x, currentPosition.y))
+				{
+					moreLeft = false;
+				}
+			}
+		}
+		
+		//does both left and right edge cases
+		var currentPosition = closestTile;
+		if(hasUp && hasDown)
+		{
+			edgeArray = [];
+			var upMore = true;
+			while (upMore)
+			{
+				if(arrayContainsCoords(defensiveObject, currentPosition.x, currentPosition.y - 1))
+				{
+					currentPosition = {x: currentPosition.x, y: currentPosition.y - 1};
+				}
+				else
+				{
+					upMore = false;
+				}
+			}
+			
+			var moredown = true;
+			while (moredown)
+			{
+				edgeArray.push(currentPosition);
+				currentPosition = {x: currentPosition.x, y: currentPosition.y + 1};
+				if(!arrayContainsCoords(defensiveObject, currentPosition.x, currentPosition.y))
+				{
+					moredown = false;
+				}
+			}
+		}
+		//does both top and bottom edge cases
+		if(hasLeft && hasRight)
+		{
+			edgeArray = [];
+			var leftMore = true;
+			while (leftMore)
+			{
+				if(arrayContainsCoords(defensiveObject, currentPosition.x - 1, currentPosition.y))
+				{
+					currentPosition = {x: currentPosition.x - 1, y: currentPosition.y};
+				}
+				else
+				{
+					leftMore = false;
+				}
+			}
+			
+			var moreRight = true;
+			while (moreRight)
+			{
+				edgeArray.push(currentPosition);
+				currentPosition = {x: currentPosition.x + 1, y: currentPosition.y};
+				if(!arrayContainsCoords(defensiveObject, currentPosition.x, currentPosition.y))
+				{
+					moreRight = false;
+				}
+			}
+		}
+		return edgeArray;
+	}
 	
+	function potentialDamageTakenOnMove(gameboard, unitStatsArray, terrainStatsArray, enemyUnits, unit, moveLocation){
+		//summation of weighted damage that unit can potentially take if a move is made
+		var xPlusMaxDamage = 0;
+		var xMinusMaxDamage = 0;
+		var yPlusMaxDamage = 0;
+		var yMinusMaxDamage = 0;
+		
+		var xPlusCanAttack = 0;
+		var xMInusCanAttack = 0;
+		var yPlusCanAttack = 0;
+		var yMInusCanAttack = 0;
+		
+		//check x+1
+		for(var ixx = 0; ixx < enemyUnits.length; ixx++)
+		{
+			if(arrayContainsCoords(enemyUnits[ixx].moves, moveLocation.x + 1, moveLocation.y))
+			{
+				var damageDone = damageCalculator.damageForAttack(enemyUnits[ixx].unit, unit.unit, gameboard[moveLocation.x + 1][moveLocation.y].terrain,
+				gameboard[moveLocation.x][moveLocation.y].terrain, unitStatsArray, terrainStatsArray);
+				
+				xPlusCanAttack++;
+				
+				if(damageDone > xPlusMaxDamage)
+				{
+					xPlusMaxDamage = damageDone;
+				}
+			}
+		}
+		
+		//check x-1
+		for(var ixx = 0; ixx < enemyUnits.length; ixx++)
+		{
+			if(arrayContainsCoords(enemyUnits[ixx].moves, moveLocation.x - 1, moveLocation.y))
+			{
+				var damageDone = damageCalculator.damageForAttack(enemyUnits[ixx].unit, unit.unit, gameboard[moveLocation.x - 1][moveLocation.y].terrain,
+				gameboard[moveLocation.x][moveLocation.y].terrain, unitStatsArray, terrainStatsArray);
+				
+				xMInusCanAttack++;
+				
+				if(damageDone > xPlusMaxDamage)
+				{
+					xMinusMaxDamage = damageDone;
+				}
+			}
+		}
+		
+		//check y+1
+		for(var ixx = 0; ixx < enemyUnits.length; ixx++)
+		{
+			if(arrayContainsCoords(enemyUnits[ixx].moves, moveLocation.x, moveLocation.y + 1))
+			{
+				var damageDone = damageCalculator.damageForAttack(enemyUnits[ixx].unit, unit.unit, gameboard[moveLocation.x][moveLocation.y + 1].terrain,
+				gameboard[moveLocation.x][moveLocation.y].terrain, unitStatsArray, terrainStatsArray);
+				
+				yPlusCanAttack++;
+				
+				if(damageDone > xPlusMaxDamage)
+				{
+					yPlusMaxDamage = damageDone;
+				}
+			}
+		}
+		
+		//check y-1
+		for(var ixx = 0; ixx < enemyUnits.length; ixx++)
+		{
+			if(arrayContainsCoords(enemyUnits[ixx].moves, moveLocation.x, moveLocation.y - 1))
+			{
+				var damageDone = damageCalculator.damageForAttack(enemyUnits[ixx].unit, unit.unit, gameboard[moveLocation.x][moveLocation.y - 1].terrain,
+				gameboard[moveLocation.x][moveLocation.y].terrain, unitStatsArray, terrainStatsArray);
+				
+				yMInusCanAttack++;
+				
+				if(damageDone > xPlusMaxDamage)
+				{
+					yMinusMaxDamage = damageDone;
+				}
+			}
+		}
+		
+		var maxUnitsAttacking = 0;
+		
+		if(xPlusCanAttack > maxUnitsAttacking)
+		{
+			maxUnitsAttacking = xPlusCanAttack;
+		}
+		if(xMInusCanAttack > maxUnitsAttacking)
+		{
+			maxUnitsAttacking = xMInusCanAttack;
+		}
+		if(yPlusCanAttack > maxUnitsAttacking)
+		{
+			maxUnitsAttacking = yPlusCanAttack;
+		}
+		if(yMInusCanAttack > maxUnitsAttacking)
+		{
+			maxUnitsAttacking = yMInusCanAttack;
+		}
+		
+		var damageTaken = 0;
+		//sum up potential damage making some assumptions
+		if(maxUnitsAttacking > 0)
+		{
+			if(maxUnitsAttacking == 1)
+			{
+				if(damageTaken < xPlusMaxDamage)
+				{
+					damageTaken = xPlusMaxDamage;
+				}
+				if(damageTaken < xMinusMaxDamage)
+				{
+					damageTaken = xMinusMaxDamage;
+				}
+				if(damageTaken < yPlusMaxDamage)
+				{
+					damageTaken = yPlusMaxDamage;
+				}
+				if(damageTaken < yMinusMaxDamage)
+				{
+					damageTaken = yMinusMaxDamage;
+				}
+				//damageTaken = 1;
+			}
+			if(maxUnitsAttacking == 2)
+			{
+				var tempDamage1 = 0;
+				var tempDamage2 = 0;
+				
+				if(tempDamage2 < xPlusMaxDamage)
+				{
+					tempDamage2 = xPlusMaxDamage;
+				}
+				if(tempDamage2 < xMinusMaxDamage)
+				{
+					tempDamage1 = tempDamage2;
+					tempDamage2 = xMinusMaxDamage;
+				}
+				if(tempDamage1 < yPlusMaxDamage)
+				{
+					if(tempDamage2 < yPlusMaxDamage)
+					{
+						tempDamage1 = tempDamage2;
+						tempDamage2 = yPlusMaxDamage;
+					}
+					else
+					{
+						tempDamage1 = yPlusMaxDamage;
+					}
+				}
+				if(tempDamage1 < yMinusMaxDamage)
+				{
+					//damageTaken = yMinusMaxDamage;
+					if(tempDamage2 < yMinusMaxDamage)
+					{
+						tempDamage1 = tempDamage2;
+						tempDamage2 = yMinusMaxDamage;
+					}
+					else
+					{
+						tempDamage1 = yMinusMaxDamage;
+					}
+				}
+				damageTaken = tempDamage1 + tempDamage2;
+				//damageTaken = 2;	
+			}
+			if(maxUnitsAttacking == 3)
+			{
+				damageTaken = 3;
+			}
+			if(maxUnitsAttacking == 4)
+			{
+				damageTaken = xPlusMaxDamage + xMinusMaxDamage + yPlusMaxDamage + yMinusMaxDamage;
+			}
+		}
+		return damageTaken;
+	}
+	
+	function totalHealth(unitArray){
+		var health = 0;
+		for(var ixx = 0; ixx < unitArray.length; ixx++)
+		{
+			health += unitArray[ixx].unit.health;
+		}
+		return health;
+	}
+	
+	//example function, picks random AI action
 	function randomAiAction(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject){
 		if(Math.random() * 100 <= 20){
 			return aiActionEndTurn();
@@ -355,7 +966,17 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		return aiActionEndTurn();
 	}
 	
+	function arrayContainsCoords(inArray, xCoordinate, yCoordinate){
+		for (var ixx = 0; ixx < inArray.length; ixx++)
+		{
+			if(inArray[ixx].x == xCoordinate && inArray[ixx].y == yCoordinate){
+				return true;
+			}
+		}
+		return false;
+	}
 
+	
     //exported functions
     return {
     	ACTION_TYPES: AI_ACTION_TYPES,
