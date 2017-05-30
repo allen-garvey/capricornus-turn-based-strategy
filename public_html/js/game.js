@@ -6,11 +6,67 @@
  app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats, ai, damageCalculator, levelLoader, modal, saveGameController, mixer, menu, textOverlay, uiStats){
 	function start(LEVEL_STATS, AUDIO_STATS, levelIndex, difficultyLevel, savedGame){
 		/**
+		* Cursor functions
+		*/
+
+		function eraseCursor(){
+			if(userInfo.cursor.coordinate){
+				renderer.eraseTile(cursorCanvasContext, userInfo.cursor.coordinate);
+			}
+		}
+		//erases cursor and disables coordinate,
+		//used when cursor is disabled
+		function disableCursor(){
+			eraseCursor();
+			userInfo.cursor.coordinate = null;
+
+		}
+		//draws the relevant cursor at current coordinate
+		function drawCursor(coordinate){
+			//check to see if a cursor is already drawn
+			if(userInfo.cursor.coordinate != null){
+				//don't do anything if cursor is in same square
+				if(util.areCoordinatesEqual(userInfo.cursor.coordinate, coordinate)){
+					return;
+				}
+				//cursor moved to new square, so erase previous cursor if there is one
+				eraseCursor();
+			}
+			//set new cursor location and draw cursor
+			userInfo.cursor.coordinate = coordinate;
+			//show attack cursor if player unit selected and cursor is over enemy unit
+			if(isOverTriggerPlayerAttackTile()){
+				renderer.drawTile(cursorCanvasContext, UI_STATS.cursor.attack.spritesheet, userInfo.cursor.coordinate, UI_STATS.cursor.attack.spriteCoordinate);
+			}
+			else{
+				renderer.drawTile(cursorCanvasContext, UI_STATS.cursor.select.spritesheet, userInfo.cursor.coordinate, UI_STATS.cursor.select.spriteCoordinate);
+			}
+
+			//draw unit path preview tiles, if applicable
+			if(userInfo.unitSelected && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.team === unitStats.TEAMS.PLAYER && util.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedMovementSquares)){
+				drawUnitMovementPreview(util.copyCoordinate(userInfo.cursor.coordinate));
+			}
+
+		}
+
+		//returns true if cursor is hovering over a tile that will trigger a player attack
+		//determines if a unit is currently selected, on the players team, and the cursor is over a valid attack tile
+		function isOverTriggerPlayerAttackTile(){
+			if(!userInfo.unitSelected){
+				return false;
+			}
+			var selectedUnit = renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit;
+			return selectedUnit.team === unitStats.TEAMS.PLAYER && selectedUnit.canMove && util.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedAttackSquares);
+		}
+
+		/**
 		 * Utility functions
 		 */
 		//reenable buttons after an action has occurred
 		function enableButtons(){
 			userInfo.buttonsEnabled = true;
+			userInfo.gameInteractionEnabled = true;
+			drawCursor(userInfo.currentMouseCoordinate);
 			
 			[endTurnButton, saveGameButton, exitGameButton].forEach(function(button){
 				button.disabled = false;
@@ -19,6 +75,9 @@
 		//used to disable buttons during animations or AI turn
 		function disableButtons(){
 			userInfo.buttonsEnabled = false;
+			userInfo.gameInteractionEnabled = false;
+			//hide cursor when user can't interact with game
+			disableCursor();
 			
 			[endTurnButton, saveGameButton, exitGameButton].forEach(function(button){
 				button.disabled = true;
@@ -29,10 +88,8 @@
 		 * Functions to show text overlay after turn or when game is won or lost
 		 */
 		function displayTurnText(text, callback){
-			userInfo.isTextOverlayDisplayed = true;
 			//duration should be slightly shorter than duration for text-overlay-heading-animation css
 			textOverlay.displayHeading(text, 2500, function(){
-				userInfo.isTextOverlayDisplayed = false;
 				callback();
 			});
 		}
@@ -46,7 +103,7 @@
 
 		function displayLevelFailed(){
 			disableButtons();
-			userInfo.isTextOverlayDisplayed = true;
+			userInfo.gameInteractionEnabled = false;
 			mixer.playAudioBuffer(AUDIO_STATS.level.failed.audio);
 			textOverlay.displayMenu('Mission Failed', 'Restart mission', function(){
 				start(LEVEL_STATS, AUDIO_STATS, userInfo.levelIndex, userInfo.difficultyLevel);
@@ -55,7 +112,7 @@
 
 		function displayLevelPassed(){
 			disableButtons();
-			userInfo.isTextOverlayDisplayed = true;
+			userInfo.gameInteractionEnabled = false;
 			mixer.playAudioBuffer(AUDIO_STATS.level.passed.audio);
 			//go to next level if there are more
 			if(userInfo.levelIndex < LEVEL_STATS.length - 1){
@@ -369,6 +426,7 @@
 							cursor: {
 								coordinate: null
 							},
+							currentMouseCoordinate: null,
 							unitSelected: false,
 							unitSelectedMovementSquares: false,
 							unitSelectedAttackSquares: false,
@@ -377,7 +435,7 @@
 							levelIndex: levelIndex,
 							buttonsEnabled: true,
 							turnNum: 0,
-							isTextOverlayDisplayed: false,
+							gameInteractionEnabled: true, //used for if user can currently interact with the game, such as moving units
 							numUnits: Object.keys(unitStats.TEAMS).map(function(){return 0;}) //array of integers corresponding to number of units; index corresponds to team. Used to determine if level has been passed/failed
 						};
 			disableButtons();
@@ -441,34 +499,13 @@
 		 */
 		//cursor rendering
 		gameContainer.onmousemove = function(e){
+			var coordinate = renderer.pixelCoordinateToTileCoordinate({x: e.offsetX, y: e.offsetY});
+			userInfo.currentMouseCoordinate = coordinate;
 			//don't update cursor during text overlay
-			if(userInfo.isTextOverlayDisplayed){
+			if(!userInfo.gameInteractionEnabled || util.areCoordinatesEqual(coordinate, userInfo.cursor.coordinate)){
 				return;
 			}
-			var coordinate = renderer.pixelCoordinateToTileCoordinate({x: e.offsetX, y: e.offsetY});
-			//not required if first time drawing cursor
-			if(userInfo.cursor.coordinate != null){
-				//don't do anything if cursor is in same square
-				if(coordinate.x == userInfo.cursor.coordinate.x && coordinate.y == userInfo.cursor.coordinate.y){
-					return;
-				}
-				//cursor moved to new square, so erase previous cursor if there is one
-				renderer.eraseTile(cursorCanvasContext, userInfo.cursor.coordinate);
-			}
-			//set new cursor location and draw cursor
-			userInfo.cursor.coordinate = coordinate;
-			//show attack cursor if player unit selected and cursor is over enemy unit
-			if(userInfo.unitSelected && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.team === unitStats.TEAMS.PLAYER && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.canMove && util.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedAttackSquares)){
-				renderer.drawTile(cursorCanvasContext, UI_STATS.cursor.attack.spritesheet, userInfo.cursor.coordinate, UI_STATS.cursor.attack.spriteCoordinate);
-			}
-			else{
-				renderer.drawTile(cursorCanvasContext, UI_STATS.cursor.select.spritesheet, userInfo.cursor.coordinate, UI_STATS.cursor.select.spriteCoordinate);
-			}
-
-			//draw unit path preview tiles, if applicable
-			if(userInfo.unitSelected && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.team === unitStats.TEAMS.PLAYER && util.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedMovementSquares)){
-				drawUnitMovementPreview(util.copyCoordinate(userInfo.cursor.coordinate));
-			}
+			drawCursor(coordinate);
 		};
 
 		gameContainer.onclick = function(e){
@@ -488,7 +525,7 @@
 			}
 
 			//have unit attack a unit if one is currently selected, on the players team, and valid attack tile is clicked
-			if(userInfo.unitSelected && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.team === unitStats.TEAMS.PLAYER && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.canMove && util.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedAttackSquares)){
+			if(isOverTriggerPlayerAttackTile()){
 				renderUnitDeselected(); //erase selection tiles
 				userUnitAttack(userInfo.unitSelected, util.copyCoordinate(userInfo.cursor.coordinate), userInfo.unitSelectedShortestPath[userInfo.unitSelectedShortestPath.length - 1]);
 				//after unit attacks it's the same as if unit was deselected
