@@ -79,7 +79,7 @@
 			userInfo.gameInteractionEnabled = false;
 			//hide cursor when user can't interact with game
 			disableCursor();
-			gameContainer.classList.add('interaction-disabled');
+			gameContainer.classList.add('interaction-disabled');	
 			
 			[endTurnButton, saveGameButton, exitGameButton].forEach(function(button){
 				button.disabled = true;
@@ -105,7 +105,7 @@
 
 		function displayLevelFailed(){
 			disableButtons();
-			userInfo.gameInteractionEnabled = false;
+			gameContainer.classList.remove('interaction-disabled');
 			mixer.playAudioBuffer(AUDIO_STATS.level.failed.audio);
 			textOverlay.displayMenu('Mission Failed', 'Restart mission', function(){
 				start(LEVEL_STATS, AUDIO_STATS, userInfo.levelIndex, userInfo.difficultyLevel);
@@ -114,7 +114,7 @@
 
 		function displayLevelPassed(){
 			disableButtons();
-			userInfo.gameInteractionEnabled = false;
+			gameContainer.classList.remove('interaction-disabled');
 			mixer.playAudioBuffer(AUDIO_STATS.level.passed.audio);
 			//go to next level if there are more
 			if(userInfo.levelIndex < LEVEL_STATS.length - 1){
