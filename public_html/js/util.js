@@ -32,8 +32,29 @@ app.util = (function(){
     	return Array.prototype.forEach.call(iteratable, callback); 
     }
 
-	//get json data at url, and passes parsed json data as argument into callback
-	function getJson(url, callback){
+    //AJAX polyfill for browsers that don't support the fetch API 
+    function fetchJsonPolyfill(url, callback){
+	    var request = new XMLHttpRequest();
+	    request.overrideMimeType('application/json');
+
+	    request.onreadystatechange = function(){
+	        if(request.readyState !== XMLHttpRequest.DONE){
+	            return;
+	        }
+	        var data = request.response;
+	        data = JSON.parse(data);
+
+	        if(request.status <= 200 && request.status < 300){
+	            callback(data);
+	        }
+	    };
+
+	    request.open('GET', url, true);
+	    request.send();
+	}
+
+	//for browsers that support the fetch API
+	function fetchJson(url, callback){
 		var request = new Request(url);
 		var headers = new Headers();
 		headers.append('Content-Type', 'application/json');
@@ -42,6 +63,16 @@ app.util = (function(){
 		}).then(function(json){
 			callback(json);
 		});
+	}
+
+	//get json data at url, and passes parsed json data as argument into callback
+	function getJson(url, callback){
+		if(window.fetch){
+			fetchJson(url, callback);
+		}
+		else{
+			fetchJsonPolyfill(url, callback);
+		}
 	}
 
 	//creates deep copy of an object and returns it

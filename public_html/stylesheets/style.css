@@ -213,12 +213,35 @@ html.loading{
 }
 
 /*
-* Game controls (end turn and save game buttons)
+* Game controls (end turn, exit game and save game buttons)
 */
 .game-controls-container{
 	display: flex;
 	justify-content: space-between;
 	margin-bottom: 10px;
+}
+
+@keyframes button-background-color-animation{
+	from{
+		background-image: linear-gradient(to bottom, #fff 0%, #e0e0e0 100%);
+	}
+	to {
+		background-image: linear-gradient(to bottom, #337ab7 0%, #265a88 100%);
+	}
+}
+/*So font color can change more abruptly*/
+@keyframes button-color-animation{
+	0%{ color: black; }
+	40%{ color: black; }
+	60%{ color: white; }
+	100%{ color: white; }
+}
+
+.game-controls-container.all-units-moved #button-end-turn{
+	animation: 1.2s infinite alternate button-background-color-animation ease-in-out, 1.2s infinite alternate button-color-animation linear;
+}
+.game-controls-container.all-units-moved #button-end-turn:hover{
+	animation: none;
 }
 
 /*
@@ -329,4 +352,59 @@ html.loading{
   20%   { transform: translateX(0px); }
   80%   { transform: translateX(0px); }
   100% { transform: translateX(2000px); }
+}
+
+/* 
+* Modal for Briefings
+*/
+
+.modal-briefings {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 9999;
+  /* Sit on top */
+  padding-top: 100px;
+  /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0);
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+
+.briefings-content {
+  background-image: url("../images/briefing-paper.png");
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 35%;
+  font-family: 'Orbitron', sans-serif;
+}
+
+
+/*
+*Close Briefings Modal
+*/
+
+.ready {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.ready:hover,
+.ready:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
 }
