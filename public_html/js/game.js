@@ -531,8 +531,8 @@
 			});
 		}
 		else{
-			showBriefings(briefings, ready, levelIndex);
 			initializeGame(levelIndex, difficultyLevel, savedGame);
+			showBriefings(briefings, ready, userInfo.levelIndex);
 		}
 
 
