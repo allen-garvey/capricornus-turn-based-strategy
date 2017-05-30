@@ -76,6 +76,9 @@ img.spritesheet{
 .game-container{
 	height: 800px;
 }
+.game-container.interaction-disabled{
+	cursor: none;
+}
 /*
 * canvas height and width must be set to pixel values
 and through JavaScript or it will mess up rendering

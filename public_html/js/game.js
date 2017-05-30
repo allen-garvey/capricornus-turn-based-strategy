@@ -67,6 +67,7 @@
 			userInfo.buttonsEnabled = true;
 			userInfo.gameInteractionEnabled = true;
 			drawCursor(userInfo.currentMouseCoordinate);
+			gameContainer.classList.remove('interaction-disabled');
 			
 			[endTurnButton, saveGameButton, exitGameButton].forEach(function(button){
 				button.disabled = false;
@@ -78,6 +79,7 @@
 			userInfo.gameInteractionEnabled = false;
 			//hide cursor when user can't interact with game
 			disableCursor();
+			gameContainer.classList.add('interaction-disabled');
 			
 			[endTurnButton, saveGameButton, exitGameButton].forEach(function(button){
 				button.disabled = true;
