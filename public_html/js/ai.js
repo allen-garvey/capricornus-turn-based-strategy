@@ -200,15 +200,8 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 				{
 					if(AIUnits[ixx].unit.name === "Infantry")
 					{
-						var targetLocation;
-						for(var iyy = 0; iyy < defenseEdge.length; iyy++)
-						{
-							if(gameboard[defenseEdge[iyy].x][defenseEdge[iyy].y].unit === undefined)
-							{
-								
-								break;
-							}
-						}
+						var targetLocation = getAvailableCoverTile(gameboard, defenseEdge);
+						
 					}
 					else
 					{
@@ -225,8 +218,65 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		return aiActionEndTurn();
 	}
 	
-	function getTileNearCover(gameboard, defenseEdge, leftAdd, rightAdd){
+	function getPartialPathTotarget(gameboard, unitStatsArray, terrainStatsArray, unit, targetLocation){
+		pathfinder.AIPathFor(unit, targetLocation, gameboard, unitStatsArray, terrainStatsArray)
+		var moveTo = null;
+		var izz = 0;
+		var unitStats = unitStatsArray[unit.unit.type];
 		
+		while(izz < unitPathToEnemy.length && unitPathToEnemy[izz].cost <= unitStats.movementSpeed)
+		{
+			moveTo = unitPathToEnemy[izz];
+			izz++
+		}
+	}
+	
+	function getAvailableCoverTile(gameboard, defenseEdge)
+	{
+		for (var ixx = 0; ixx < defenseEdge.length; ixx++)
+		{
+			if(gameboard[defenseEdge[ixx].x][defenseEdge[ixx].y].unit === undefined)
+				return defenseEdge[ixx];
+		}
+		return null;
+	}
+	
+	function getTileNearCover(gameboard, defenseEdge, leftAdd, rightAdd){
+		var nextAvailableTile = null;
+		var counter = 0;
+		var nextLeft = {x: defenseEdge[0].x + leftAdd.x , y: defenseEdge[0].y + leftAdd.y};
+		var nextRight = {x: defenseEdge[defenseEdge.length - 1].x + RightAdd.x , y: defenseEdge[defenseEdge.length - 1].y + RightAdd.y};
+		while (nextAvailableTile === null && counter < 20)
+		{
+			if(counter % 2 === 0)
+			{
+				if(nextLeft.x < gameboard.length && nextLeft.x >= 0
+				&& nextLeft.y < gameboard[nextLeft.x].length && nextLeft.y >= 0
+				&& gameboard[nextLeft.x][nextLeft.y].unit === undefined)
+				{
+					return {nextLeft};
+				}
+				else
+				{
+					nextLeft = {x: nextLeft.x + leftAdd.x , y: nextLeft.y + leftAdd.y};
+				}
+			}
+			else
+			{
+				if(nextRight.x < gameboard.length && nextRight.x > 0
+				&& nextRight.y < gameboard[nextRight.x].length && nextRight.y >= 0
+				&& gameboard[nextRight.x][nextRight.y].unit === undefined)
+				{
+					return {nextRight};
+				}
+				else
+				{
+					nextRight = {x: nextRight.x + leftAdd.x , y: nextRight.y + leftAdd.y};
+				}
+			}
+			counter++;
+		}
+		return null;
 	}
 	
 	function seekCover(AIUnits, enemyUnits){
