@@ -459,9 +459,6 @@
 
 			renderer.renderLevel(terrainCanvasContext, levelSpritesheet);
 			renderer.renderInitialGameboard(gameboard, unitCanvasContext);
-			displayUserTurnText(function(){
-				enableButtons();
-			});
 		}
 		
 
@@ -472,7 +469,7 @@
 		 * @param levelIndex - -1 for random setup or otherwise index of level in levelStats
 		 */
 		function showBriefings(briefings, ready, levelIndex) {
-            if(levelIndex == 0)
+                        if(levelIndex == 0)
 			{
 				var brief = "Welcome recruit to the legendary Capricornus Squadron. We’re glad to have you with us, as we’ve recently had some setbacks and have fallen on hard times. The enemy have taken over the Gemini Bridges, a vital position in our supply line, and we need to take it back. With your help we should be able to do so.</br></br>When attacking remember that infantry have advantages over planes, planes have advantages over tanks, and tanks have advantages over infantry. Also, infantry will take less damage if they are taking cover in mountains or trees. If you keep these things in mind you should be able to claim victory on the battlefield. Good luck out there soldier!";
 			}
