@@ -172,40 +172,60 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 			var endingCoordinate = endingCoordinates[Math.floor(Math.random() * endingCoordinates.length)];
 			return aiActionAttackUnit(unitToMove, endingCoordinate, attackCoordinate, memoizationObject);
 		}
+		return groupAndFortify(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, friendlyUnits, enemyUnits);
 		// console.log("In Chase");
-		return blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unitToMove, enemyUnits)
+		return blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unitToMove, enemyUnits);
 		//return move for one unit
 	}
 	
-	function groupAndFortify(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, AIunits, enemyUnits)
+	function groupAndFortify(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, AIUnits, enemyUnits)
 	{
 		if(memoizationObject.doneMoving !== undefined && memoizationObject.doneMoving === true)
 		{
 			return aiActionEndTurn();
 		}
 		var cover = getNearestCover(gameboard, unitStatsArray, terrainStatsArray, memoizationObject.AICentroid);
-		var defensiveObject = getDeffensiveShape(gameboard, unitStatsArray, terrainStatsArray, nearCover);
+		var defensiveObject = getDeffensiveShape(gameboard, unitStatsArray, terrainStatsArray, cover);
 		var defenseEdge = getDefenseEdgeNearCentroid(memoizationObject.EnemyCentroid, defensiveObject);
 		
 		// advantageous to seek cover
-		if(seekCover(AIunits, enemyUnits))
+		if(seekCover(AIUnits, enemyUnits) || true)
 		{
 			var leftLocations = {x: defenseEdge[0].x - defenseEdge[1].x, y: defenseEdge[0].y - defenseEdge[1].y};
-			var rightLocations = {x: defenseEdge[defenseEdge.length].x - defenseEdge[defenseEdge.length - 1].x,
-			y: defenseEdge[defenseEdge.length].y - defenseEdge[defenseEdge.length - 1].y};
+			var rightLocations = {x: defenseEdge[defenseEdge.length - 1].x - defenseEdge[defenseEdge.length - 2].x,
+			y: defenseEdge[defenseEdge.length - 1].y - defenseEdge[defenseEdge.length - 2].y};
+			var firstLeft = {x: defenseEdge[0].x + leftLocations.x , y: defenseEdge[0].y + leftLocations.y};
+			var firstRight = {x: defenseEdge[defenseEdge.length - 1].x + rightLocations.x , y: defenseEdge[defenseEdge.length - 1].y + rightLocations.y};
+			
 			
 			for(var ixx = 0; ixx < AIUnits.length; ixx++)
 			{
 				if(AIUnits[ixx].unit.canMove)
 				{
-					if(AIUnits[ixx].unit.name === "Infantry")
+					//if infantry find cover
+					if(AIUnits[ixx].unit.type === 0 || AIUnits[ixx].unit.type === 2)
 					{
-						var targetLocation = getAvailableCoverTile(gameboard, defenseEdge);
-						
+						if(!arrayContainsCoords(defenseEdge, AIUnits[ixx].x, AIUnits[ixx].y)){
+							var targetLocation = getAvailableCoverTile(gameboard, defenseEdge);
+							if(targetLocation === null)
+							{
+								targetLocation = getTileNearCover(gameboard, defenseEdge, leftLocations, rightLocations);
+							}
+							targetLocation = getPartialPathTarget(gameboard, unitStatsArray, terrainStatsArray, AIUnits[ixx], targetLocation);
+							return aiActionMoveUnit(AIUnits[ixx], targetLocation, memoizationObject);
+						}
 					}
+					//if not infantry find space near cover
 					else
 					{
-						var moveLocation = getTileNearCover(gameboard, defenseEdge, leftAdd, rightAdd);
+						if(!(AIUnits[ixx].x === firstLeft.x && AIUnits[ixx].y === firstLeft.y) 
+							|| (AIUnits[ixx].x === firstRight.x && AIUnits[ixx].y === firstRight.y)){
+							var targetLocation = getTileNearCover(gameboard, defenseEdge, leftLocations, rightLocations);
+							
+							targetLocation = getPartialPathTarget(gameboard, unitStatsArray, terrainStatsArray, AIUnits[ixx], targetLocation);
+							console.log({a: targetLocation, b: firstLeft,c: firstRight});
+							return aiActionMoveUnit(AIUnits[ixx], targetLocation, memoizationObject);
+						}
 					}
 				}
 			}
@@ -218,43 +238,44 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		return aiActionEndTurn();
 	}
 	
-	function getPartialPathTotarget(gameboard, unitStatsArray, terrainStatsArray, unit, targetLocation){
-		pathfinder.AIPathFor(unit, targetLocation, gameboard, unitStatsArray, terrainStatsArray)
+	function getPartialPathTarget(gameboard, unitStatsArray, terrainStatsArray, unit, targetLocation){
+		
+		var unitPathToEnemy = pathfinder.AIPathFor(unit, targetLocation, gameboard, unitStatsArray, terrainStatsArray)
 		var moveTo = null;
 		var izz = 0;
 		var unitStats = unitStatsArray[unit.unit.type];
-		
 		while(izz < unitPathToEnemy.length && unitPathToEnemy[izz].cost <= unitStats.movementSpeed)
 		{
+			
 			moveTo = unitPathToEnemy[izz];
 			izz++
 		}
+		return moveTo;
 	}
 	
 	function getAvailableCoverTile(gameboard, defenseEdge)
 	{
 		for (var ixx = 0; ixx < defenseEdge.length; ixx++)
 		{
-			if(gameboard[defenseEdge[ixx].x][defenseEdge[ixx].y].unit === undefined)
+			if(gameboard[defenseEdge[ixx].x][defenseEdge[ixx].y].unit === undefined || gameboard[defenseEdge[ixx].x][defenseEdge[ixx].y].unit === null)
 				return defenseEdge[ixx];
 		}
 		return null;
 	}
 	
 	function getTileNearCover(gameboard, defenseEdge, leftAdd, rightAdd){
-		var nextAvailableTile = null;
 		var counter = 0;
 		var nextLeft = {x: defenseEdge[0].x + leftAdd.x , y: defenseEdge[0].y + leftAdd.y};
-		var nextRight = {x: defenseEdge[defenseEdge.length - 1].x + RightAdd.x , y: defenseEdge[defenseEdge.length - 1].y + RightAdd.y};
-		while (nextAvailableTile === null && counter < 20)
+		var nextRight = {x: defenseEdge[defenseEdge.length - 1].x + rightAdd.x , y: defenseEdge[defenseEdge.length - 1].y + rightAdd.y};
+		while (counter < 20)
 		{
 			if(counter % 2 === 0)
 			{
 				if(nextLeft.x < gameboard.length && nextLeft.x >= 0
 				&& nextLeft.y < gameboard[nextLeft.x].length && nextLeft.y >= 0
-				&& gameboard[nextLeft.x][nextLeft.y].unit === undefined)
+				&& (gameboard[nextLeft.x][nextLeft.y].unit === undefined || gameboard[nextLeft.x][nextLeft.y].unit === null))
 				{
-					return {nextLeft};
+					return nextLeft;
 				}
 				else
 				{
@@ -265,9 +286,9 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 			{
 				if(nextRight.x < gameboard.length && nextRight.x > 0
 				&& nextRight.y < gameboard[nextRight.x].length && nextRight.y >= 0
-				&& gameboard[nextRight.x][nextRight.y].unit === undefined)
+				&& (gameboard[nextRight.x][nextRight.y].unit === undefined || gameboard[nextLeft.x][nextLeft.y].unit === null))
 				{
-					return {nextRight};
+					return nextRight;
 				}
 				else
 				{
@@ -515,7 +536,7 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		var hasLeft = arrayContainsCoords(defensiveObject, closestTile.x - 1, closestTile.y);
 		var hasRight = arrayContainsCoords(defensiveObject, closestTile.x + 1, closestTile.y);
 		
-		console.log({up: hasUp, down: hasDown, left: hasLeft, right: hasRight});
+		
 		//handle all 8 possible cases
 		//add elements to the array in a top to bottom left to right order
 		

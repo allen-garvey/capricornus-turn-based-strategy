@@ -59,25 +59,30 @@ app.pathfinder = (function(util){
 		var pathReverse = [];
 		var path = [];
 		var possibleTargets = [];
+		if(arrayContainsCoords(validMoves, targetCoordinate.x, targetCoordinate.y))
+		{
+			possibleTargets.push({x: targetCoordinate.x, y: targetCoordinate.y, 
+			cost: getCoordinateFromMoveArray(validMoves, targetCoordinate.x, targetCoordinate.y).cost});
+		}
 		if(arrayContainsCoords(validMoves, targetCoordinate.x + 1, targetCoordinate.y))
 		{
 			possibleTargets.push({x: targetCoordinate.x + 1, y: targetCoordinate.y, 
-			cost: getCoordinateFromMoveArray(validMoves, targetCoordinate.x + 1, targetCoordinate.y)});
+			cost: getCoordinateFromMoveArray(validMoves, targetCoordinate.x + 1, targetCoordinate.y).cost});
 		}
 		if(arrayContainsCoords(validMoves, targetCoordinate.x - 1, targetCoordinate.y))
 		{
 			possibleTargets.push({x: targetCoordinate.x - 1, y: targetCoordinate.y, 
-			cost: getCoordinateFromMoveArray(validMoves, targetCoordinate.x - 1, targetCoordinate.y)});
+			cost: getCoordinateFromMoveArray(validMoves, targetCoordinate.x - 1, targetCoordinate.y).cost});
 		}
 		if(arrayContainsCoords(validMoves, targetCoordinate.x, targetCoordinate.y + 1))
 		{
 			possibleTargets.push({x: targetCoordinate.x, y: targetCoordinate.y + 1, 
-			cost: getCoordinateFromMoveArray(validMoves, targetCoordinate.x, targetCoordinate.y + 1)});
+			cost: getCoordinateFromMoveArray(validMoves, targetCoordinate.x, targetCoordinate.y + 1).cost});
 		}
 		if(arrayContainsCoords(validMoves, targetCoordinate.x, targetCoordinate.y - 1))
 		{
 			possibleTargets.push({x: targetCoordinate.x, y: targetCoordinate.y - 1, 
-			cost: getCoordinateFromMoveArray(validMoves, targetCoordinate.x, targetCoordinate.y - 1)});
+			cost: getCoordinateFromMoveArray(validMoves, targetCoordinate.x, targetCoordinate.y - 1).cost});
 		}
 		var endingCoordinate;
 		
