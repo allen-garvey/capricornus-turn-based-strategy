@@ -20,7 +20,7 @@
 			var fadeTime = 1000;
 			var otherTeamMusic = userInfo.musicBuffers[otherTeamIndex];
 			if(otherTeamMusic){
-				mixer.stopSound(otherTeamMusic, Math.floor(fadeTime / 2));
+				mixer.stopSound(otherTeamMusic, 300);
 			}
 			userInfo.musicBuffers[currentTeamIndex] = mixer.playAudioBuffer(AUDIO_STATS.music[currentTeamIndex].audio, true, fadeTime);
 		}
