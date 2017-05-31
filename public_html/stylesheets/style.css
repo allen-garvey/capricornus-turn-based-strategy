@@ -59,6 +59,7 @@ img.spritesheet{
 }
 .tab{
 	display: none;
+	padding-bottom: 100px;
 }
 .tab.active{
 	display: block;
@@ -67,7 +68,7 @@ img.spritesheet{
 /*
 * Setup for game section
 */
-.game-section{
+.tab.game-section{
 	padding-bottom: 200px;
 }
 .game-section, .game-container{
