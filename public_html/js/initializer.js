@@ -14,7 +14,7 @@
 
 	//3 * levelStats array, since each level has a 2 unit files and 1 terrain file to download
 	//3 * audioStats unit array, since each unit has 3 sound effects files
-	var assetsLeftToLoad = imageSprites.length + (3 * levelStatsArray.length) + (3 * audioStatsArray.units.length) + cursorAudioKeys.length + levelAudioKeys.length;
+	var assetsLeftToLoad = imageSprites.length + (3 * levelStatsArray.length) + (3 * audioStatsArray.units.length) + cursorAudioKeys.length + levelAudioKeys.length + audioStatsArray.music.length;
 
 	//called after a single asset loads
 	function assetDidLoad(){
@@ -91,6 +91,12 @@
 		var levelItem = audioStatsArray.level[levelAudioKey];
 		mixer.getAudioBuffer(levelItem.url, function(buffer){
 			levelItem.audio = buffer;
+			assetDidLoad();
+		});
+	});
+	audioStatsArray.music.forEach(function(musicInfo){
+		mixer.getAudioBuffer(musicInfo.url, function(buffer){
+			musicInfo.audio = buffer;
 			assetDidLoad();
 		});
 	});

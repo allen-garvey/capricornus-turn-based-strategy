@@ -5,6 +5,27 @@
 */
  app.game = (function(util, renderer, unitStats, terrainStats, pathfinder, levelStats, ai, damageCalculator, levelLoader, modal, saveGameController, mixer, menu, textOverlay, uiStats){
 	function start(LEVEL_STATS, AUDIO_STATS, levelIndex, difficultyLevel, savedGame){
+		/*
+		* Music functions
+		*/
+		function killMusic(){
+			userInfo.musicBuffers.forEach(function(buffer){
+				if(buffer){
+					mixer.stopSound(buffer, 200);
+				}
+			});
+		}
+
+		function switchMusic(currentTeamIndex, otherTeamIndex){
+			var fadeTime = 1000;
+			var otherTeamMusic = userInfo.musicBuffers[otherTeamIndex];
+			if(otherTeamMusic){
+				mixer.stopSound(otherTeamMusic, Math.floor(fadeTime / 2));
+			}
+			userInfo.musicBuffers[currentTeamIndex] = mixer.playAudioBuffer(AUDIO_STATS.music[currentTeamIndex].audio, true, fadeTime);
+		}
+
+
 		/**
 		* Cursor functions
 		*/
@@ -121,15 +142,18 @@
 			});
 		}
 		function displayUserTurnText(callback){
+			switchMusic(unitStats.TEAMS.PLAYER, unitStats.TEAMS.AI);
 			displayTurnText('Turn ' + (userInfo.turnNum + 1), callback);
 		}
 
 		function displayAiTurnText(callback){
+			switchMusic(unitStats.TEAMS.AI, unitStats.TEAMS.PLAYER);
 			displayTurnText('Computer Turn', callback);
 		}
 
 		function displayLevelFailed(){
 			disableButtons();
+			killMusic();
 			gameContainer.classList.remove('interaction-disabled');
 			mixer.playAudioBuffer(AUDIO_STATS.level.failed.audio);
 			textOverlay.displayMenu('Mission Failed', 'Restart mission', function(){
@@ -139,6 +163,7 @@
 
 		function displayLevelPassed(){
 			disableButtons();
+			killMusic();
 			gameContainer.classList.remove('interaction-disabled');
 			mixer.playAudioBuffer(AUDIO_STATS.level.passed.audio);
 			//go to next level if there are more
@@ -462,6 +487,7 @@
 							levelIndex: levelIndex,
 							buttonsEnabled: true,
 							turnNum: 0,
+							musicBuffers: [null, null],
 							gameInteractionEnabled: true, //used for if user can currently interact with the game, such as moving units
 							numUnits: Object.keys(unitStats.TEAMS).map(function(){return 0;}) //array of integers corresponding to number of units; index corresponds to team. Used to determine if level has been passed/failed
 						};
@@ -657,6 +683,7 @@
 				return;
 			}
 			modal.confirm('Are you sure you want to quit? All unsaved progress will be lost.', function(){
+				killMusic();
 				menu.displayMainMenu();
 			});
 		};

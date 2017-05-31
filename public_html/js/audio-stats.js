@@ -71,6 +71,18 @@ app.audioStats = (function(){
             }
         };
 
+        stats.music = [
+            {
+                url: 'sounds/ready-steady.ogg',
+                audio: null
+            },
+            {
+                url: 'sounds/panic-attack.ogg',
+                audio: null
+            }
+
+        ];
+
     	return stats;
     }
 
