@@ -159,6 +159,12 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 			return aiActionEndTurn();
 		}
 		//decide on strategy
+		
+		var canAttack = numberThatCanAttack(gameboard, unitStatsArray, terrainStatsArray, memoizationObject, friendlyUnits, enemyUnits);
+		if (canAttack >= 1)
+		{
+			return attackOptimize(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, friendlyUnits, enemyUnits, canAttack);
+		}
 		var attackCoordinates = pathfinder.attackCoordinatesFor(unitToMove, gameboard, unitStatsArray, terrainStatsArray);
 		// console.log(attackCoordinates);
 		if(attackCoordinates.length > 0){
@@ -176,6 +182,48 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		// console.log("In Chase");
 		return blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unitToMove, enemyUnits);
 		//return move for one unit
+	}
+	
+	function attackOptimize(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, AIUnits, enemyUnits, canAttack){
+		
+		//cautious attack
+		if (canAttack === 1)
+		{
+			var unitThatCanAttack = null;
+			for (var ixx = 0; ixx < AIUnits.length; ixx++)
+			{
+				var attackCoordinates = pathfinder.attackCoordinatesFor(AIUnits[ixx], gameboard, unitStatsArray, terrainStatsArray);
+				if(attackCoordinates.length > 0){
+					unitThatCanAttack = AIUnits[ixx];
+				}
+			}
+			
+		}
+		else
+		{
+			
+		}
+	}
+	
+	
+	function  getBestTarget(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unit, enemyUnit, attackCoordinates){
+		
+	}
+	
+	function getAttackFromCoordinate(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unit, enemyUnit, attackCoordinates){
+		
+	}
+	
+	function numberThatCanAttack(gameboard, unitStatsArray, terrainStatsArray, memoizationObject, AIUnits, enemyUnits){
+		var count = 0;
+		for (var ixx = 0; ixx < AIUnits.length; ixx++)
+		{
+			var attackCoordinates = pathfinder.attackCoordinatesFor(AIUnits[ixx], gameboard, unitStatsArray, terrainStatsArray);
+			if(attackCoordinates.length > 0){
+				count++;
+			}
+		}
+		return count;
 	}
 	
 	function groupAndFortify(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, AIUnits, enemyUnits)
@@ -223,7 +271,7 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 							var targetLocation = getTileNearCover(gameboard, defenseEdge, leftLocations, rightLocations);
 							
 							targetLocation = getPartialPathTarget(gameboard, unitStatsArray, terrainStatsArray, AIUnits[ixx], targetLocation);
-							console.log({a: targetLocation, b: firstLeft,c: firstRight});
+							//console.log({a: targetLocation, b: firstLeft,c: firstRight});
 							return aiActionMoveUnit(AIUnits[ixx], targetLocation, memoizationObject);
 						}
 					}
