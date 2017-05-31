@@ -66,6 +66,35 @@ img.spritesheet{
 }
 
 /*
+* Styles for non-game tabs
+*/
+.text-container{
+	margin: 0 auto;
+	max-width: 800px;
+}
+.text-list{
+	list-style-type: square;
+	margin-top: 0;
+}
+.text-list li{
+	margin-bottom: 0.5em;
+}
+.section-subheading{
+	margin-top: 0;
+	margin-bottom: 4px;
+}
+.section-main-subheading{
+	margin-top: 0;
+	margin-bottom: 12px;
+}
+.text-section{
+	margin-bottom: 2em;
+}
+.credit-developer{
+	margin-bottom: 1.67em;
+}
+
+/*
 * Setup for game section
 */
 .tab.game-section{
