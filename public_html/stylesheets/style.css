@@ -420,6 +420,9 @@ html.loading{
   width: 35%;
   font-family: 'Orbitron', sans-serif;
 }
+.briefings-content p{
+	line-height: 1.2em;
+}
 
 
 /*
