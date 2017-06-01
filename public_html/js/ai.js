@@ -189,29 +189,139 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		//cautious attack
 		if (canAttack === 1)
 		{
-			var unitThatCanAttack = null;
-			for (var ixx = 0; ixx < AIUnits.length; ixx++)
-			{
-				var attackCoordinates = pathfinder.attackCoordinatesFor(AIUnits[ixx], gameboard, unitStatsArray, terrainStatsArray);
-				if(attackCoordinates.length > 0){
-					unitThatCanAttack = AIUnits[ixx];
-				}
-			}
-			
+			return groupAndFortify(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, AIUnits, enemyUnits);
 		}
 		else
 		{
-			
+			var action = getBestTarget(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, AIUnits, enemyUnits);
+			console.log(action);
+			return action;
 		}
 	}
 	
 	
-	function  getBestTarget(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unit, enemyUnit, attackCoordinates){
-		
-	}
-	
-	function getAttackFromCoordinate(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unit, enemyUnit, attackCoordinates){
-		
+	function getBestTarget(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, AIUnits, enemyUnits){
+		var bestUnit = null;
+		var bestWeight = 0;
+		var attackFrom = null;
+		var attack = null;
+		for(var ixx = 0; ixx < AIUnits.length; ixx++)
+		{
+			if(AIUnits[ixx].unit.canMove){
+				var moveCoordinates = pathfinder.movementCoordinatesFor(AIUnits[ixx], gameboard, unitStatsArray, terrainStatsArray);
+				var attackCoordinates = pathfinder.attackCoordinatesFor(AIUnits[ixx], gameboard, unitStatsArray, terrainStatsArray);
+				
+				for(var iyy = 0; iyy < attackCoordinates.length; iyy++)
+				{
+					var enemyHP = gameboard[attackCoordinates[iyy].x][attackCoordinates[iyy].y].unit.health;
+					if(arrayContainsCoords(moveCoordinates ,attackCoordinates[iyy].x - 1, attackCoordinates[iyy].y)){
+						var damageDone = damageCalculator.damageForAttack(AIUnits[ixx].unit, 
+						gameboard[attackCoordinates[iyy].x][attackCoordinates[iyy].y].unit, 
+						gameboard[attackCoordinates[iyy].x - 1][attackCoordinates[iyy].y].terrain, 
+						gameboard[attackCoordinates[iyy].x][attackCoordinates[iyy].y].terrain, 
+						unitStatsArray, terrainStatsArray);
+						
+						var tempWeight = 0;
+						
+						if(damageDone > enemyHP)
+						{
+							//heavy weight inversely proportional to favor minimal effort to kill
+							tempWeight = 20000 / damageDone;
+						}
+						else
+						{
+							tempWeight = damageDone;
+						}
+						if(tempWeight > bestWeight)
+						{
+							bestWeight = tempWeight;
+							attackFrom = {x: attackCoordinates[iyy].x - 1, y: attackCoordinates[iyy].y};
+							attack = {x: attackCoordinates[iyy].x, y: attackCoordinates[iyy].y};
+							bestUnit = AIUnits[ixx];
+						}
+					}
+					if(arrayContainsCoords(moveCoordinates ,attackCoordinates[iyy].x + 1, attackCoordinates[iyy].y)){
+						var damageDone = damageCalculator.damageForAttack(AIUnits[ixx].unit, 
+						gameboard[attackCoordinates[iyy].x][attackCoordinates[iyy].y].unit, 
+						gameboard[attackCoordinates[iyy].x + 1][attackCoordinates[iyy].y].terrain, 
+						gameboard[attackCoordinates[iyy].x][attackCoordinates[iyy].y].terrain, 
+						unitStatsArray, terrainStatsArray);
+						
+						var tempWeight = 0;
+						
+						if(damageDone > enemyHP)
+						{
+							//heavy weight inversely proportional to favor minimal effort to kill
+							tempWeight = 20000 / damageDone;
+						}
+						else
+						{
+							tempWeight = damageDone;
+						}
+						if(tempWeight > bestWeight)
+						{
+							bestWeight = tempWeight;
+							attackFrom = {x: attackCoordinates[iyy].x + 1, y: attackCoordinates[iyy].y};
+							attack = {x: attackCoordinates[iyy].x, y: attackCoordinates[iyy].y};
+							bestUnit = AIUnits[ixx];
+						}
+					}
+					if(arrayContainsCoords(moveCoordinates ,attackCoordinates[iyy].x, attackCoordinates[iyy].y + 1)){
+						var damageDone = damageCalculator.damageForAttack(AIUnits[ixx].unit, 
+						gameboard[attackCoordinates[iyy].x][attackCoordinates[iyy].y].unit, 
+						gameboard[attackCoordinates[iyy].x][attackCoordinates[iyy].y + 1].terrain, 
+						gameboard[attackCoordinates[iyy].x][attackCoordinates[iyy].y].terrain, 
+						unitStatsArray, terrainStatsArray);
+						
+						var tempWeight = 0;
+						
+						if(damageDone > enemyHP)
+						{
+							//heavy weight inversely proportional to favor minimal effort to kill
+							tempWeight = 20000 / damageDone;
+						}
+						else
+						{
+							tempWeight = damageDone;
+						}
+						if(tempWeight > bestWeight)
+						{
+							bestWeight = tempWeight;
+							attackFrom = {x: attackCoordinates[iyy].x, y: attackCoordinates[iyy].y + 1};
+							attack = {x: attackCoordinates[iyy].x, y: attackCoordinates[iyy].y};
+							bestUnit = AIUnits[ixx];
+						}
+					}
+					if(arrayContainsCoords(moveCoordinates ,attackCoordinates[iyy].x, attackCoordinates[iyy].y - 1)){
+						var damageDone = damageCalculator.damageForAttack(AIUnits[ixx].unit, 
+						gameboard[attackCoordinates[iyy].x][attackCoordinates[iyy].y].unit, 
+						gameboard[attackCoordinates[iyy].x][attackCoordinates[iyy].y - 1].terrain, 
+						gameboard[attackCoordinates[iyy].x][attackCoordinates[iyy].y].terrain, 
+						unitStatsArray, terrainStatsArray);
+						
+						var tempWeight = 0;
+						
+						if(damageDone > enemyHP)
+						{
+							//heavy weight inversely proportional to favor minimal effort to kill
+							tempWeight = 20000 / damageDone;
+						}
+						else
+						{
+							tempWeight = damageDone;
+						}
+						if(tempWeight > bestWeight)
+						{
+							bestWeight = tempWeight;
+							attackFrom = {x: attackCoordinates[iyy].x, y: attackCoordinates[iyy].y - 1};
+							attack = {x: attackCoordinates[iyy].x, y: attackCoordinates[iyy].y};
+							bestUnit = AIUnits[ixx];
+						}
+					}
+				}
+			}
+		}
+		return aiActionAttackUnit(bestUnit, attackFrom, attack, memoizationObject);
 	}
 	
 	function numberThatCanAttack(gameboard, unitStatsArray, terrainStatsArray, memoizationObject, AIUnits, enemyUnits){
