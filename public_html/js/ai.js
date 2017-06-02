@@ -178,7 +178,10 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 			var endingCoordinate = endingCoordinates[Math.floor(Math.random() * endingCoordinates.length)];
 			return aiActionAttackUnit(unitToMove, endingCoordinate, attackCoordinate, memoizationObject);
 		}
-		return groupAndFortify(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, friendlyUnits, enemyUnits);
+		//console.log(difficultyLevel);
+		if(difficultyLevel === 1){
+			return groupAndFortify(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, friendlyUnits, enemyUnits);
+		}
 		// console.log("In Chase");
 		return blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unitToMove, enemyUnits);
 		//return move for one unit
@@ -187,14 +190,47 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 	function attackOptimize(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, AIUnits, enemyUnits, canAttack){
 		
 		//cautious attack
-		if (canAttack === 1)
+		if (canAttack === 1 && AIUnits.length > 1)
 		{
-			return groupAndFortify(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, AIUnits, enemyUnits);
+			if(difficultyLevel === 1){
+				return groupAndFortify(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, AIUnits, enemyUnits);
+			}
+			else
+			{
+				var unitToMove = null;
+				for (var ixx = 0; ixx < AIUnits.length; ixx++)
+				{
+					if(AIUnits[ixx].unit.canMove)
+					{
+						unitToMove = AIUnits[ixx];
+						break;
+					}
+				}
+				if(unitToMove === null)
+				{
+					return aiActionEndTurn();
+				}
+				
+				var attackCoordinates = pathfinder.attackCoordinatesFor(unitToMove, gameboard, unitStatsArray, terrainStatsArray);
+				// console.log(attackCoordinates);
+				if(attackCoordinates.length > 0){
+					// console.log("In Attack");
+					var movementCoordinates = pathfinder.movementCoordinatesFor(unitToMove, gameboard, unitStatsArray, terrainStatsArray);
+					var attackCoordinate = attackCoordinates[Math.floor(Math.random() * attackCoordinates.length)];
+					//find ending coordinate for attack coordinate
+					//add the starting coordinate, since it is not already in movementCoordinates
+					movementCoordinates.push(unitToMove);
+					var endingCoordinates = pathfinder.movementCoordinatesForAttackCoordinate(attackCoordinate, movementCoordinates);
+					var endingCoordinate = endingCoordinates[Math.floor(Math.random() * endingCoordinates.length)];
+					return aiActionAttackUnit(unitToMove, endingCoordinate, attackCoordinate, memoizationObject);
+				}
+				return blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unitToMove, enemyUnits);
+			}
 		}
 		else
 		{
 			var action = getBestTarget(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, AIUnits, enemyUnits);
-			console.log(action);
+			//console.log(action);
 			return action;
 		}
 	}
@@ -340,7 +376,7 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 			return blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unitToMove, enemyUnits);
 		}
 		
-		console.log(aiActionAttackUnit(bestUnit, attackFrom, attack, memoizationObject));
+		//console.log(aiActionAttackUnit(bestUnit, attackFrom, attack, memoizationObject));
 		return aiActionAttackUnit(bestUnit, attackFrom, attack, memoizationObject);
 	}
 	
