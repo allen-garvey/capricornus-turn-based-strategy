@@ -17,7 +17,7 @@
 		}
 
 		function switchMusic(currentTeamIndex, otherTeamIndex){
-			var fadeTime = 1000;
+			var fadeInTime = null;
 			var otherTeamMusic = userInfo.musicBuffers[otherTeamIndex];
 			if(otherTeamMusic){
 				mixer.stopSound(otherTeamMusic, 300);
@@ -25,7 +25,7 @@
 
 			var musicIndex = currentTeamIndex + (userInfo.levelIndex * currentTeamIndex);
 			var currentTeamMusic = AUDIO_STATS.music[musicIndex].audio;
-			userInfo.musicBuffers[currentTeamIndex] = mixer.playAudioBuffer(currentTeamMusic, true, fadeTime);
+			userInfo.musicBuffers[currentTeamIndex] = mixer.playAudioBuffer(currentTeamMusic, true, fadeInTime);
 		}
 
 

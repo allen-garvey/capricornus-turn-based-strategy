@@ -33,11 +33,18 @@ app.mixer = (function(){
 	 * plays sound stored in audio buffer using web audio api
 	 * based on: https://www.html5rocks.com/en/tutorials/webaudio/intro/
 	 * @param audioBuffer - AudioBuffer object preloaded with audio
-	 * @param shouldLoop - boolean - if audio should loop
-	 * @param delay - delay in milliseconds before audio should start for the first time
+	 * @param shouldLoop - boolean (optional) - if audio should loop
+	 * @param delay - int (optional) - delay in milliseconds before audio should start for the first time
+	 * @param duration - int (optional) - total milliseconds audio should play for
 	 * @returns GainNode - use stop method to stop sound
 	 */
-	function playAudioBuffer(audioBuffer, shouldLoop, delay){
+	function playAudioBuffer(audioBuffer, shouldLoop, delay, duration){
+		function stopAfterDuration(gainNode){
+			setTimeout(function(){
+				stopSound(gainNode, 2000);
+			}, duration);
+		}
+
 		var source = context.createBufferSource();    // creates a sound source
 		source.buffer = audioBuffer;                    // tell the source which sound to play
 		if(shouldLoop){
@@ -49,12 +56,18 @@ app.mixer = (function(){
 		gainNode.connect(context.destination);         // connect the source to the context's destination (the speakers)
 		
 		if(delay && delay > 0){
-			source.start(0);
+			setTimeout(function(){
+				source.start(0);
+				if(duration && duration > 0){
+					stopAfterDuration(gainNode);
+				}	
+			}, delay);
 		}
 		else{
-			setTimeout(function(){
-				source.start(0);		
-			}, delay);
+			source.start(0);
+			if(duration && duration > 0){
+				stopAfterDuration(gainNode);
+			}	
 		}
 		return gainNode;
 	}
