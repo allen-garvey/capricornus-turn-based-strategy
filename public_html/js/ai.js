@@ -161,7 +161,7 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		//decide on strategy
 		
 		var canAttack = numberThatCanAttack(gameboard, unitStatsArray, terrainStatsArray, memoizationObject, friendlyUnits, enemyUnits);
-		if (canAttack >= 1)
+		if (canAttack >= 1 || friendlyUnits.length === 1)
 		{
 			return attackOptimize(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, friendlyUnits, enemyUnits, canAttack);
 		}
@@ -210,6 +210,7 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 			if(AIUnits[ixx].unit.canMove){
 				var moveCoordinates = pathfinder.movementCoordinatesFor(AIUnits[ixx], gameboard, unitStatsArray, terrainStatsArray);
 				var attackCoordinates = pathfinder.attackCoordinatesFor(AIUnits[ixx], gameboard, unitStatsArray, terrainStatsArray);
+				moveCoordinates.push({x: AIUnits[ixx].x, y: AIUnits[ixx].y});
 				
 				for(var iyy = 0; iyy < attackCoordinates.length; iyy++)
 				{
