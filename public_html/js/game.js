@@ -22,7 +22,10 @@
 			if(otherTeamMusic){
 				mixer.stopSound(otherTeamMusic, 300);
 			}
-			userInfo.musicBuffers[currentTeamIndex] = mixer.playAudioBuffer(AUDIO_STATS.music[currentTeamIndex].audio, true, fadeTime);
+
+			var musicIndex = currentTeamIndex + (userInfo.levelIndex * currentTeamIndex);
+			var currentTeamMusic = AUDIO_STATS.music[musicIndex].audio;
+			userInfo.musicBuffers[currentTeamIndex] = mixer.playAudioBuffer(currentTeamMusic, true, fadeTime);
 		}
 
 

@@ -79,6 +79,14 @@ app.audioStats = (function(){
             {
                 url: 'sounds/panic-attack.ogg',
                 audio: null
+            },
+            {
+                url: 'sounds/marche-grotesque.ogg',
+                audio: null
+            },
+            {
+                url: 'sounds/visions-of-apocalypse.ogg',
+                audio: null
             }
 
         ];
