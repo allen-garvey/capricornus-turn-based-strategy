@@ -321,6 +321,25 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 				}
 			}
 		}
+		
+		if(bestUnit === null)
+		{
+			var unitToMove = null;
+			for(var izz = 0; izz < AIUnits.length; izz++)
+			{
+				if(AIUnits[izz].unit.canMove)
+				{
+					unitToMove = AIUnits[izz];
+				}
+			}
+			if(unitToMove === null)
+			{
+				return aiActionEndTurn();
+			}
+			return blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unitToMove, enemyUnits);
+		}
+		
+		console.log(aiActionAttackUnit(bestUnit, attackFrom, attack, memoizationObject));
 		return aiActionAttackUnit(bestUnit, attackFrom, attack, memoizationObject);
 	}
 	
