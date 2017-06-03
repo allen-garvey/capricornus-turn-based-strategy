@@ -25,7 +25,7 @@
 
 			var musicIndex = currentTeamIndex + (userInfo.levelIndex * currentTeamIndex);
 			var currentTeamMusic = AUDIO_STATS.music[musicIndex].audio;
-			userInfo.musicBuffers[currentTeamIndex] = mixer.playAudioBuffer(currentTeamMusic, true, fadeInTime);
+			userInfo.musicBuffers[currentTeamIndex] = mixer.playAudioBuffer(currentTeamMusic, false, fadeInTime);
 		}
 
 

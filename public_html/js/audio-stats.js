@@ -73,19 +73,19 @@ app.audioStats = (function(){
 
         stats.music = [
             {
-                url: 'sounds/ready-steady.ogg',
+                url: 'sounds/ready-steady-stinger.ogg',
                 audio: null
             },
             {
-                url: 'sounds/panic-attack.ogg',
+                url: 'sounds/panic-attack-stinger.ogg',
                 audio: null
             },
             {
-                url: 'sounds/marche-grotesque.ogg',
+                url: 'sounds/marche-grotesque-stinger.ogg',
                 audio: null
             },
             {
-                url: 'sounds/visions-of-apocalypse.ogg',
+                url: 'sounds/visions-of-apocalypse-stinger.ogg',
                 audio: null
             }
 
