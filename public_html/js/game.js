@@ -361,7 +361,6 @@
 		}
 
 		function triggerAiTurn(){
-			disableButtons();
 			displayAiTurnText(function(){
 				aiTurnAction({}, function(){
 					resetGameboardForPlayerTurn();
@@ -669,6 +668,9 @@
 			if(!userInfo.buttonsEnabled){
 				return;
 			}
+			disableButtons();
+			renderUnitDeselected();
+			userInfo.unitSelected = false;
 			triggerAiTurn();
 		};
 
