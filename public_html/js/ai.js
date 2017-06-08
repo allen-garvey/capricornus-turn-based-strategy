@@ -82,7 +82,10 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		return  aiMain(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject);
 		//return randomAiAction(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject);
 	}
-
+	
+	/*
+	* Entry point for AI swithches between strategies based on the current game conditions and difficulty selected
+	*/
 	function aiMain(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject){
 		//parse map
 		var friendlyUnits = [];
@@ -120,8 +123,8 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 			memoizationObject.AICentroid = getUnitCentroid(friendlyUnits);
 			//console.log(memoizationObject.AICentroid);
 		}
-		// var nearCover = getNearestCover(gameboard, unitStatsArray, terrainStatsArray, memoizationObject.AICentroid);
 		
+		// var nearCover = getNearestCover(gameboard, unitStatsArray, terrainStatsArray, memoizationObject.AICentroid);
 		// var defensiveObject = getDeffensiveShape(gameboard, unitStatsArray, terrainStatsArray, nearCover);
 		// console.log(defensiveObject);
 		// var defenseEdge = getDefenseEdgeNearCentroid(memoizationObject.EnemyCentroid, defensiveObject);
@@ -144,7 +147,7 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		}
 		memoizationObject.UnitsCanAttack = unitsCanAttack;
 		
-		
+		//find Next unit that can  move for Chase strategy and check to see if there is a moveable unit
 		var unitToMove = null;
 		for (var ixx = 0; ixx < friendlyUnits.length; ixx++)
 		{
@@ -154,12 +157,15 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 				break;
 			}
 		}
+		
 		if(unitToMove === null)
 		{
 			return aiActionEndTurn();
 		}
+		
 		//decide on strategy
 		
+		//determine if AI should attack or hold
 		var canAttack = numberThatCanAttack(gameboard, unitStatsArray, terrainStatsArray, memoizationObject, friendlyUnits, enemyUnits);
 		if (canAttack >= 1 || friendlyUnits.length === 1)
 		{
@@ -167,7 +173,8 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		}
 		var attackCoordinates = pathfinder.attackCoordinatesFor(unitToMove, gameboard, unitStatsArray, terrainStatsArray);
 		// console.log(attackCoordinates);
-		if(attackCoordinates.length > 0){
+		//easy default to attack if only one AI unit can attack
+		if(attackCoordinates.length > 0 && difficultyLevel === 0){
 			// console.log("In Attack");
 			var movementCoordinates = pathfinder.movementCoordinatesFor(unitToMove, gameboard, unitStatsArray, terrainStatsArray);
 			var attackCoordinate = attackCoordinates[Math.floor(Math.random() * attackCoordinates.length)];
@@ -179,14 +186,22 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 			return aiActionAttackUnit(unitToMove, endingCoordinate, attackCoordinate, memoizationObject);
 		}
 		//console.log(difficultyLevel);
+		
+		//If hard
 		if(difficultyLevel === 1){
 			return groupAndFortify(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, friendlyUnits, enemyUnits);
 		}
+		
+		//default to chase
 		// console.log("In Chase");
 		return blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unitToMove, enemyUnits);
 		//return move for one unit
 	}
 	
+	
+	/*
+	* Optimizes attack to minimal kill then max damage, then min damage taken after 
+	*/
 	function attackOptimize(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, AIUnits, enemyUnits, canAttack){
 		
 		//cautious attack
@@ -235,7 +250,10 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		}
 	}
 	
-	
+	/*
+	* Determines the best target to attack by optimizing in a greedy way
+	* minimal kill, then max damage, then min damage taken after 
+	*/
 	function getBestTarget(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, AIUnits, enemyUnits){
 		var bestUnit = null;
 		var bestWeight = 0;
@@ -359,6 +377,8 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 			}
 		}
 		
+		//If no attack option exists but we are inside this function only one AI unit exists and it 
+		// should advance towards the enemy
 		if(bestUnit === null)
 		{
 			var unitToMove = null;
@@ -380,6 +400,9 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		return aiActionAttackUnit(bestUnit, attackFrom, attack, memoizationObject);
 	}
 	
+	/*
+	* returns the number of AI units that can attack this turn
+	*/
 	function numberThatCanAttack(gameboard, unitStatsArray, terrainStatsArray, memoizationObject, AIUnits, enemyUnits){
 		var count = 0;
 		for (var ixx = 0; ixx < AIUnits.length; ixx++)
@@ -392,6 +415,9 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		return count;
 	}
 	
+	/*
+	* Strategy that moves the AI towards cover and aligns units along the edge near the enemy.
+	*/
 	function groupAndFortify(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, AIUnits, enemyUnits)
 	{
 		if(memoizationObject.doneMoving !== undefined && memoizationObject.doneMoving === true)
@@ -402,7 +428,8 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		var defensiveObject = getDeffensiveShape(gameboard, unitStatsArray, terrainStatsArray, cover);
 		var defenseEdge = getDefenseEdgeNearCentroid(memoizationObject.EnemyCentroid, defensiveObject);
 		
-		// advantageous to seek cover
+		// advantageous to seek cover else was unecessary and it was determined that is was
+		// advantageous to group near cover even if it couldn't be used at least for the levels as they are
 		if(seekCover(AIUnits, enemyUnits) || true)
 		{
 			var leftLocations = {x: defenseEdge[0].x - defenseEdge[1].x, y: defenseEdge[0].y - defenseEdge[1].y};
@@ -445,13 +472,18 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 			}
 		}
 		// advantageous to group up away from cover
-		else
-		{
+		//ended up being unecessary.
+		// else
+		// {
 			
-		}
+		// }
 		return aiActionEndTurn();
 	}
 	
+	
+	/*
+	* returns a tile along a multi-turn path for the AI
+	*/
 	function getPartialPathTarget(gameboard, unitStatsArray, terrainStatsArray, unit, targetLocation){
 		
 		var unitPathToEnemy = pathfinder.AIPathFor(unit, targetLocation, gameboard, unitStatsArray, terrainStatsArray)
@@ -467,6 +499,9 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		return moveTo;
 	}
 	
+	/*
+	* Returns an avaialble tile in the cover object
+	*/
 	function getAvailableCoverTile(gameboard, defenseEdge)
 	{
 		for (var ixx = 0; ixx < defenseEdge.length; ixx++)
@@ -477,6 +512,11 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		return null;
 	}
 	
+	
+	/*
+	* returns a tile on the edges of a cover aligned with the units ligning up on the cover for
+	* units that can't move onto cover.
+	*/
 	function getTileNearCover(gameboard, defenseEdge, leftAdd, rightAdd){
 		var counter = 0;
 		var nextLeft = {x: defenseEdge[0].x + leftAdd.x , y: defenseEdge[0].y + leftAdd.y};
@@ -514,6 +554,12 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		return null;
 	}
 	
+	
+	/*
+	* gets ratio of units that benefit from cover between the AI and player to decide if cover is advantageous for the AI
+	* ended up not being necessary since the AI strategy endedup to be to deny the player cover in hard mode by sitting on cover until 
+	* the player moved close enough to attack
+	*/
 	function seekCover(AIUnits, enemyUnits){
 		var enemyTanks = 0;
 		var AITanks = 0;
@@ -553,6 +599,12 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		return false;
 	}
 	
+	
+	/*
+	* chase strategy where AI unit moves towards closest player unit
+	* --might add move towards closest unit weak to AI unit
+	* --used mostly for easy AI so I left it at closest unit
+	*/
 	function blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unit, enemyUnits){
 		if(unit === null)
 		{
@@ -582,6 +634,10 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		return aiActionMoveUnit(unit, moveTo, memoizationObject);
 	}
 	
+	
+	/*
+	* finds the enter point for a unit array
+	*/
 	function getUnitCentroid(unitArray){
 		if(unitArray !== undefined && unitArray.length > 0)
 		{
@@ -599,6 +655,10 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		return {x: toInt(xAvg), y: toInt(yAvg)};
 	}
 	
+	
+	/*
+	* finds the cover tile colsest to a unit centroid
+	*/
 	function getNearestCover(gameboard, unitStatsArray, terrainStatsArray, centroid){
 		var onBoard = true;
 		var coverFound = false;
@@ -689,8 +749,15 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		
 	}
 	
+	/*
+	* rounds a float to int for average positions can be conveted to an index location
+	*/
 	function toInt(n){ return Math.round(Number(n)); };	
 	
+	
+	/*
+	* returns all consecutive cover tiles that are apart of the defensive object in the seed location
+	*/
 	function getDeffensiveShape(gameboard, unitStatsArray, terrainStatsArray, coverLocationSeed){
 		var deffensiveTerrain = [];
 		deffensiveTerrain.push(coverLocationSeed);
@@ -730,6 +797,10 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		return deffensiveTerrain;
 	}
 	
+	
+	/*
+	* returns the edge of the defensive object that is towards the enemy centroid
+	*/
 	function getDefenseEdgeNearCentroid(centroid, defensiveObject){
 		
 		var closestTile = {x: 100, y: 100};
@@ -1029,6 +1100,10 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		return edgeArray;
 	}
 	
+	
+	/*
+	* calcualte potential damage take on a move
+	*/
 	function potentialDamageTakenOnMove(gameboard, unitStatsArray, terrainStatsArray, enemyUnits, unit, moveLocation){
 		//summation of weighted damage that unit can potentially take if a move is made
 		var xPlusMaxDamage = 0;
@@ -1196,7 +1271,8 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 			}
 			if(maxUnitsAttacking == 3)
 			{
-				damageTaken = 3;
+				damageTaken = xPlusMaxDamage + xMinusMaxDamage + yPlusMaxDamage + yMinusMaxDamage;
+				//damageTaken = 3;
 			}
 			if(maxUnitsAttacking == 4)
 			{
@@ -1206,6 +1282,10 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		return damageTaken;
 	}
 	
+	
+	/*
+	* return the total health of a team
+	*/
 	function totalHealth(unitArray){
 		var health = 0;
 		for(var ixx = 0; ixx < unitArray.length; ixx++)
@@ -1251,6 +1331,9 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 		return aiActionEndTurn();
 	}
 	
+	/*
+	* returns true if the coordinates are apart of an array
+	*/
 	function arrayContainsCoords(inArray, xCoordinate, yCoordinate){
 		for (var ixx = 0; ixx < inArray.length; ixx++)
 		{
