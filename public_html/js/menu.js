@@ -5,7 +5,7 @@
 var app = app || {};
 
 app.menu = (function(util, levelStats, saveGameController, templater, modal, ai){
-	var SHOW_DEBUG_MENUS = true;
+	var SHOW_DEBUG_MENUS = false;
 
 	/*
 	 * shared menu initialization functionality
