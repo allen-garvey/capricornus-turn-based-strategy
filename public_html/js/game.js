@@ -171,7 +171,7 @@
 			mixer.playAudioBuffer(AUDIO_STATS.level.passed.audio);
 			//go to next level if there are more
 			if(userInfo.levelIndex < LEVEL_STATS.length - 1){
-				textOverlay.displayMenu('Mission Complete', 'Next level', function(){
+				textOverlay.displayMenu('Mission Complete', 'Next mission', function(){
 					start(LEVEL_STATS, AUDIO_STATS, userInfo.levelIndex + 1, userInfo.difficultyLevel);
 				});
 
