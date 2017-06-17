@@ -24,6 +24,9 @@ app.mixer = (function(){
 		request.onload = function() {
 			context.decodeAudioData(request.response, function(buffer){
 				callback(buffer);
+			}, function(){
+				//if ogg vorbis files not supported, this error callback will be called
+				callback(null);
 			});
 		}
 		request.send();
@@ -32,13 +35,16 @@ app.mixer = (function(){
 	/**
 	 * plays sound stored in audio buffer using web audio api
 	 * based on: https://www.html5rocks.com/en/tutorials/webaudio/intro/
-	 * @param audioBuffer - AudioBuffer object preloaded with audio
+	 * @param audioBuffer - AudioBuffer object preloaded with audio or null if ogg vorbis playback not supported
 	 * @param shouldLoop - boolean (optional) - if audio should loop
 	 * @param delay - int (optional) - delay in milliseconds before audio should start for the first time
 	 * @param duration - int (optional) - total milliseconds audio should play for
 	 * @returns GainNode - use stop method to stop sound
 	 */
 	function playAudioBuffer(audioBuffer, shouldLoop, delay, duration){
+		if(audioBuffer === null){
+			return null;
+		}
 		function stopAfterDuration(gainNode){
 			setTimeout(function(){
 				stopSound(gainNode, 2000);
@@ -78,6 +84,9 @@ app.mixer = (function(){
 	 * @param fadeOutTime - time in milliseconds to fade out sound
 	 */
 	function stopSound(gainNode, fadeOutTime){
+		if(gainNode === null){
+			return;
+		}
 		if(!fadeOutTime){
 			gainNode.disconnect();
 			return;
