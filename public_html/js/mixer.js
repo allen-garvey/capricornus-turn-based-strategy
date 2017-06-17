@@ -13,9 +13,10 @@ app.mixer = (function(){
 	 * asynchronously downloads an audio file at url and decodes into audio buffer
 	 * based on: https://www.html5rocks.com/en/tutorials/webaudio/intro/
 	 * @param url - string - url of audio file
+	 * @param isRetry - bool - used when browser can't play .ogg audio files, so retrys as .aac
 	 * @param callback - function - called when audio file is downloaded and AudioBuffer is decoded - passed into callback as argument 
 	 */
-	function getAudioBuffer(url, callback){
+	function getAudioBuffer(url, callback, isRetry){
 		var request = new XMLHttpRequest();
 		request.open('GET', url, true);
 		request.responseType = 'arraybuffer';
@@ -25,8 +26,15 @@ app.mixer = (function(){
 			context.decodeAudioData(request.response, function(buffer){
 				callback(buffer);
 			}, function(){
-				//if ogg vorbis files not supported, this error callback will be called
-				callback(null);
+				if(!isRetry){
+					//if ogg vorbis files not supported, this error callback will be called
+					var aacUrl = url.replace(/ogg$/, 'aac');
+					getAudioBuffer(aacUrl, callback, true);
+				}
+				else{
+					//aac files not supported, either, so there will be no audio
+					callback(null);
+				}
 			});
 		}
 		request.send();
