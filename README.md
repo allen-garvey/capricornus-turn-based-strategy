@@ -1,6 +1,6 @@
-# Capricornus Turn-based Strategy Game
+# Capricornus Squadron
 
-HTML5 browser-based turn-based strategy game (in the style of Advance Wars), written in JavaScript. 
+HTML5 browser-based turn-based strategy game (in the style of Advance Wars), written in JavaScript. Play the game at [https://allen-garvey.github.io/capricornus-squadron/](https://allen-garvey.github.io/capricornus-squadron/)
 
 
 ## Dependencies for playing
