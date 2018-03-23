@@ -16,3 +16,7 @@ Thumbs.db
 *.rb
 *.kra~
 *.png~
+
+#compiled files
+public_html/js/*
+public_html/css/*

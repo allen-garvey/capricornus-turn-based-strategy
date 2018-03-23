@@ -12,7 +12,6 @@ HTML5 browser-based turn-based strategy game (in the style of Advance Wars), wri
 
 * node >= 6.11
 * npm
-* The `minify.rb` script to minify the JavaScript and CSS source files (this is optional step) requires Ruby 2.3, Sassc and UglifyJS (command line version)
 
 
 ## Known Issues
@@ -26,6 +25,8 @@ HTML5 browser-based turn-based strategy game (in the style of Advance Wars), wri
 * Download or clone this repository
 * Navigate into the project directory using the command line
 * Type `npm install` to install dependencies
+* Type `npm run gulp` to compile Sass and JavaScript files
+* Optionally, you can type `npm run gulp:watch` to start gulp and automatically watch for changes and re-compile as necessary
 * Type `npm start` to start a local webserver
 * Open a supported browser to [localhost:3000](http://localhost:3000).
 
