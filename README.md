@@ -27,7 +27,7 @@ HTML5 browser-based turn-based strategy game (in the style of Advance Wars), wri
 * Navigate into the project directory using the command line
 * Type `npm install` to install dependencies
 * Type `npm start` to start a local webserver
-* Open a supported browser to [localhost:3000](localhost:3000).
+* Open a supported browser to [localhost:3000](http://localhost:3000).
 
 
 ## Copyright
