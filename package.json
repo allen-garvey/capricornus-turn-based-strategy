@@ -1,0 +1,24 @@
+{
+  "name": "capricornus-squadron",
+  "version": "1.0.0",
+  "description": "A browser-based turn-based strategy game",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "http-server public_html -c-1 -p 3000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/allen-garvey/capricornus-squadron.git"
+  },
+  "author": "Allen Garvey, Kyle Livermore, Stephen Griffin",
+  "license": "UNLICENSED",
+  "private": "true",
+  "bugs": {
+    "url": "https://github.com/allen-garvey/capricornus-squadron/issues"
+  },
+  "homepage": "https://github.com/allen-garvey/capricornus-squadron#readme",
+  "devDependencies": {
+    "http-server": "^0.11.1"
+  }
+}
