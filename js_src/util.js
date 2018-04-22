@@ -24,6 +24,16 @@ app.util = (function(){
 	}
 
 	function areCoordinatesEqual(coordinate1, coordinate2){
+		//for non-mouse inputs, one or both of the coordinates might be null
+		if(!coordinate1){
+			if(!coordinate2){
+				return true;
+			}
+			return false;
+		}
+		else if(!coordinate2){
+			return false;
+		}
 		return (coordinate1.x === coordinate2.x && coordinate1.y === coordinate2.y);
 	}
 

@@ -47,6 +47,10 @@
 		}
 		//draws the relevant cursor at current coordinate
 		function drawCursor(coordinate){
+			//for non-mouse inputs, the coordinate might be null here and cause an error
+			if(!coordinate){
+				return;
+			}
 			//check to see if a cursor is already drawn
 			if(userInfo.cursor.coordinate != null){
 				//don't do anything if cursor is in same square
@@ -70,7 +74,16 @@
 			if(userInfo.unitSelected && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.team === unitStats.TEAMS.PLAYER && util.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedMovementSquares)){
 				drawUnitMovementPreview(util.copyCoordinate(userInfo.cursor.coordinate));
 			}
+		}
 
+		function updateCursorPosition(xCoordinate, yCoordinate){
+			var coordinate = renderer.pixelCoordinateToTileCoordinate({x: xCoordinate, y: yCoordinate});
+			userInfo.currentMouseCoordinate = coordinate;
+			//don't update cursor during text overlay
+			if(!userInfo.gameInteractionEnabled || util.areCoordinatesEqual(coordinate, userInfo.cursor.coordinate)){
+				return;
+			}
+			drawCursor(coordinate);
 		}
 
 		//returns true if cursor is hovering over a tile that will trigger a player attack
@@ -613,13 +626,7 @@
 		 */
 		//cursor rendering
 		gameContainer.onmousemove = function(e){
-			var coordinate = renderer.pixelCoordinateToTileCoordinate({x: e.offsetX, y: e.offsetY});
-			userInfo.currentMouseCoordinate = coordinate;
-			//don't update cursor during text overlay
-			if(!userInfo.gameInteractionEnabled || util.areCoordinatesEqual(coordinate, userInfo.cursor.coordinate)){
-				return;
-			}
-			drawCursor(coordinate);
+			updateCursorPosition(e.offsetX, e.offsetY);
 		};
 
 		gameContainer.onclick = function(e){
@@ -628,6 +635,9 @@
 			if(!userInfo.buttonsEnabled){
 				return;
 			}
+			//this is so things will work correctly for non-mouse inputs, when there is no onmousemove event
+			updateCursorPosition(e.offsetX, e.offsetY);
+
 			//move unit if one is currently selected, is on the player's team, and valid movement tile is clicked
 			if(userInfo.unitSelected && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.team === unitStats.TEAMS.PLAYER && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.canMove && util.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedMovementSquares)){
 				renderUnitDeselected(); //erase selection tiles
