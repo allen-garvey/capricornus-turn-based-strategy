@@ -41,7 +41,7 @@ app.ai = (function(util, pathfinder, unitStats, terrainStats, damageCalculator){
 			startingCoordinate: startingCoordinate,
 			endingCoordinate: endingCoordinate,
 			memoizationObject: memoizationObject
-		}
+		};
 	}
 
 	/*
