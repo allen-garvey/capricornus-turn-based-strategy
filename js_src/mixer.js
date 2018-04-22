@@ -101,13 +101,12 @@ app.mixer = (function(){
 		}
 		var stepTime = 10; //number of milliseconds between each fade step
 		var gainStep = 100 / (fadeOutTime / stepTime) / 100;
-
-		var numberOfFades = (fadeOutTime / stepTime) - 1;
-		gainNode.gain.value = gainNode.gain.value - gainStep;
+		var gainDelay = 0.1;
+		gainNode.gain.setValueAtTime(gainNode.gain.value - gainStep, gainDelay);
 
 		function fade(){
 			setTimeout(function(){
-				gainNode.gain.value = gainNode.gain.value - gainStep;
+				gainNode.gain.setValueAtTime(gainNode.gain.value - gainStep, gainDelay);
 				if(gainNode.gain.value > 0){
 					fade();
 				}
