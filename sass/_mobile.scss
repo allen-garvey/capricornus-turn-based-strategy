@@ -1,0 +1,20 @@
+@media screen and (max-width: $container_width){
+	.header{
+		width: $container_width;
+	}
+	.nav-list{
+		// justify-content: flex-start;
+		width: 100vw;
+	}
+	.main-menu .main-menu-container, .load-game-menu .load-game-container, .difficulty-menu .difficulty-level-container{
+		align-items: flex-start;
+		//center in visible viewport
+		padding-left: calc(25vw);
+	}
+	.game-controls-container{
+		max-width: 100vw;
+	}
+	.modal-briefings{
+		padding-top: 0;
+	}
+}

@@ -21,7 +21,7 @@ p{
 }
 
 .container{
-	width: 1216px;
+	width: $container_width;
 	margin: 0 auto;
 }
 img.spritesheet{
@@ -417,7 +417,7 @@ html.loading{
   margin: auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 35%;
+  max-width: 573px;
   font-family: 'Orbitron', sans-serif;
 }
 .briefings-content p{
