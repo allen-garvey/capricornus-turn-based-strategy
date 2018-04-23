@@ -14,10 +14,10 @@ HTML5 browser-based turn-based strategy game (in the style of Advance Wars), wri
 * npm
 
 
-## Known Issues
+## Caveats
 
 * No sound in Microsoft Edge
-* No support for mobile devices, as neither mobile screen sizes or touch input is supported
+* While the game is technically playable at mobile screen sizes and with touch input, for best experience at least an iPad size screen and mouse are required
 
 
 ## Getting Started for Local Development
