@@ -2,7 +2,16 @@
 /*
  * Logic to start game when all assets are loaded
  */
-(function(start, util, levelStats, menu, levelLoader, mixer, audioStats){
+
+ import { start } from './game.js';
+ import util from './util.js';
+ import levelStats from './level-stats.js';
+ import menu from './menu.js';
+ import levelLoader from './level-loader.js';
+ import mixer from './mixer.js';
+ import audioStats from './audio-stats.js';
+
+export function startGame(){
 	var levelStatsArray = levelStats.get();
 	var levelUnitDatas = levelStatsArray.map(function(){ return [null, null]; });
 	var levelTerrainDatas = [];
@@ -100,5 +109,4 @@
 			assetDidLoad();
 		});
 	});
-
-})(app.game.start, app.util, app.levelStats, app.menu, app.levelLoader, app.mixer, app.audioStats);
+}

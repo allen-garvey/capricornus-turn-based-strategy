@@ -2,41 +2,43 @@
 /*
  * Functionality for site navigation to trigger page section tabs
  */
-(function(util){
-	//saves some typing
-    var $ = function(selector){ return document.querySelectorAll(selector); };
 
-    var navLinks = $('.nav-list li');
-    var pageSections = $('.tab[data-tab]');
+import util from './util.js';
 
-    function navLinkClicked(navLink){
-    	deselectNavlinks();
-		navLink.classList.add('active');
-		var tabSelector = navLink.dataset.tab;
-		hideAllPageSections();
-		document.querySelector('.tab[data-tab="' + tabSelector + '"]').classList.add('active');
-    }
+//saves some typing
+var $ = function(selector){ return document.querySelectorAll(selector); };
 
-    function deselectNavlinks(){
-    	util.forEach(navLinks, function(navLink){
-    		navLink.classList.remove('active');
-    	});
-    }
+var navLinks = $('.nav-list li');
+var pageSections = $('.tab[data-tab]');
 
-    function hideAllPageSections(){
-		util.forEach(pageSections, function(pageSection){
-    		pageSection.classList.remove('active');
-    	});
-	}
+function navLinkClicked(navLink){
+	deselectNavlinks();
+	navLink.classList.add('active');
+	var tabSelector = navLink.dataset.tab;
+	hideAllPageSections();
+	document.querySelector('.tab[data-tab="' + tabSelector + '"]').classList.add('active');
+}
 
-    //set navLink to be active on click
-    util.forEach(navLinks, function(navLink){
-    	navLink.onclick = function(){
-    		navLinkClicked(navLink);
-    	};
-    });
+function deselectNavlinks(){
+	util.forEach(navLinks, function(navLink){
+		navLink.classList.remove('active');
+	});
+}
 
-    //select first navLink active by default on page load
-    navLinkClicked(navLinks[0]);
+function hideAllPageSections(){
+	util.forEach(pageSections, function(pageSection){
+		pageSection.classList.remove('active');
+	});
+}
 
-})(app.util);
+export function initNavLinks(){
+	//set navLink to be active on click
+	util.forEach(navLinks, function(navLink){
+		navLink.onclick = function(){
+			navLinkClicked(navLink);
+		};
+	});
+
+	//select first navLink active by default on page load
+	navLinkClicked(navLinks[0]);
+}
