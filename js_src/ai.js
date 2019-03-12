@@ -3,10 +3,8 @@
  * Module for AI Player
  */
 
- import util from './util.js';
  import pathfinder from './pathfinding.js';
  import unitStats from './ui-stats.js';
- import terrainStats from './terrain-stats.js';
  import damageCalculator from './damage.js';
 
 

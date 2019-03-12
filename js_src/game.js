@@ -8,7 +8,6 @@ import renderer from './renderer.js';
 import unitStats from './unit-stats.js';
 import terrainStats from './terrain-stats.js';
 import pathfinder from './pathfinding.js';
-import levelStats from './level-stats.js';
 import ai from './ai.js';
 import damageCalculator from './damage.js';
 import levelLoader from './level-loader.js';

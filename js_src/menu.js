@@ -4,7 +4,6 @@
  */
 
  import util from './util.js';
- import levelStats from './level-stats.js';
  import saveGameController from './save-game.js';
  import templater from './templater.js';
  import modal from './modal.js';
