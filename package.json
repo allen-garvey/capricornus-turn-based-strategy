@@ -6,8 +6,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "http-server public_html -c-1 -p 3000",
-    "gulp": "gulp",
-    "gulp:watch": "gulp watch",
     "webpack:dev": "webpack --config webpack.config.js",
     "webpack:prod": "webpack --config webpack.production.config.js",
     "webpack:watch": "webpack --config webpack.watch.config.js"
