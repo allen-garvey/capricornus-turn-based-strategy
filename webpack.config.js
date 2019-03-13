@@ -5,11 +5,16 @@ module.exports = {
     mode: 'development',
     entry: [
             `${__dirname}/js_src/index.js`, 
-            // `${__dirname}/sass/style.scss`,
+            `${__dirname}/sass/style.scss`,
         ],
     output: {
         filename: 'app.js',
         path: path.resolve(__dirname, 'public_html/js'),
+    },
+    resolve: {
+        alias: {
+            images: path.resolve(__dirname, 'public_html/images'),
+        },
     },
     module: {
         rules: [
@@ -28,6 +33,17 @@ module.exports = {
                             outputStyle: 'compressed',
                         },
                     },
+                ]
+            },
+            {
+                test: /\.(png|jpg|gif)$/,
+                use: [
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            limit: 5000,
+                        }
+                    }
                 ]
             },
         ]
