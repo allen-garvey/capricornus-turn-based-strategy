@@ -10,7 +10,7 @@ HTML5 browser-based turn-based strategy game (in the style of Advance Wars), wri
 
 ## Dependencies for development
 
-* node >= 6.11
+* node >= 8.11
 * npm
 
 
