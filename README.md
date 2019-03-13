@@ -23,9 +23,9 @@ HTML5 browser-based turn-based strategy game (in the style of Advance Wars), wri
 ## Getting Started for Local Development
 
 * Download or clone this repository
-* Navigate into the project directory using the command line
-* Type `npm install` to install dependencies
-* Type `npm run gulp` to compile Sass and JavaScript files
+* `cd` into the project directory
+* Run `npm install` to install dependencies
+* Run `npm run webpack:dev` to build Sass and JavaScript files for local development, or `npm run webpack:prod` to create a production build
 * Optionally, you can type `npm run gulp:watch` to start gulp and automatically watch for changes and re-compile as necessary
 * Type `npm start` to start a local webserver
 * Open a supported browser to [localhost:3000](http://localhost:3000).
