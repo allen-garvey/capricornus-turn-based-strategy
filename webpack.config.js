@@ -16,6 +16,10 @@ module.exports = {
             images: path.resolve(__dirname, 'public_html/images'),
         },
     },
+    devServer: {
+        contentBase: path.join(__dirname, 'public_html'),
+        port: 3000,
+    },
     module: {
         rules: [
             {
