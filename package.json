@@ -16,7 +16,7 @@
   },
   "author": "Allen Garvey, Kyle Livermore, Stephen Griffin",
   "license": "UNLICENSED",
-  "private": "true",
+  "private": true,
   "bugs": {
     "url": "https://github.com/allen-garvey/capricornus-squadron/issues"
   },
