@@ -9,7 +9,7 @@ module.exports = {
         ],
     output: {
         filename: 'app.js',
-        path: path.resolve(__dirname, 'public_html/js'),
+        path: path.resolve(__dirname, 'public_html/assets'),
     },
     resolve: {
         alias: {
@@ -18,6 +18,7 @@ module.exports = {
     },
     devServer: {
         contentBase: path.join(__dirname, 'public_html'),
+        publicPath: 'http://localhost:3000/assets/',
         port: 3000,
     },
     module: {
@@ -56,7 +57,7 @@ module.exports = {
     },
     plugins: [
         new MiniCssExtractPlugin({
-            filename: '../css/style.css',
+            filename: '../assets/style.css',
         }),
     ],
 };
