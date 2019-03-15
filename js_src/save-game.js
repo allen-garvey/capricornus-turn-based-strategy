@@ -5,6 +5,37 @@
 
 import util from './util.js';
 
+const SAVE_GAME_LS_KEY = 'capricornus_squadron_saves';
+
+/**
+ * Gets the saved game array from localStorage
+ * @returns either the array of saved game objects from localStorage, or null
+ */
+function getSavesFromLocalStorage(){
+	const saves = localStorage.getItem(SAVE_GAME_LS_KEY);
+	if(saves){
+		try {
+			const parsedSaves = JSON.parse(saves);
+			return parsedSaves;
+		} catch (error) {
+			console.log(error);
+		}
+	}
+	return [];
+}
+
+/**
+ * Saves the past in array of save games to localStorage
+ */
+function saveGamesToLocalStorage(newSaves){
+	try {
+		localStorage.setItem(SAVE_GAME_LS_KEY, JSON.stringify(newSaves));
+		return true;	
+	} catch (error) {
+		return false;
+	}
+}
+
 /**
  * Makes a deep copy of the gameboard to prepare it to be saved, and discards unnecessary properties not needed
  * for loading a game from it-
@@ -75,21 +106,11 @@ function createSave(name, gameboard, gameMetadata){
 	
 	var timestamp = year + "/" + month + "/" + day + " " + hours + ":" + minutes + ":" + seconds;
 
-	//Give unique ID
-	var id;
-	if(localStorage.length == 0) {
-		id = 'capricornus0';
-	}
-	else {
-		var data = JSON.parse(localStorage.getItem(localStorage.key(localStorage.length-1)));
-		var prevId = data['id'].substring(11);
-		var num = Number(prevId);
-		num++;    
-		id = 'capricornus' + num; 
-	}
+	const saves = getSavesFromLocalStorage();
+	const id = saves.length > 0 ? saves[saves.length - 1].id + 1 : 1;
 
 	//Assign variables
-	var state = {
+	const save = {
 		id: id,
 		name : name,
 		gameboard : gameboard,
@@ -97,14 +118,9 @@ function createSave(name, gameboard, gameMetadata){
 		formattedDate : timestamp
 	};
 
-	//Save data in localStorage
-	try {
-		localStorage.setItem(id, JSON.stringify(state));
-		return true;
-	}
-	catch(exception) {
-		return false;
-	}
+	saves.push(save);
+
+	return saveGamesToLocalStorage(saves);
 }
 
 
@@ -115,18 +131,15 @@ function createSave(name, gameboard, gameMetadata){
 	* id was not found, or the delete action failed
 	*/
 function deleteSave(savegameId){
-	
-	if(localStorage.getItem(savegameId) != null)
-	{
-		try {
-			localStorage.removeItem(savegameId);
-			return true;
-		}
-		catch(exception) {
-			return false;
-		}
-	}
-	return false;
+	let saveGameFound = false;
+	const newSaves = getSavesFromLocalStorage().filter((save)=>{
+		const saveFound = save.id !== savegameId;
+		saveGameFound = saveGameFound || saveFound;
+		return saveFound;
+	});
+	const deleteSucceeded = saveGamesToLocalStorage(newSaves);
+
+	return saveGameFound && deleteSucceeded;
 }	
 
 
@@ -143,8 +156,12 @@ function deleteSave(savegameId){
 	}
 	*/
 function getSave(savegameId){
-	if(localStorage.getItem(savegameId) != null)
-		return JSON.parse(localStorage.getItem(savegameId));
+	const saves = getSavesFromLocalStorage();
+	for(const save of saves){
+		if(save.id === savegameId){
+			return save;
+		}
+	}
 	return null;
 }
 
@@ -164,17 +181,14 @@ function getSave(savegameId){
 	array should be sorted in reverse order based on datetime of saved game creation, so that the newer saved games come before older saved games
 	*/
 function getSaves(){
-	var saveArr = [];
-	for(var i = 0; i < localStorage.length; i++)
-	{
-		var data = JSON.parse(localStorage.getItem(localStorage.key(i)));
-			saveArr.push({
-				id: data['id'],
-				name: data['name'],
-				formattedDate: data['formattedDate'],
-				gameMetadata: data['gameMetadata']
-			});
-	}
+	var saveArr = getSavesFromLocalStorage().map((data)=>{
+		return {
+			id: data['id'],
+			name: data['name'],
+			formattedDate: data['formattedDate'],
+			gameMetadata: data['gameMetadata'],
+		};
+	});
 	
 	//Sorts by formatted date, with most recently saved first 
 	saveArr.sort(function(a,b) {
@@ -182,10 +196,10 @@ function getSaves(){
 	});
 	
 			
-	if(saveArr.length > 0)
+	if(saveArr.length > 0){
 		return saveArr;
-	else
-		return null;
+	}
+	return null;
 }
 
 export default {
