@@ -25,10 +25,14 @@ HTML5 browser-based turn-based strategy game (in the style of Advance Wars), wri
 * Download or clone this repository
 * `cd` into the project directory
 * Run `npm install` to install dependencies
-* Run `npm run webpack:dev` to build Sass and JavaScript files for local development, or `npm run webpack:prod` to create a production build
-* Optionally, you can type `npm run wepback:watch` to start webpack and automatically watch for changes and re-build as necessary
-* Type `npm start` to start a local webserver
-* Open a supported browser to [localhost:3000](http://localhost:3000).
+* Type `npm start` to watch and compile files, start a local webserver and open your browser to [localhost:3000](http://localhost:3000)
+
+## Webpack scripts
+
+* `npm run webpack:dev` to build Sass and JavaScript files for local development
+* `npm run webpack:prod` to create a production build
+* `npm run wepback:watch` to start webpack and automatically watch for changes and re-build as necessary
+* `npm start` to watch and compile files, start a local webserver and open your browser to [localhost:3000](http://localhost:3000)
 
 
 ## Copyright
