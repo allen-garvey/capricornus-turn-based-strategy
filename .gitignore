@@ -20,3 +20,4 @@ Thumbs.db
 #compiled files
 public_html/js/*
 public_html/css/*
+public_html/assets/*
