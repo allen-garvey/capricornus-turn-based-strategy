@@ -29,9 +29,9 @@ HTML5 browser-based turn-based strategy game (in the style of Advance Wars), wri
 
 ## Webpack scripts
 
-* `npm run webpack:dev` to build Sass and JavaScript files for local development
-* `npm run webpack:prod` to create a production build
-* `npm run wepback:watch` to start webpack and automatically watch for changes and re-build as necessary
+* `npm run build` to build Sass and JavaScript files for local development
+* `npm run deploy` to create a production build
+* `npm run watch` to start webpack and automatically watch for changes and re-build as necessary
 * `npm start` to watch and compile files, start a local webserver and open your browser to [localhost:3000](http://localhost:3000)
 
 
