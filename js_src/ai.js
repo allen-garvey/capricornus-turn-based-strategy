@@ -118,7 +118,6 @@ function aiMain(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, m
 			}
 		}
 	}
-	//console.log(totalHealth(enemyUnits));
 	if (memoizationObject !== null && memoizationObject.EnemyCentroid === undefined){
 		memoizationObject.EnemyCentroid = getUnitCentroid(enemyUnits);
 	}
@@ -591,9 +590,6 @@ function seekCover(AIUnits, enemyUnits){
 			enemyInfantry++;
 		}
 	}
-	
-	var enemyHealth = totalHealth(enemyUnits);
-	var AIHealth = totalHealth(AIUnits);
 	
 	if(AIInfantry >= enemyInfantry && AIInfantry > 0)
 	{
@@ -1283,19 +1279,6 @@ function potentialDamageTakenOnMove(gameboard, unitStatsArray, terrainStatsArray
 		}
 	}
 	return damageTaken;
-}
-
-
-/*
-* return the total health of a team
-*/
-function totalHealth(unitArray){
-	var health = 0;
-	for(var ixx = 0; ixx < unitArray.length; ixx++)
-	{
-		health += unitArray[ixx].unit.health;
-	}
-	return health;
 }
 
 /*
