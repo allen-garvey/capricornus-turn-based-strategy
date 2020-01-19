@@ -84,7 +84,6 @@ function aiActionAttackUnit(startingCoordinate, endingCoordinate, attackedUnitCo
 */
 function aiAction(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject){
 	return  aiMain(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject);
-	//return randomAiAction(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject);
 }
 
 /*
@@ -1297,42 +1296,6 @@ function totalHealth(unitArray){
 		health += unitArray[ixx].unit.health;
 	}
 	return health;
-}
-
-//example function, picks random AI action
-function randomAiAction(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject){
-	if(Math.random() * 100 <= 20){
-		return aiActionEndTurn();
-	}
-	for(var i = 0; i < gameboard.length; i++){
-		var innerArray = gameboard[i];
-		for(var j = 0; j < innerArray.length; j++){
-			//randomly decide to move a unit if it can move and is an AI unit
-			if(gameboard[i][j].unit && gameboard[i][j].unit.team === unitStats.TEAMS.AI && gameboard[i][j].unit.canMove && Math.random() * 100 <= 70){
-				var unit = gameboard[i][j].unit;
-				var startingCoordinate = {x: i, y: j};
-				var movementCoordinates = pathfinder.movementCoordinatesFor(startingCoordinate, gameboard, unitStatsArray, terrainStatsArray);
-				var attackCoordinates = pathfinder.attackCoordinatesFor(startingCoordinate, gameboard, unitStatsArray, terrainStatsArray);
-				//attack a unit, if possible
-				if(attackCoordinates.length > 0){
-					var attackCoordinate = attackCoordinates[Math.floor(Math.random() * attackCoordinates.length)];
-					//find ending coordinate for attack coordinate
-					//add the starting coordinate, since it is not already in movementCoordinates
-					movementCoordinates.push(startingCoordinate);
-					var endingCoordinates = pathfinder.movementCoordinatesForAttackCoordinate(attackCoordinate, movementCoordinates);
-					var endingCoordinate = endingCoordinates[Math.floor(Math.random() * endingCoordinates.length)];
-					return aiActionAttackUnit(startingCoordinate, endingCoordinate, attackCoordinate, memoizationObject);
-				}
-				//otherwise, just move
-				else{
-					//pick random ending coordinate
-					var endingCoordinate = movementCoordinates[Math.floor(Math.random() * movementCoordinates.length)];
-					return aiActionMoveUnit(startingCoordinate, endingCoordinate, memoizationObject);
-				}
-			}
-		}
-	}
-	return aiActionEndTurn();
 }
 
 /*
