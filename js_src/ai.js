@@ -164,10 +164,8 @@ function aiMain(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, m
 		return attackOptimize(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, friendlyUnits, enemyUnits, canAttack);
 	}
 	var attackCoordinates = pathfinder.attackCoordinatesFor(unitToMove, gameboard, unitStatsArray, terrainStatsArray);
-	// console.log(attackCoordinates);
 	//easy default to attack if only one AI unit can attack
 	if(attackCoordinates.length > 0 && difficultyLevel === 0){
-		// console.log("In Attack");
 		var movementCoordinates = pathfinder.movementCoordinatesFor(unitToMove, gameboard, unitStatsArray, terrainStatsArray);
 		var attackCoordinate = attackCoordinates[Math.floor(Math.random() * attackCoordinates.length)];
 		//find ending coordinate for attack coordinate
@@ -177,7 +175,6 @@ function aiMain(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, m
 		var endingCoordinate = endingCoordinates[Math.floor(Math.random() * endingCoordinates.length)];
 		return aiActionAttackUnit(unitToMove, endingCoordinate, attackCoordinate, memoizationObject);
 	}
-	//console.log(difficultyLevel);
 	
 	//If hard
 	if(difficultyLevel === 1){
@@ -185,7 +182,6 @@ function aiMain(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, m
 	}
 	
 	//default to chase
-	// console.log("In Chase");
 	return blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unitToMove, enemyUnits);
 	//return move for one unit
 }
@@ -219,9 +215,7 @@ function attackOptimize(gameboard, unitStatsArray, terrainStatsArray, difficulty
 			}
 			
 			var attackCoordinates = pathfinder.attackCoordinatesFor(unitToMove, gameboard, unitStatsArray, terrainStatsArray);
-			// console.log(attackCoordinates);
 			if(attackCoordinates.length > 0){
-				// console.log("In Attack");
 				var movementCoordinates = pathfinder.movementCoordinatesFor(unitToMove, gameboard, unitStatsArray, terrainStatsArray);
 				var attackCoordinate = attackCoordinates[Math.floor(Math.random() * attackCoordinates.length)];
 				//find ending coordinate for attack coordinate
@@ -237,7 +231,6 @@ function attackOptimize(gameboard, unitStatsArray, terrainStatsArray, difficulty
 	else
 	{
 		var action = getBestTarget(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, AIUnits, enemyUnits);
-		//console.log(action);
 		return action;
 	}
 }
@@ -388,7 +381,6 @@ function getBestTarget(gameboard, unitStatsArray, terrainStatsArray, difficultyL
 		return blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, unitToMove, enemyUnits);
 	}
 	
-	//console.log(aiActionAttackUnit(bestUnit, attackFrom, attack, memoizationObject));
 	return aiActionAttackUnit(bestUnit, attackFrom, attack, memoizationObject);
 }
 
@@ -456,7 +448,6 @@ function groupAndFortify(gameboard, unitStatsArray, terrainStatsArray, difficult
 						var targetLocation = getTileNearCover(gameboard, defenseEdge, leftLocations, rightLocations);
 						
 						targetLocation = getPartialPathTarget(gameboard, unitStatsArray, terrainStatsArray, AIUnits[ixx], targetLocation);
-						//console.log({a: targetLocation, b: firstLeft,c: firstRight});
 						return aiActionMoveUnit(AIUnits[ixx], targetLocation, memoizationObject);
 					}
 				}
@@ -619,7 +610,6 @@ function blitz(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, me
 		moveTo = unitPathToEnemy[izz];
 		izz++
 	}
-	//console.log(potentialDamageTakenOnMove(gameboard, unitStatsArray, terrainStatsArray, enemyUnits, unit, moveTo));
 	return aiActionMoveUnit(unit, moveTo, memoizationObject);
 }
 
@@ -649,14 +639,12 @@ function getUnitCentroid(unitArray){
 * finds the cover tile colsest to a unit centroid
 */
 function getNearestCover(gameboard, unitStatsArray, terrainStatsArray, centroid){
-	var onBoard = true;
 	var coverFound = false;
 	var x = centroid.x;
 	var y = centroid.y;
 	var coverX = 0;
 	var coverY = 0;
 	var counter = 1;
-	//console.log(terrainStatsArray[gameboard[centroid.x][centroid.y].terrain.type].defense);
 	if(terrainStatsArray[gameboard[centroid.x][centroid.y].terrain.type].defense)
 	{
 		return {x: centroid.x, y: centroid.y};
@@ -1032,188 +1020,6 @@ function getDefenseEdgeNearCentroid(centroid, defensiveObject){
 		}
 	}
 	return edgeArray;
-}
-
-
-/*
-* calcualte potential damage take on a move
-*/
-function potentialDamageTakenOnMove(gameboard, unitStatsArray, terrainStatsArray, enemyUnits, unit, moveLocation){
-	//summation of weighted damage that unit can potentially take if a move is made
-	var xPlusMaxDamage = 0;
-	var xMinusMaxDamage = 0;
-	var yPlusMaxDamage = 0;
-	var yMinusMaxDamage = 0;
-	
-	var xPlusCanAttack = 0;
-	var xMInusCanAttack = 0;
-	var yPlusCanAttack = 0;
-	var yMInusCanAttack = 0;
-	
-	//check x+1
-	for(var ixx = 0; ixx < enemyUnits.length; ixx++)
-	{
-		if(arrayContainsCoords(enemyUnits[ixx].moves, moveLocation.x + 1, moveLocation.y))
-		{
-			var damageDone = damageCalculator.damageForAttack(enemyUnits[ixx].unit, unit.unit, gameboard[moveLocation.x + 1][moveLocation.y].terrain,
-			gameboard[moveLocation.x][moveLocation.y].terrain, unitStatsArray, terrainStatsArray);
-			
-			xPlusCanAttack++;
-			
-			if(damageDone > xPlusMaxDamage)
-			{
-				xPlusMaxDamage = damageDone;
-			}
-		}
-	}
-	
-	//check x-1
-	for(var ixx = 0; ixx < enemyUnits.length; ixx++)
-	{
-		if(arrayContainsCoords(enemyUnits[ixx].moves, moveLocation.x - 1, moveLocation.y))
-		{
-			var damageDone = damageCalculator.damageForAttack(enemyUnits[ixx].unit, unit.unit, gameboard[moveLocation.x - 1][moveLocation.y].terrain,
-			gameboard[moveLocation.x][moveLocation.y].terrain, unitStatsArray, terrainStatsArray);
-			
-			xMInusCanAttack++;
-			
-			if(damageDone > xPlusMaxDamage)
-			{
-				xMinusMaxDamage = damageDone;
-			}
-		}
-	}
-	
-	//check y+1
-	for(var ixx = 0; ixx < enemyUnits.length; ixx++)
-	{
-		if(arrayContainsCoords(enemyUnits[ixx].moves, moveLocation.x, moveLocation.y + 1))
-		{
-			var damageDone = damageCalculator.damageForAttack(enemyUnits[ixx].unit, unit.unit, gameboard[moveLocation.x][moveLocation.y + 1].terrain,
-			gameboard[moveLocation.x][moveLocation.y].terrain, unitStatsArray, terrainStatsArray);
-			
-			yPlusCanAttack++;
-			
-			if(damageDone > xPlusMaxDamage)
-			{
-				yPlusMaxDamage = damageDone;
-			}
-		}
-	}
-	
-	//check y-1
-	for(var ixx = 0; ixx < enemyUnits.length; ixx++)
-	{
-		if(arrayContainsCoords(enemyUnits[ixx].moves, moveLocation.x, moveLocation.y - 1))
-		{
-			var damageDone = damageCalculator.damageForAttack(enemyUnits[ixx].unit, unit.unit, gameboard[moveLocation.x][moveLocation.y - 1].terrain,
-			gameboard[moveLocation.x][moveLocation.y].terrain, unitStatsArray, terrainStatsArray);
-			
-			yMInusCanAttack++;
-			
-			if(damageDone > xPlusMaxDamage)
-			{
-				yMinusMaxDamage = damageDone;
-			}
-		}
-	}
-	
-	var maxUnitsAttacking = 0;
-	
-	if(xPlusCanAttack > maxUnitsAttacking)
-	{
-		maxUnitsAttacking = xPlusCanAttack;
-	}
-	if(xMInusCanAttack > maxUnitsAttacking)
-	{
-		maxUnitsAttacking = xMInusCanAttack;
-	}
-	if(yPlusCanAttack > maxUnitsAttacking)
-	{
-		maxUnitsAttacking = yPlusCanAttack;
-	}
-	if(yMInusCanAttack > maxUnitsAttacking)
-	{
-		maxUnitsAttacking = yMInusCanAttack;
-	}
-	
-	var damageTaken = 0;
-	//sum up potential damage making some assumptions
-	if(maxUnitsAttacking > 0)
-	{
-		if(maxUnitsAttacking == 1)
-		{
-			if(damageTaken < xPlusMaxDamage)
-			{
-				damageTaken = xPlusMaxDamage;
-			}
-			if(damageTaken < xMinusMaxDamage)
-			{
-				damageTaken = xMinusMaxDamage;
-			}
-			if(damageTaken < yPlusMaxDamage)
-			{
-				damageTaken = yPlusMaxDamage;
-			}
-			if(damageTaken < yMinusMaxDamage)
-			{
-				damageTaken = yMinusMaxDamage;
-			}
-			//damageTaken = 1;
-		}
-		if(maxUnitsAttacking == 2)
-		{
-			var tempDamage1 = 0;
-			var tempDamage2 = 0;
-			
-			if(tempDamage2 < xPlusMaxDamage)
-			{
-				tempDamage2 = xPlusMaxDamage;
-			}
-			if(tempDamage2 < xMinusMaxDamage)
-			{
-				tempDamage1 = tempDamage2;
-				tempDamage2 = xMinusMaxDamage;
-			}
-			if(tempDamage1 < yPlusMaxDamage)
-			{
-				if(tempDamage2 < yPlusMaxDamage)
-				{
-					tempDamage1 = tempDamage2;
-					tempDamage2 = yPlusMaxDamage;
-				}
-				else
-				{
-					tempDamage1 = yPlusMaxDamage;
-				}
-			}
-			if(tempDamage1 < yMinusMaxDamage)
-			{
-				//damageTaken = yMinusMaxDamage;
-				if(tempDamage2 < yMinusMaxDamage)
-				{
-					tempDamage1 = tempDamage2;
-					tempDamage2 = yMinusMaxDamage;
-				}
-				else
-				{
-					tempDamage1 = yMinusMaxDamage;
-				}
-			}
-			damageTaken = tempDamage1 + tempDamage2;
-			//damageTaken = 2;	
-		}
-		if(maxUnitsAttacking == 3)
-		{
-			damageTaken = xPlusMaxDamage + xMinusMaxDamage + yPlusMaxDamage + yMinusMaxDamage;
-			//damageTaken = 3;
-		}
-		if(maxUnitsAttacking == 4)
-		{
-			damageTaken = xPlusMaxDamage + xMinusMaxDamage + yPlusMaxDamage + yMinusMaxDamage;
-		}
-	}
-	return damageTaken;
 }
 
 /*
