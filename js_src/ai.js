@@ -26,9 +26,6 @@ function aiActionEndTurn(){
 	return {actionType: AI_ACTION_TYPES.END_TURN};
 }
 
-//Constants for optimization
-var HealthRatioForAdvantage = 0.8;
-
 /*
 	* Used for when AI wants to move a unit
 	* use as return value for aiAction function
@@ -123,14 +120,7 @@ function aiMain(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, m
 	}
 	if (memoizationObject !== null && memoizationObject.AICentroid === undefined){
 		memoizationObject.AICentroid = getUnitCentroid(friendlyUnits);
-		//console.log(memoizationObject.AICentroid);
 	}
-	
-	// var nearCover = getNearestCover(gameboard, unitStatsArray, terrainStatsArray, memoizationObject.AICentroid);
-	// var defensiveObject = getDeffensiveShape(gameboard, unitStatsArray, terrainStatsArray, nearCover);
-	// console.log(defensiveObject);
-	// var defenseEdge = getDefenseEdgeNearCentroid(memoizationObject.EnemyCentroid, defensiveObject);
-	// console.log(defenseEdge);
 	
 	//Determine how many units can attack
 	if (memoizationObject !== null && memoizationObject.UnitsCanAttack === undefined){
@@ -827,61 +817,6 @@ function getDefenseEdgeNearCentroid(centroid, defensiveObject){
 	//does both left and right edge cases
 	var currentPosition = closestTile;
 	var edgeArray = [];
-	// if(hasUp && hasDown)
-	// {
-		// edgeArray = [];
-		// var upMore = true;
-		// while (upMore)
-		// {
-			// if(arrayContainsCoords(defensiveObject, currentPosition.x, currentPosition.y - 1))
-			// {
-				// currentPosition = {x: currentPosition.x, y: currentPosition.y - 1};
-			// }
-			// else
-			// {
-				// upMore = false;
-			// }
-		// }
-		
-		// var moredown = true;
-		// while (moredown)
-		// {
-			// edgeArray.push(currentPosition);
-			// currentPosition = {x: currentPosition.x, y: currentPosition.y + 1};
-			// if(!arrayContainsCoords(defensiveObject, currentPosition.x, currentPosition.y))
-			// {
-				// moredown = false;
-			// }
-		// }
-	// }
-	//does both top and bottom edge cases
-	// if(hasLeft && hasRight)
-	// {
-		// edgeArray = [];
-		// var leftMore = true;
-		// while (leftMore)
-		// {
-			// if(arrayContainsCoords(defensiveObject, currentPosition.x - 1, currentPosition.y))
-			// {
-				// currentPosition = {x: currentPosition.x - 1, y: currentPosition.y};
-			// }
-			// else
-			// {
-				// leftMore = false;
-			// }
-		// }
-		
-		// var moreRight = true;
-		// while (moreRight)
-		// {
-			// edgeArray.push(currentPosition);
-			// currentPosition = {x: currentPosition.x + 1, y: currentPosition.y};
-			// if(!arrayContainsCoords(defensiveObject, currentPosition.x, currentPosition.y))
-			// {
-				// moreRight = false;
-			// }
-		// }
-	// }
 	//top left vertex case
 	if(hasDown && hasRight)
 	{
