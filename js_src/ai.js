@@ -631,7 +631,7 @@ function getUnitCentroid(unitArray){
 		yAvg = yAvg / unitArray.length;
 	}
 	
-	return {x: toInt(xAvg), y: toInt(yAvg)};
+	return {x: Math.round(xAvg), y: Math.round(yAvg)};
 }
 
 
@@ -725,12 +725,6 @@ function getNearestCover(gameboard, unitStatsArray, terrainStatsArray, centroid)
 	return {x: coverX, y: coverY};
 	
 }
-
-/*
-* rounds a float to int for average positions can be conveted to an index location
-*/
-function toInt(n){ return Math.round(Number(n)); };	
-
 
 /*
 * returns all consecutive cover tiles that are apart of the defensive object in the seed location
