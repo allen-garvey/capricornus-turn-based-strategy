@@ -165,7 +165,7 @@ function aiMain(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, m
 	}
 	var attackCoordinates = pathfinder.attackCoordinatesFor(unitToMove, gameboard, unitStatsArray, terrainStatsArray);
 	//easy default to attack if only one AI unit can attack
-	if(attackCoordinates.length > 0 && difficultyLevel === 0){
+	if(attackCoordinates.length > 0 && difficultyLevel === AI_DIFFICULTY_LEVELS.EASY){
 		var movementCoordinates = pathfinder.movementCoordinatesFor(unitToMove, gameboard, unitStatsArray, terrainStatsArray);
 		var attackCoordinate = attackCoordinates[Math.floor(Math.random() * attackCoordinates.length)];
 		//find ending coordinate for attack coordinate
@@ -177,7 +177,7 @@ function aiMain(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, m
 	}
 	
 	//If hard
-	if(difficultyLevel === 1){
+	if(difficultyLevel === AI_DIFFICULTY_LEVELS.HARD){
 		return groupAndFortify(gameboard, unitStatsArray, terrainStatsArray, difficultyLevel, memoizationObject, friendlyUnits, enemyUnits);
 	}
 	
