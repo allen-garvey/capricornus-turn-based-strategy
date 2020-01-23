@@ -4,7 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = {
     mode: 'development',
     entry: [
-            `${__dirname}/js_src/index.js`, 
+            `${__dirname}/src/index.js`, 
             `${__dirname}/sass/style.scss`,
         ],
     output: {
