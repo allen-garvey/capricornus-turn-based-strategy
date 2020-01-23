@@ -1,4 +1,3 @@
-"use strict";
 /*
  * Functions for calculating damage done when units attack
  */
@@ -13,24 +12,17 @@
 * @returns - positive integer or 0 representing the amount of damage attackingUnit deals to defendingUnit from attack
 */
 function damageForAttack(attackingUnit, defendingUnit, attackingTerrain, defendingTerrain, unitStatsArray, terrainStatsArray){
-	//get attacking unit stats
-	var attackingUnitStats = unitStatsArray[attackingUnit.type];
-	//get defending unit stats
-	var defendingUnitStats = unitStatsArray[defendingUnit.type];
+	const attackingUnitStats = unitStatsArray[attackingUnit.type];
+	const defendingUnitStats = unitStatsArray[defendingUnit.type];
 	
 	//get defending unit terrain stats
-	var defendingTerrainStats = terrainStatsArray[defendingTerrain.type];
+	const defendingTerrainStats = terrainStatsArray[defendingTerrain.type];
+	const damage = attackingUnitStats.attackTable[defendingUnit.type];
 	
-	var damage = attackingUnitStats.attackTable[defendingUnit.type];
-	
-	if(defendingUnitStats.applyDefense == true && defendingTerrainStats.defense == true)
-	{	
+	if(defendingUnitStats.applyDefense && defendingTerrainStats.defense){	
 		return Math.floor(damage * 0.5); 
 	}
-	else
-	{
-		return damage;
-	}	
+	return damage;	
 }
 
 /*
@@ -45,11 +37,10 @@ function damageForAttack(attackingUnit, defendingUnit, attackingTerrain, defendi
 */
 function damageForCounterattack(attackingUnit, defendingUnit, attackingTerrain, defendingTerrain, unitStatsArray, terrainStatsArray){
 	//returns percentage of attack damage
-	var counterDamage = Math.floor(damageForAttack(attackingUnit, defendingUnit, attackingTerrain, defendingTerrain, unitStatsArray, terrainStatsArray) * 0.5);
-	return counterDamage;
+	return Math.floor(damageForAttack(attackingUnit, defendingUnit, attackingTerrain, defendingTerrain, unitStatsArray, terrainStatsArray) * 0.5);
 }
 
 export default {
-	damageForAttack: damageForAttack,
-	damageForCounterattack: damageForCounterattack
+	damageForAttack,
+	damageForCounterattack,
 };
