@@ -1,4 +1,5 @@
-"use strict";
+import { getArrayBuffer } from './ajax';
+
 /*
  * Functions loading and playing sounds from audio files
  */
@@ -10,31 +11,21 @@ var context = new AudioContext();
  * asynchronously downloads an audio file at url and decodes into audio buffer
  * based on: https://www.html5rocks.com/en/tutorials/webaudio/intro/
  * @param url - string - url of audio file
- * @param isRetry - bool - used when browser can't play .ogg audio files, so retrys as .aac
  * @param callback - function - called when audio file is downloaded and AudioBuffer is decoded - passed into callback as argument 
  */
-function getAudioBuffer(url, callback, isRetry){
-	var request = new XMLHttpRequest();
-	request.open('GET', url, true);
-	request.responseType = 'arraybuffer';
-
-	// Decode asynchronously
-	request.onload = function() {
-		context.decodeAudioData(request.response, function(buffer){
+function getAudioBuffer(url, callback){
+	getArrayBuffer(url).then((arrayBuffer) => {
+		context.decodeAudioData(arrayBuffer, (buffer) => {
 			callback(buffer);
-		}, function(){
-			if(!isRetry){
-				//if ogg vorbis files not supported, this error callback will be called
-				var aacUrl = url.replace(/ogg$/, 'aac');
-				getAudioBuffer(aacUrl, callback, true);
-			}
-			else{
-				//aac files not supported, either, so there will be no audio
-				callback(null);
-			}
+		}, () => {
+			const aacUrl = url.replace(/ogg$/, 'aac');
+			getAudioBuffer(aacUrl).then((arrayBuffer) => {
+				context.decodeAudioData(arrayBuffer, (buffer) => {
+					callback(buffer);
+				});
+			});
 		});
-	}
-	request.send();
+	});
 }
 
 /**
