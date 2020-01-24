@@ -13,15 +13,19 @@ var context = new AudioContext();
  * @param url - string - url of audio file
  * @param callback - function - called when audio file is downloaded and AudioBuffer is decoded - passed into callback as argument 
  */
-function getAudioBuffer(url, callback){
-	getArrayBuffer(url).then((arrayBuffer) => {
-		context.decodeAudioData(arrayBuffer, (buffer) => {
-			callback(buffer);
-		}, () => {
-			const aacUrl = url.replace(/ogg$/, 'aac');
-			getAudioBuffer(aacUrl).then((arrayBuffer) => {
-				context.decodeAudioData(arrayBuffer, (buffer) => {
-					callback(buffer);
+function getAudioBuffer(url){
+	return new Promise((resolve, reject) => {
+		getArrayBuffer(url).then((arrayBuffer) => {
+			context.decodeAudioData(arrayBuffer, (buffer) => {
+				resolve(buffer);
+			}, () => {
+				const aacUrl = url.replace(/ogg$/, 'aac');
+				getArrayBuffer(aacUrl).then((arrayBuffer) => {
+					context.decodeAudioData(arrayBuffer, (buffer) => {
+						resolve(buffer);
+					}, () => {
+						reject();
+					});
 				});
 			});
 		});
@@ -111,7 +115,7 @@ function stopSound(gainNode, fadeOutTime){
 }
 
 export default {
-	getAudioBuffer: getAudioBuffer,
-	playAudioBuffer: playAudioBuffer,
-	stopSound: stopSound
+	getAudioBuffer,
+	playAudioBuffer,
+	stopSound,
 };

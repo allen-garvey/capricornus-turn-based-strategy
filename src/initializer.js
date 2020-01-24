@@ -48,7 +48,7 @@ export function startGame(){
 	}
 
 	//don't start game until all images are loaded
-	util.forEach(imageSprites, function(sprite){
+	util.forEach(imageSprites, (sprite) => {
 		if(sprite.complete){
 			assetDidLoad();
 		}
@@ -60,9 +60,9 @@ export function startGame(){
 	});
 
 	//download level unit placements and terrain data
-	levelStatsArray.forEach(function(level, index){
+	levelStatsArray.forEach((level, index) => {
 		//unit placement
-		level.dataUnitsUrls.forEach(function(dataUnitUrl, innerIndex){
+		level.dataUnitsUrls.forEach((dataUnitUrl, innerIndex) => {
 			getJson(dataUnitUrl).then((json) => {
 				levelUnitDatas[index][innerIndex] = json;
 				assetDidLoad();
@@ -76,36 +76,36 @@ export function startGame(){
 		});
 	});
 
-	audioStatsArray.units.forEach(function(unitSound){
-		mixer.getAudioBuffer(unitSound.moveUrl, function(buffer){
+	audioStatsArray.units.forEach((unitSound) => {
+		mixer.getAudioBuffer(unitSound.moveUrl).then((buffer) => {
 			unitSound.move = buffer;
 			assetDidLoad();
 		});
-		mixer.getAudioBuffer(unitSound.dieUrl, function(buffer){
+		mixer.getAudioBuffer(unitSound.dieUrl).then((buffer) => {
 			unitSound.die = buffer;
 			assetDidLoad();
 		});
-		mixer.getAudioBuffer(unitSound.attackUrl, function(buffer){
+		mixer.getAudioBuffer(unitSound.attackUrl).then((buffer) => {
 			unitSound.attack = buffer;
 			assetDidLoad();
 		});
 	});
-	cursorAudioKeys.forEach(function(cursorAudioKey){
-		var cursorItem = audioStatsArray.cursor[cursorAudioKey];
-		mixer.getAudioBuffer(cursorItem.url, function(buffer){
+	cursorAudioKeys.forEach((cursorAudioKey) => {
+		const cursorItem = audioStatsArray.cursor[cursorAudioKey];
+		mixer.getAudioBuffer(cursorItem.url).then((buffer) => {
 			cursorItem.audio = buffer;
 			assetDidLoad();
 		});
 	});
-	levelAudioKeys.forEach(function(levelAudioKey){
-		var levelItem = audioStatsArray.level[levelAudioKey];
-		mixer.getAudioBuffer(levelItem.url, function(buffer){
+	levelAudioKeys.forEach((levelAudioKey) => {
+		const levelItem = audioStatsArray.level[levelAudioKey];
+		mixer.getAudioBuffer(levelItem.url).then((buffer) => {
 			levelItem.audio = buffer;
 			assetDidLoad();
 		});
 	});
-	audioStatsArray.music.forEach(function(musicInfo){
-		mixer.getAudioBuffer(musicInfo.url, function(buffer){
+	audioStatsArray.music.forEach((musicInfo) => {
+		mixer.getAudioBuffer(musicInfo.url).then((buffer) => {
 			musicInfo.audio = buffer;
 			assetDidLoad();
 		});
