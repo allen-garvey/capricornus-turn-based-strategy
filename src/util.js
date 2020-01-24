@@ -40,49 +40,6 @@ function forEach(iteratable, callback){
 	return Array.prototype.forEach.call(iteratable, callback); 
 }
 
-//AJAX polyfill for browsers that don't support the fetch API 
-function fetchJsonPolyfill(url, callback){
-	var request = new XMLHttpRequest();
-	request.overrideMimeType('application/json');
-
-	request.onreadystatechange = function(){
-		if(request.readyState !== XMLHttpRequest.DONE){
-			return;
-		}
-		var data = request.response;
-		data = JSON.parse(data);
-
-		if(request.status <= 200 && request.status < 300){
-			callback(data);
-		}
-	};
-
-	request.open('GET', url, true);
-	request.send();
-}
-
-//for browsers that support the fetch API
-function fetchJson(url, callback){
-	var request = new Request(url);
-	var headers = new Headers();
-	headers.append('Content-Type', 'application/json');
-	fetch(request, {headers: headers}).then(function(response){
-		return response.json();
-	}).then(function(json){
-		callback(json);
-	});
-}
-
-//get json data at url, and passes parsed json data as argument into callback
-function getJson(url, callback){
-	if(window.fetch){
-		fetchJson(url, callback);
-	}
-	else{
-		fetchJsonPolyfill(url, callback);
-	}
-}
-
 //creates deep copy of an object and returns it
 //note this will only copy serializable properties, not functions
 //based on: http://stackoverflow.com/questions/728360/how-do-i-correctly-clone-a-javascript-object
@@ -96,7 +53,6 @@ export default {
 	isCoordinateInMovementSquares: isCoordinateInMovementSquares,
 	areCoordinatesEqual: areCoordinatesEqual,
 	coordinateFrom: coordinateFrom,
-	getJson: getJson,
 	forEach: forEach,
 	cloneObject: cloneObject
 };

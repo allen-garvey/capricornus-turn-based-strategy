@@ -4,6 +4,7 @@
  */
 
  import { start } from './game.js';
+ import { getJson } from './ajax';
  import util from './util.js';
  import levelStats from './level-stats.js';
  import menu from './menu.js';
@@ -62,14 +63,14 @@ export function startGame(){
 	levelStatsArray.forEach(function(level, index){
 		//unit placement
 		level.dataUnitsUrls.forEach(function(dataUnitUrl, innerIndex){
-			util.getJson(dataUnitUrl, function(json){
+			getJson(dataUnitUrl).then((json) => {
 				levelUnitDatas[index][innerIndex] = json;
 				assetDidLoad();
 			});
 		});
 
 		//terrain data
-		util.getJson(level.dataTerrainUrl, function(json){
+		getJson(level.dataTerrainUrl).then((json) => {
 			levelTerrainDatas[index] = json;
 			assetDidLoad();
 		});
