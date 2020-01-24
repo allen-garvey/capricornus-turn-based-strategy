@@ -1,5 +1,5 @@
 export function getJson(url){
-	return fetch(url).then((response) => response.json());
+	return fetch(url).then((res) => res.json());
 }
 
 export function getArrayBuffer(url){
