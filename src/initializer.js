@@ -38,7 +38,7 @@ export function startGame(){
 	}
 
 	//don't start game until all images are loaded
-	util.forEach(imageSprites, (sprite) => {
+	imageSprites.forEach((sprite) => {
 		const imagePromise = new Promise((resolve, reject) => {
 			if(sprite.complete){
 				return resolve();

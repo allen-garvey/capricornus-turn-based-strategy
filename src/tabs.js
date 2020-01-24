@@ -14,27 +14,27 @@ var pageSections = $('.tab[data-tab]');
 function navLinkClicked(navLink){
 	deselectNavlinks();
 	navLink.classList.add('active');
-	var tabSelector = navLink.dataset.tab;
+	const tabSelector = navLink.dataset.tab;
 	hideAllPageSections();
 	document.querySelector('.tab[data-tab="' + tabSelector + '"]').classList.add('active');
 }
 
 function deselectNavlinks(){
-	util.forEach(navLinks, function(navLink){
+	navLinks.forEach((navLink) => {
 		navLink.classList.remove('active');
 	});
 }
 
 function hideAllPageSections(){
-	util.forEach(pageSections, function(pageSection){
+	pageSections.forEach((pageSection) => {
 		pageSection.classList.remove('active');
 	});
 }
 
 export function initNavLinks(){
 	//set navLink to be active on click
-	util.forEach(navLinks, function(navLink){
-		navLink.onclick = function(){
+	navLinks.forEach((navLink) => {
+		navLink.onclick = () => {
 			navLinkClicked(navLink);
 		};
 	});

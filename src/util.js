@@ -35,11 +35,6 @@ function areCoordinatesEqual(coordinate1, coordinate2){
 	return (coordinate1.x === coordinate2.x && coordinate1.y === coordinate2.y);
 }
 
-//because can't use array prototype methods on NodeList
-function forEach(iteratable, callback){ 
-	return Array.prototype.forEach.call(iteratable, callback); 
-}
-
 //creates deep copy of an object and returns it
 //note this will only copy serializable properties, not functions
 //based on: http://stackoverflow.com/questions/728360/how-do-i-correctly-clone-a-javascript-object
@@ -49,10 +44,9 @@ function cloneObject(object){
 
 
 export default {
-	copyCoordinate: copyCoordinate,
-	isCoordinateInMovementSquares: isCoordinateInMovementSquares,
-	areCoordinatesEqual: areCoordinatesEqual,
-	coordinateFrom: coordinateFrom,
-	forEach: forEach,
-	cloneObject: cloneObject
+	copyCoordinate,
+	isCoordinateInMovementSquares,
+	areCoordinatesEqual,
+	coordinateFrom,
+	cloneObject,
 };

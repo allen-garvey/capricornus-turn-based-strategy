@@ -17,7 +17,7 @@ var SHOW_DEBUG_MENUS = false;
 */
 function initializeMenuButtons(){
 	//add onclick listeners for back to main menu buttons
-	util.forEach(document.querySelectorAll('[data-button-target="main-menu"]'), function(backToMainMenuButton, index){
+	document.querySelectorAll('[data-button-target="main-menu"]').forEach((backToMainMenuButton) => {
 		backToMainMenuButton.onclick = function(){
 			displayMainMenu();
 		};
