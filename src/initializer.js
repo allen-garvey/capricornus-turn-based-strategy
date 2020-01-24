@@ -13,26 +13,16 @@
  import audioStats from './audio-stats.js';
 
 export function startGame(){
-	var levelStatsArray = levelStats.get();
-	var levelUnitDatas = levelStatsArray.map(function(){ return [null, null]; });
-	var levelTerrainDatas = [];
-	var audioStatsArray = audioStats.get();
-	var cursorAudioKeys = ['select', 'deselect'];
-	var levelAudioKeys = ['passed', 'failed'];
+	const levelStatsArray = levelStats.get();
+	const levelUnitDatas = levelStatsArray.map(function(){ return [null, null]; });
+	const levelTerrainDatas = [];
+	const audioStatsArray = audioStats.get();
+	const cursorAudioKeys = ['select', 'deselect'];
+	const levelAudioKeys = ['passed', 'failed'];
 
-	var imageSprites = document.querySelectorAll('img.spritesheet');
+	const imageSprites = document.querySelectorAll('img.spritesheet');
 
-	//3 * levelStats array, since each level has a 2 unit files and 1 terrain file to download
-	//3 * audioStats unit array, since each unit has 3 sound effects files
-	var assetsLeftToLoad = imageSprites.length + (3 * levelStatsArray.length) + (3 * audioStatsArray.units.length) + cursorAudioKeys.length + levelAudioKeys.length + audioStatsArray.music.length;
-
-	//called after a single asset loads
-	function assetDidLoad(){
-		assetsLeftToLoad--;
-		if(assetsLeftToLoad == 0){
-			allAssetsFinishedLoading();
-		}
-	}
+	const assetPromises = [];
 
 	//called when all assets are loaded
 	function allAssetsFinishedLoading(){
@@ -49,65 +39,68 @@ export function startGame(){
 
 	//don't start game until all images are loaded
 	util.forEach(imageSprites, (sprite) => {
-		if(sprite.complete){
-			assetDidLoad();
-		}
-		else{
+		const imagePromise = new Promise((resolve, reject) => {
+			if(sprite.complete){
+				return resolve();
+			}
 			sprite.onload = function(){
-				assetDidLoad();
+				resolve();
 			};
-		}
+		});
+		assetPromises.push(imagePromise);
 	});
 
 	//download level unit placements and terrain data
 	levelStatsArray.forEach((level, index) => {
 		//unit placement
 		level.dataUnitsUrls.forEach((dataUnitUrl, innerIndex) => {
-			getJson(dataUnitUrl).then((json) => {
+			const unitPromise = getJson(dataUnitUrl).then((json) => {
 				levelUnitDatas[index][innerIndex] = json;
-				assetDidLoad();
 			});
+			assetPromises.push(unitPromise);
 		});
 
 		//terrain data
-		getJson(level.dataTerrainUrl).then((json) => {
+		const terrainPromise = getJson(level.dataTerrainUrl).then((json) => {
 			levelTerrainDatas[index] = json;
-			assetDidLoad();
 		});
+		assetPromises.push(terrainPromise);
 	});
 
 	audioStatsArray.units.forEach((unitSound) => {
-		mixer.getAudioBuffer(unitSound.moveUrl).then((buffer) => {
+		const unitMovePromise = mixer.getAudioBuffer(unitSound.moveUrl).then((buffer) => {
 			unitSound.move = buffer;
-			assetDidLoad();
 		});
-		mixer.getAudioBuffer(unitSound.dieUrl).then((buffer) => {
+		const unitDiePromise = mixer.getAudioBuffer(unitSound.dieUrl).then((buffer) => {
 			unitSound.die = buffer;
-			assetDidLoad();
 		});
-		mixer.getAudioBuffer(unitSound.attackUrl).then((buffer) => {
+		const unitAttackPromise = mixer.getAudioBuffer(unitSound.attackUrl).then((buffer) => {
 			unitSound.attack = buffer;
-			assetDidLoad();
 		});
+		assetPromises.push(unitMovePromise);
+		assetPromises.push(unitDiePromise);
+		assetPromises.push(unitAttackPromise);
 	});
 	cursorAudioKeys.forEach((cursorAudioKey) => {
 		const cursorItem = audioStatsArray.cursor[cursorAudioKey];
-		mixer.getAudioBuffer(cursorItem.url).then((buffer) => {
+		const cursorPromise = mixer.getAudioBuffer(cursorItem.url).then((buffer) => {
 			cursorItem.audio = buffer;
-			assetDidLoad();
 		});
+		assetPromises.push(cursorPromise);
 	});
 	levelAudioKeys.forEach((levelAudioKey) => {
 		const levelItem = audioStatsArray.level[levelAudioKey];
-		mixer.getAudioBuffer(levelItem.url).then((buffer) => {
+		const levelPromise = mixer.getAudioBuffer(levelItem.url).then((buffer) => {
 			levelItem.audio = buffer;
-			assetDidLoad();
 		});
+		assetPromises.push(levelPromise);
 	});
 	audioStatsArray.music.forEach((musicInfo) => {
-		mixer.getAudioBuffer(musicInfo.url).then((buffer) => {
+		const levelPromise = mixer.getAudioBuffer(musicInfo.url).then((buffer) => {
 			musicInfo.audio = buffer;
-			assetDidLoad();
 		});
+		assetPromises.push(levelPromise);
 	});
+	
+	Promise.all(assetPromises).then(() => allAssetsFinishedLoading());
 }
