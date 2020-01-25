@@ -23,9 +23,7 @@ function getAudioBuffer(url){
 				getArrayBuffer(aacUrl).then((arrayBuffer) => {
 					context.decodeAudioData(arrayBuffer, (buffer) => {
 						resolve(buffer);
-					}, () => {
-						reject();
-					});
+					}, reject);
 				});
 			});
 		});

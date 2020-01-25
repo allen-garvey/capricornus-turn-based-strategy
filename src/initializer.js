@@ -43,9 +43,7 @@ export function startGame(){
 			if(sprite.complete){
 				return resolve();
 			}
-			sprite.onload = function(){
-				resolve();
-			};
+			sprite.onload = resolve;
 		});
 		assetPromises.push(imagePromise);
 	});
