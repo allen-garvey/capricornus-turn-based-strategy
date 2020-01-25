@@ -1,10 +1,9 @@
-"use strict";
 /*
  * Utility functions
  */
 
 function coordinateFrom(x, y){
-	return {x: x, y: y};
+	return {x, y};
 }
 
 function copyCoordinate(coordinate){
@@ -12,8 +11,8 @@ function copyCoordinate(coordinate){
 }
 
 function isCoordinateInMovementSquares(coordinate, movementSquares){
-	for(var i = 0; i < movementSquares.length; i++){
-		var currentCoordinate = movementSquares[i];
+	for(let i = 0; i < movementSquares.length; i++){
+		const currentCoordinate = movementSquares[i];
 		if(coordinate.x === currentCoordinate.x && coordinate.y === currentCoordinate.y){
 			return true;
 		}
