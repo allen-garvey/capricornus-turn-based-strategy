@@ -3,8 +3,6 @@
  * Functionality for site navigation to trigger page section tabs
  */
 
-import util from './util.js';
-
 //saves some typing
 var $ = function(selector){ return document.querySelectorAll(selector); };
 

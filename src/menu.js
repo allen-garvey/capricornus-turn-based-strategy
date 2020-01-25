@@ -3,7 +3,6 @@
  * Functionality for main menu and load game menu
  */
 
- import util from './util.js';
  import saveGameController from './save-game.js';
  import templater from './templater.js';
  import modal from './modal.js';

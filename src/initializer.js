@@ -5,7 +5,6 @@
 
  import { start } from './game.js';
  import { getJson } from './ajax';
- import util from './util.js';
  import levelStats from './level-stats.js';
  import menu from './menu.js';
  import levelLoader from './level-loader.js';
