@@ -4,12 +4,10 @@
 
 import Coordinate from './coordinate.js';
 import unitStats from './unit-stats.js';
-import terrainStats from './terrain-stats.js';
 import animationStats from './animation-stats.js';
 
 
 var UNIT_STATS = unitStats.get();
-var TERRAIN_STATS = terrainStats.get();
 var ANIMATION_STATS = animationStats.get();
 
 //constants used when rendering unit orientation and movement animation
