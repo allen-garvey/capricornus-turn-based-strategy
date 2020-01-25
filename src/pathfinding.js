@@ -1,8 +1,7 @@
-"use strict";
 /*
  * Logic for unit pathfinding
  */
-import util from './util.js';
+import Coordinate from './coordinate';
 
 /*
 * @param startingCoordinate - starting coordinate {x, y} of the unit
@@ -366,10 +365,10 @@ function stubAttackCoordinatesFor(unitCoordinate, gameboard, unitStatsArray, ter
 
 	movementCoordinates.forEach(function(coordinate){
 		[
-			util.coordinateFrom(coordinate.x + 1, coordinate.y), 
-			util.coordinateFrom(coordinate.x - 1, coordinate.y),
-			util.coordinateFrom(coordinate.x, coordinate.y + 1), 
-			util.coordinateFrom(coordinate.x, coordinate.y - 1)
+			Coordinate.from(coordinate.x + 1, coordinate.y), 
+			Coordinate.from(coordinate.x - 1, coordinate.y),
+			Coordinate.from(coordinate.x, coordinate.y + 1), 
+			Coordinate.from(coordinate.x, coordinate.y - 1)
 		].forEach(function(adjacentCoordinate){
 			if(coordinateContainsEnemyUnit(adjacentCoordinate)){
 				attackCoordinates.push(adjacentCoordinate);

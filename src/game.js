@@ -1,9 +1,7 @@
-"use strict";
-
 /*
 * Main game loop functionality
 */
-import util from './util.js';
+import Coordinate from './coordinate.js';
 import renderer from './renderer.js';
 import unitStats from './unit-stats.js';
 import terrainStats from './terrain-stats.js';
@@ -69,7 +67,7 @@ export function start(LEVEL_STATS, AUDIO_STATS, levelIndex, difficultyLevel, sav
 		//check to see if a cursor is already drawn
 		if(userInfo.cursor.coordinate != null){
 			//don't do anything if cursor is in same square
-			if(util.areCoordinatesEqual(userInfo.cursor.coordinate, coordinate)){
+			if(Coordinate.areCoordinatesEqual(userInfo.cursor.coordinate, coordinate)){
 				return;
 			}
 			//cursor moved to new square, so erase previous cursor if there is one
@@ -86,8 +84,8 @@ export function start(LEVEL_STATS, AUDIO_STATS, levelIndex, difficultyLevel, sav
 		}
 
 		//draw unit path preview tiles, if applicable
-		if(userInfo.unitSelected && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.team === unitStats.TEAMS.PLAYER && util.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedMovementSquares)){
-			drawUnitMovementPreview(util.copyCoordinate(userInfo.cursor.coordinate));
+		if(userInfo.unitSelected && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.team === unitStats.TEAMS.PLAYER && Coordinate.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedMovementSquares)){
+			drawUnitMovementPreview(Coordinate.copy(userInfo.cursor.coordinate));
 		}
 	}
 
@@ -95,7 +93,7 @@ export function start(LEVEL_STATS, AUDIO_STATS, levelIndex, difficultyLevel, sav
 		var coordinate = renderer.pixelCoordinateToTileCoordinate({x: xCoordinate, y: yCoordinate});
 		userInfo.currentMouseCoordinate = coordinate;
 		//don't update cursor during text overlay
-		if(!userInfo.gameInteractionEnabled || util.areCoordinatesEqual(coordinate, userInfo.cursor.coordinate)){
+		if(!userInfo.gameInteractionEnabled || Coordinate.areCoordinatesEqual(coordinate, userInfo.cursor.coordinate)){
 			return;
 		}
 		drawCursor(coordinate);
@@ -108,7 +106,7 @@ export function start(LEVEL_STATS, AUDIO_STATS, levelIndex, difficultyLevel, sav
 			return false;
 		}
 		var selectedUnit = renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit;
-		return selectedUnit.team === unitStats.TEAMS.PLAYER && selectedUnit.canMove && util.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedAttackSquares);
+		return selectedUnit.team === unitStats.TEAMS.PLAYER && selectedUnit.canMove && Coordinate.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedAttackSquares);
 	}
 
 	/**
@@ -248,10 +246,10 @@ export function start(LEVEL_STATS, AUDIO_STATS, levelIndex, difficultyLevel, sav
 		var validMovementCoordinates = pathfinder.movementCoordinatesForAttackCoordinate(attackCoordinate, movementSquares);
 		//check if movement coordinate is valid
 		if(movementCoordinate === undefined || !validMovementCoordinates.find(function(coordinate){
-			return util.areCoordinatesEqual(coordinate, movementCoordinate);
+			return Coordinate.areCoordinatesEqual(coordinate, movementCoordinate);
 		})){
 			//see if unit has to move to attack
-			if(util.isCoordinateInMovementSquares(startingCoordinate, validMovementCoordinates)){
+			if(Coordinate.isCoordinateInMovementSquares(startingCoordinate, validMovementCoordinates)){
 				movementCoordinate = startingCoordinate;
 			}
 			else{
@@ -331,7 +329,7 @@ export function start(LEVEL_STATS, AUDIO_STATS, levelIndex, difficultyLevel, sav
 	function moveUnit(startingCoordinate, endingCoordinate, doneCallback){
 		var unitToBeMoved = renderer.gameTileForCoordinate(startingCoordinate, gameboard).unit;
 		//don't render movement if starting and ending coordinates are the same
-		if(util.areCoordinatesEqual(startingCoordinate, endingCoordinate)){
+		if(Coordinate.areCoordinatesEqual(startingCoordinate, endingCoordinate)){
 			unitToBeMoved.canMove = false;
 			renderer.redrawUnit(unitCanvasContext, startingCoordinate, unitToBeMoved);
 			doneCallback();
@@ -654,9 +652,9 @@ export function start(LEVEL_STATS, AUDIO_STATS, levelIndex, difficultyLevel, sav
 		updateCursorPosition(e.offsetX, e.offsetY);
 
 		//move unit if one is currently selected, is on the player's team, and valid movement tile is clicked
-		if(userInfo.unitSelected && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.team === unitStats.TEAMS.PLAYER && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.canMove && util.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedMovementSquares)){
+		if(userInfo.unitSelected && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.team === unitStats.TEAMS.PLAYER && renderer.gameTileForCoordinate(userInfo.unitSelected, gameboard).unit.canMove && Coordinate.isCoordinateInMovementSquares(userInfo.cursor.coordinate, userInfo.unitSelectedMovementSquares)){
 			renderUnitDeselected(); //erase selection tiles
-			moveUserUnit(userInfo.unitSelected, util.copyCoordinate(userInfo.cursor.coordinate));
+			moveUserUnit(userInfo.unitSelected, Coordinate.copy(userInfo.cursor.coordinate));
 			//after unit is moved it's the same as if unit was deselected
 			userInfo.unitSelected = false;
 			//userInfo.unitSelectedMovementSquares = false;
@@ -666,7 +664,7 @@ export function start(LEVEL_STATS, AUDIO_STATS, levelIndex, difficultyLevel, sav
 		//have unit attack a unit if one is currently selected, on the players team, and valid attack tile is clicked
 		if(isOverTriggerPlayerAttackTile()){
 			renderUnitDeselected(); //erase selection tiles
-			userUnitAttack(userInfo.unitSelected, util.copyCoordinate(userInfo.cursor.coordinate), userInfo.unitSelectedShortestPath[userInfo.unitSelectedShortestPath.length - 1]);
+			userUnitAttack(userInfo.unitSelected, Coordinate.copy(userInfo.cursor.coordinate), userInfo.unitSelectedShortestPath[userInfo.unitSelectedShortestPath.length - 1]);
 			//after unit attacks it's the same as if unit was deselected
 			userInfo.unitSelected = false;
 			return;

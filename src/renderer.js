@@ -1,10 +1,8 @@
-"use strict";
-
 /*
  * Functionality used to render graphics on a canvas context
  */
 
-import util from './util.js';
+import Coordinate from './coordinate.js';
 import unitStats from './unit-stats.js';
 import terrainStats from './terrain-stats.js';
 import animationStats from './animation-stats.js';
@@ -266,7 +264,7 @@ function renderUnitMovementPreview(canvasContext, pathCoordinates){
 	var start = null;
 	var startingPixelCoordinate = tileCoordinateToPixelCoordinate(startingCoordinate);
 	var endingPixelCoordinate = tileCoordinateToPixelCoordinate(endingCoordinate);
-	var currentPixelCoordinate = util.copyCoordinate(startingPixelCoordinate);
+	var currentPixelCoordinate = Coordinate.copy(startingPixelCoordinate);
 	var currentDirection = orientUnit(startingCoordinate, endingCoordinate, unit);
 
 	function step(timestamp){
@@ -298,7 +296,7 @@ function renderUnitMovementPreview(canvasContext, pathCoordinates){
 		}
 		//render unit at current position
 		renderUnitAtPixelCoordinate(animationCanvasContext, currentPixelCoordinate, unit);
-		if(!util.areCoordinatesEqual(currentPixelCoordinate, endingPixelCoordinate)){
+		if(!Coordinate.areCoordinatesEqual(currentPixelCoordinate, endingPixelCoordinate)){
 			//reset start
 			start = null;
 			window.requestAnimationFrame(step);

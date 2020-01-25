@@ -1,12 +1,12 @@
 /*
- * Utility functions
+ * Functions involving game coordinates
  */
 
 function coordinateFrom(x, y){
 	return {x, y};
 }
 
-function copyCoordinate(coordinate){
+function copy(coordinate){
 	return {x: coordinate.x, y: coordinate.y};
 }
 
@@ -36,8 +36,8 @@ function areCoordinatesEqual(coordinate1, coordinate2){
 
 
 export default {
-	copyCoordinate,
+	copy,
 	isCoordinateInMovementSquares,
 	areCoordinatesEqual,
-	coordinateFrom,
+	from: coordinateFrom,
 };
