@@ -1,4 +1,3 @@
-"use strict";
 /*
  * Used to store information about the animations
  */

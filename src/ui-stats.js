@@ -1,4 +1,3 @@
-"use strict";
 /*
  * Used to store information about ui sprites, such as for the cursor
  */

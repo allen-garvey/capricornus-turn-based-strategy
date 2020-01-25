@@ -1,4 +1,3 @@
-"use strict";
 /*
  * Displays text overlay menus for when turn starts and level is over
  */

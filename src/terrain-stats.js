@@ -1,4 +1,3 @@
-"use strict";
 /*
  * Array that stores statistics about each terrain type
  */

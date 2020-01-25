@@ -1,4 +1,3 @@
-"use strict";
 /*
  * Functionality for main menu and load game menu
  */

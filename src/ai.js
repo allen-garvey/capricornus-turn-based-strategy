@@ -1,4 +1,3 @@
-"use strict";
 /*
  * Module for AI Player
  */

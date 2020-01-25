@@ -1,4 +1,3 @@
-"use strict";
 /*
  * Functionality for site navigation to trigger page section tabs
  */

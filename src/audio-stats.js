@@ -1,4 +1,3 @@
-"use strict";
 /*
  * Stores information about audio sound effects
  */

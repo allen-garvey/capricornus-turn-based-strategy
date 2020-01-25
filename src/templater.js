@@ -1,4 +1,3 @@
-"use strict";
 /*
  * Functions DOM manipulation and HTML templating
  */

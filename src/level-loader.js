@@ -1,5 +1,3 @@
-"use strict";
-
 /*
  * Functionality for translating level data from json files into 
  * format used by gameboard

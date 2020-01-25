@@ -1,4 +1,3 @@
-"use strict";
 /*
  * Functions for displaying modal dialogs
  */
