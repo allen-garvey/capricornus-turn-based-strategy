@@ -1,11 +1,15 @@
-"use strict";
 /*
  * Functionality for saving and loading games
- */
-
-import util from './util.js';
+*/
 
 const SAVE_GAME_LS_KEY = 'capricornus_squadron_saves';
+
+//creates deep copy of an object and returns it
+//note this will only copy serializable properties, not functions
+//based on: http://stackoverflow.com/questions/728360/how-do-i-correctly-clone-a-javascript-object
+function cloneObject(object){
+	return JSON.parse(JSON.stringify(object));
+}
 
 /**
  * Gets the saved game array from localStorage
@@ -51,7 +55,7 @@ function serializeGameboard(gameboard){
 
 		for(var j = 0; j < subarray.length; j++){
 			serializedGameboard[i][j] = {};
-			serializedGameboard[i][j].unit = util.cloneObject(gameboard[i][j].unit);
+			serializedGameboard[i][j].unit = cloneObject(gameboard[i][j].unit);
 		}
 	}
 	return serializedGameboard;
