@@ -1,3 +1,5 @@
+import css from '../sass/style.scss';
+
 import { initNavLinks } from './tabs.js';
 initNavLinks();
 
