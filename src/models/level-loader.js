@@ -3,8 +3,8 @@
  * format used by gameboard
  */
 
-import unitStats from './models/unit-stats.js';
-import terrainStats from './models/terrain-stats.js';
+import unitStats from './unit-stats.js';
+import terrainStats from './terrain-stats.js';
 
 /**
  * Used to get the correct unit type for a square in the map

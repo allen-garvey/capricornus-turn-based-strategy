@@ -2,10 +2,10 @@
  * Functionality for main menu and load game menu
  */
 
- import saveGameController from './save-game.js';
+ import saveGameController from '../save-game.js';
  import templater from './templater.js';
  import modal from './modal.js';
- import ai from './ai.js';
+ import ai from '../ai.js';
 
 
 var SHOW_DEBUG_MENUS = false;

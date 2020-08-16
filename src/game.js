@@ -8,14 +8,14 @@ import terrainStats from './models/terrain-stats.js';
 import pathfinder from './pathfinding.js';
 import ai from './ai.js';
 import damageCalculator from './damage.js';
-import levelLoader from './level-loader.js';
-import modal from './modal.js';
+import levelLoader from './models/level-loader.js';
+import modal from './ui/modal.js';
 import saveGameController from './save-game.js';
 import mixer from './mixer.js';
-import menu from './menu.js';
-import textOverlay from './text-overlay.js';
+import menu from './ui/menu.js';
+import textOverlay from './ui/text-overlay.js';
 import uiStats from './models/ui-stats.js';
-import Briefings from './briefings.js';
+import Briefings from './ui/briefings.js';
 
 
 export function start(LEVEL_STATS, AUDIO_STATS, levelIndex, difficultyLevel, savedGame){
