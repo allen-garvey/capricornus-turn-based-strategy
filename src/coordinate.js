@@ -7,17 +7,7 @@ function coordinateFrom(x, y){
 }
 
 function copy(coordinate){
-	return {x: coordinate.x, y: coordinate.y};
-}
-
-function isCoordinateInMovementSquares(coordinate, movementSquares){
-	for(let i = 0; i < movementSquares.length; i++){
-		const currentCoordinate = movementSquares[i];
-		if(coordinate.x === currentCoordinate.x && coordinate.y === currentCoordinate.y){
-			return true;
-		}
-	}
-	return false;
+	return {...coordinate};
 }
 
 function areCoordinatesEqual(coordinate1, coordinate2){
@@ -26,6 +16,15 @@ function areCoordinatesEqual(coordinate1, coordinate2){
 		return !!coordinate1 === !!coordinate2;
 	}
 	return (coordinate1.x === coordinate2.x && coordinate1.y === coordinate2.y);
+}
+
+function isCoordinateInMovementSquares(coordinate, movementSquares){
+	for(const currentCoordinate of movementSquares){
+		if(areCoordinatesEqual(coordinate, currentCoordinate)){
+			return true;
+		}
+	}
+	return false;
 }
 
 
