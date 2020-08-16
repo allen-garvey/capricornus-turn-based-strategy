@@ -1,3 +1,13 @@
+.mobile-warning-container {
+	position: relative;
+	top: -30px;
+
+	@media (hover: hover){
+		display: none;
+	}
+}
+
+
 @media screen and (max-width: $container_width){
 	.header{
 		width: $container_width;
