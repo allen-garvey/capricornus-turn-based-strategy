@@ -3,7 +3,7 @@
  */
 
  import pathfinder from './pathfinding.js';
- import unitStats from './unit-stats.js';
+ import unitStats from './models/unit-stats.js';
  import damageCalculator from './damage.js';
 
 

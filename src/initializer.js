@@ -4,11 +4,11 @@
 
  import { start } from './game.js';
  import { getJson } from './ajax';
- import levelStats from './level-stats.js';
+ import levelStats from './models/level-stats.js';
  import menu from './menu.js';
  import levelLoader from './level-loader.js';
  import mixer from './mixer.js';
- import audioStats from './audio-stats.js';
+ import audioStats from './models/audio-stats.js';
 
 export function startGame(){
 	const levelStatsArray = levelStats.get();

@@ -3,8 +3,8 @@
 */
 import Coordinate from './coordinate.js';
 import renderer from './renderer.js';
-import unitStats from './unit-stats.js';
-import terrainStats from './terrain-stats.js';
+import unitStats from './models/unit-stats.js';
+import terrainStats from './models/terrain-stats.js';
 import pathfinder from './pathfinding.js';
 import ai from './ai.js';
 import damageCalculator from './damage.js';
@@ -14,7 +14,7 @@ import saveGameController from './save-game.js';
 import mixer from './mixer.js';
 import menu from './menu.js';
 import textOverlay from './text-overlay.js';
-import uiStats from './ui-stats.js';
+import uiStats from './models/ui-stats.js';
 import Briefings from './briefings.js';
 
 
