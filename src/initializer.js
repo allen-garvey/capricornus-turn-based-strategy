@@ -98,5 +98,5 @@ export function startGame(){
 		assetPromises.push(levelPromise);
 	});
 	
-	Promise.all(assetPromises).then(() => allAssetsFinishedLoading());
+	Promise.all(assetPromises).then(allAssetsFinishedLoading);
 }
