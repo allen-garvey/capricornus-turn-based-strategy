@@ -2,12 +2,12 @@
  * Logic to start game when all assets are loaded
  */
 
- import { start } from './game.js';
+ import { start } from './engine/game.js';
  import { getJson } from './ajax';
  import levelStats from './models/level-stats.js';
  import menu from './ui/menu.js';
  import levelLoader from './models/level-loader.js';
- import mixer from './mixer.js';
+ import mixer from './engine/mixer.js';
  import audioStats from './models/audio-stats.js';
 
 export function startGame(){

@@ -3,8 +3,8 @@
  */
 
 import Coordinate from './coordinate.js';
-import unitStats from './models/unit-stats.js';
-import animationStats from './models/animation-stats.js';
+import unitStats from '../models/unit-stats.js';
+import animationStats from '../models/animation-stats.js';
 
 
 var UNIT_STATS = unitStats.get();

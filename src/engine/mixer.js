@@ -1,4 +1,4 @@
-import { getArrayBuffer } from './ajax';
+import { getArrayBuffer } from '../ajax';
 
 /*
  * Functions loading and playing sounds from audio files
